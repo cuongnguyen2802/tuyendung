@@ -1,0 +1,30 @@
+{
+  "positions": [
+    "Nhân viên kinh doanh",
+    "Kế toán",
+    "Marketing",
+    "Hành chính nhân sự",
+    "Chăm sóc khách hàng",
+    "Ngân hàng",
+    "IT - Phần mềm",
+    "Lao động phổ thông",
+    "Senior / Manager",
+    "Kỹ sư xây dựng",
+    "Thiết kế đồ họa",
+    "Bất động sản"
+  ],
+  "fields": [
+    "Sản xuất",
+    "Bán lẻ - FMCG",
+    "IT - Phần mềm",
+    "Xây dựng",
+    "Giáo dục / Đào tạo",
+    "Tài chính - Ngân hàng",
+    "Y tế - Dược",
+    "Vận tải - Logistics",
+    "Du lịch - Khách sạn",
+    "Truyền thông",
+    "Kế toán - Kiểm toán",
+    "Nhân sự"
+  ]
+}

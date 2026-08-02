@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json.schemastore.org/swcrc",
+  "sourceMaps": true,
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "decorators": true,
+      "dynamicImport": true
+    },
+    "transform": {
+      "legacyDecorator": true,
+      "decoratorMetadata": true
+    },
+    "target": "es2022",
+    "keepClassNames": true,
+    "baseUrl": "./",
+    "paths": {
+      "meilisearch": ["./node_modules/meilisearch/dist/index.js"]
+    }
+  },
+  "module": {
+    "type": "commonjs",
+    "strict": true
+  },
+  "minify": false
+}

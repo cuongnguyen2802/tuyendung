@@ -1,0 +1,36 @@
+{
+  "items": [
+    {
+      "id": "saved",
+      "label": "",
+      "icon": "heart",
+      "href": "/profile/saved-jobs",
+      "visible": true,
+      "showBadge": true
+    },
+    {
+      "id": "register",
+      "label": "",
+      "icon": "user-plus",
+      "href": "/register",
+      "visible": true,
+      "showBadge": false
+    },
+    {
+      "id": "feedback",
+      "label": "Góp ý",
+      "icon": "message-circle",
+      "href": "",
+      "visible": true,
+      "showBadge": false
+    },
+    {
+      "id": "support",
+      "label": "Hỗ trợ",
+      "icon": "headset",
+      "href": "",
+      "visible": true,
+      "showBadge": false
+    }
+  ]
+}

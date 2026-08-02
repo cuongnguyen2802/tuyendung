@@ -1,0 +1,27 @@
+{
+  "name": "tuyendung",
+  "private": true,
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "test": "turbo run test",
+    "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
+    "db:migrate": "pnpm --filter database db:migrate",
+    "db:push": "pnpm --filter database db:push",
+    "db:generate": "pnpm --filter database db:generate",
+    "db:seed": "pnpm --filter database db:seed",
+    "db:studio": "pnpm --filter database db:studio"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "turbo": "^2.3.3",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@9.12.3"
+}

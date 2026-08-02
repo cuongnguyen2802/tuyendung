@@ -1,0 +1,95 @@
+{
+  "items": [
+    {
+      "id": "jobs",
+      "label": "Việc làm",
+      "type": "mega",
+      "visible": true,
+      "sections": [
+        {
+          "id": "quick-links",
+          "title": "Việc làm",
+          "items": [
+            { "id": "find-jobs", "label": "Tìm việc làm", "href": "/jobs", "visible": true },
+            { "id": "saved-jobs", "label": "Việc làm đã lưu", "href": "/saved-jobs", "visible": true },
+            { "id": "applied", "label": "Việc đã ứng tuyển", "href": "/applications", "visible": true },
+            { "id": "recommended", "label": "Việc phù hợp với bạn", "href": "/jobs?recommended=true", "visible": true }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cv",
+      "label": "Tạo CV",
+      "type": "mega",
+      "visible": true,
+      "sections": [
+        {
+          "id": "cv-styles",
+          "title": "Mẫu CV theo style",
+          "href": "/resumes/templates",
+          "items": [
+            { "id": "simple", "label": "Mẫu CV Đơn giản", "href": "/resumes/templates?style=simple", "visible": true },
+            { "id": "impressive", "label": "Mẫu CV Ấn tượng", "href": "/resumes/templates?style=impressive", "visible": true },
+            { "id": "professional", "label": "Mẫu CV Chuyên nghiệp", "href": "/resumes/templates?style=professional", "visible": true },
+            { "id": "harvard", "label": "Mẫu CV Harvard", "href": "/resumes/templates?style=harvard", "visible": true }
+          ]
+        },
+        {
+          "id": "cv-positions",
+          "title": "Mẫu CV theo vị trí ứng tuyển",
+          "href": "/resumes/templates?by=position",
+          "items": [
+            { "id": "sales", "label": "Nhân viên kinh doanh", "href": "/resumes/templates?position=sales", "visible": true },
+            { "id": "developer", "label": "Lập trình viên", "href": "/resumes/templates?position=developer", "visible": true },
+            { "id": "accountant", "label": "Nhân viên kế toán", "href": "/resumes/templates?position=accountant", "visible": true },
+            { "id": "marketing", "label": "Chuyên viên marketing", "href": "/resumes/templates?position=marketing", "visible": true }
+          ]
+        },
+        {
+          "id": "cv-tools",
+          "title": "Công cụ CV",
+          "items": [
+            { "id": "manage-cv", "label": "Quản lý CV", "href": "/resumes", "visible": true },
+            { "id": "upload-cv", "label": "Tải CV lên", "href": "/resumes/upload", "visible": true },
+            { "id": "cv-guide", "label": "Hướng dẫn viết CV", "href": "/blog/cv", "visible": true },
+            { "id": "cover-letters", "label": "Quản lý Cover Letter", "href": "/cover-letters", "visible": true },
+            { "id": "cover-templates", "label": "Mẫu Cover Letter", "href": "/cover-letters/templates", "visible": true }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tools",
+      "label": "Công cụ",
+      "type": "simple",
+      "visible": true,
+      "children": [
+        { "id": "salary-calc", "label": "Tính lương", "href": "/tools/salary", "visible": true },
+        { "id": "interview-tips", "label": "Cẩm nang phỏng vấn", "href": "/tools/interview", "visible": true },
+        { "id": "career-test", "label": "Trắc nghiệm nghề nghiệp", "href": "/tools/career-test", "visible": true }
+      ]
+    },
+    {
+      "id": "handbook",
+      "label": "Cẩm nang nghề nghiệp",
+      "type": "simple",
+      "visible": true,
+      "children": [
+        { "id": "career-guide", "label": "Hướng dẫn nghề nghiệp", "href": "/handbook/career", "visible": true },
+        { "id": "interview-guide", "label": "Kinh nghiệm phỏng vấn", "href": "/handbook/interview", "visible": true },
+        { "id": "salary-guide", "label": "Đàm phán lương", "href": "/handbook/salary", "visible": true },
+        { "id": "cv-guide2", "label": "Hướng dẫn viết CV", "href": "/handbook/cv", "visible": true }
+      ]
+    },
+    {
+      "id": "companies",
+      "label": "Công ty",
+      "type": "simple",
+      "visible": true,
+      "children": [
+        { "id": "company-list", "label": "Danh sách công ty", "href": "/companies", "visible": true }
+      ]
+    }
+  ]
+}
