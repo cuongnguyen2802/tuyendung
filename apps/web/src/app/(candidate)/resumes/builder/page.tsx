@@ -1,7 +1,6 @@
 'use client'
 
-export const dynamic = 'force-dynamic'
-
+import { Suspense } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { api } from '@/lib/api'
@@ -66,6 +65,14 @@ function contentToForm(content: any, resumeTitle: string): Partial<CVForm> {
 }
 
 export default function CVBuilderPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center py-20 text-gray-400">Đang tải...</div>}>
+      <CVBuilderInner />
+    </Suspense>
+  )
+}
+
+function CVBuilderInner() {
   const queryClient = useQueryClient()
   const searchParams = useSearchParams()
   const resumeId = searchParams.get('id')
