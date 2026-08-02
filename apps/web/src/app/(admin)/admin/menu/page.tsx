@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import {
   GripVerticalIcon, EyeIcon, EyeOffIcon, PlusIcon, Trash2Icon,
   ChevronDownIcon, ChevronRightIcon, SaveIcon, PencilIcon, CheckIcon,
-  XIcon, LayoutGridIcon, ExternalLinkIcon,
+  LayoutGridIcon, ExternalLinkIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
