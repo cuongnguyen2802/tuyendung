@@ -1,4 +1,6 @@
-'use client'
+﻿'use client'
+
+export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
 import { useState, useEffect, Suspense } from 'react'
@@ -9,10 +11,10 @@ import { z } from 'zod'
 import { LockIcon, CheckCircleIcon, XCircleIcon, EyeIcon, EyeOffIcon } from 'lucide-react'
 
 const schema = z.object({
-  newPassword: z.string().min(8, 'Mật khẩu phải có ít nhất 8 ký tự'),
+  newPassword: z.string().min(8, 'Máº­t kháº©u pháº£i cÃ³ Ã­t nháº¥t 8 kÃ½ tá»±'),
   confirmPassword: z.string(),
 }).refine((d) => d.newPassword === d.confirmPassword, {
-  message: 'Mật khẩu xác nhận không khớp',
+  message: 'Máº­t kháº©u xÃ¡c nháº­n khÃ´ng khá»›p',
   path: ['confirmPassword'],
 })
 type FormData = z.infer<typeof schema>
@@ -34,7 +36,7 @@ function ResetPasswordForm() {
   useEffect(() => {
     if (!token) {
       setStatus('error')
-      setErrorMsg('Link không hợp lệ. Vui lòng yêu cầu lại.')
+      setErrorMsg('Link khÃ´ng há»£p lá»‡. Vui lÃ²ng yÃªu cáº§u láº¡i.')
     }
   }, [token])
 
@@ -51,7 +53,7 @@ function ResetPasswordForm() {
       setTimeout(() => router.push('/login'), 3000)
     } else {
       const body = await res.json().catch(() => ({}))
-      setErrorMsg(body?.message || 'Link đã hết hạn. Vui lòng yêu cầu lại.')
+      setErrorMsg(body?.message || 'Link Ä‘Ã£ háº¿t háº¡n. Vui lÃ²ng yÃªu cáº§u láº¡i.')
       setStatus('error')
     }
   }
@@ -62,12 +64,12 @@ function ResetPasswordForm() {
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand-50">
           <CheckCircleIcon className="h-8 w-8 text-brand" />
         </div>
-        <h1 className="mb-2 text-xl font-bold text-gray-900">Mật khẩu đã được cập nhật!</h1>
+        <h1 className="mb-2 text-xl font-bold text-gray-900">Máº­t kháº©u Ä‘Ã£ Ä‘Æ°á»£c cáº­p nháº­t!</h1>
         <p className="mb-6 text-sm text-gray-500">
-          Đang chuyển hướng về trang đăng nhập...
+          Äang chuyá»ƒn hÆ°á»›ng vá» trang Ä‘Äƒng nháº­p...
         </p>
         <Link href="/login" className="btn-primary px-6 py-2.5 text-sm">
-          Đăng nhập ngay
+          ÄÄƒng nháº­p ngay
         </Link>
       </div>
     )
@@ -79,10 +81,10 @@ function ResetPasswordForm() {
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
           <XCircleIcon className="h-8 w-8 text-red-500" />
         </div>
-        <h1 className="mb-2 text-xl font-bold text-gray-900">Link không hợp lệ</h1>
+        <h1 className="mb-2 text-xl font-bold text-gray-900">Link khÃ´ng há»£p lá»‡</h1>
         <p className="mb-6 text-sm text-gray-500">{errorMsg}</p>
         <Link href="/forgot-password" className="btn-primary px-6 py-2.5 text-sm">
-          Yêu cầu lại
+          YÃªu cáº§u láº¡i
         </Link>
       </div>
     )
@@ -93,17 +95,17 @@ function ResetPasswordForm() {
       <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-brand/10">
         <LockIcon className="h-6 w-6 text-brand" />
       </div>
-      <h1 className="mb-1 text-2xl font-bold text-gray-900">Đặt mật khẩu mới</h1>
-      <p className="mb-6 text-sm text-gray-500">Nhập mật khẩu mới cho tài khoản của bạn.</p>
+      <h1 className="mb-1 text-2xl font-bold text-gray-900">Äáº·t máº­t kháº©u má»›i</h1>
+      <p className="mb-6 text-sm text-gray-500">Nháº­p máº­t kháº©u má»›i cho tÃ i khoáº£n cá»§a báº¡n.</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">Mật khẩu mới</label>
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">Máº­t kháº©u má»›i</label>
           <div className="relative">
             <input
               {...register('newPassword')}
               type={showPw ? 'text' : 'password'}
-              placeholder="Ít nhất 8 ký tự"
+              placeholder="Ãt nháº¥t 8 kÃ½ tá»±"
               className="input pr-10"
               autoFocus
             />
@@ -119,12 +121,12 @@ function ResetPasswordForm() {
         </div>
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">Xác nhận mật khẩu</label>
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">XÃ¡c nháº­n máº­t kháº©u</label>
           <div className="relative">
             <input
               {...register('confirmPassword')}
               type={showConfirm ? 'text' : 'password'}
-              placeholder="Nhập lại mật khẩu"
+              placeholder="Nháº­p láº¡i máº­t kháº©u"
               className="input pr-10"
             />
             <button
@@ -145,7 +147,7 @@ function ResetPasswordForm() {
         )}
 
         <button type="submit" disabled={isSubmitting} className="btn-primary w-full py-3">
-          {isSubmitting ? 'Đang cập nhật...' : 'Đặt lại mật khẩu'}
+          {isSubmitting ? 'Äang cáº­p nháº­t...' : 'Äáº·t láº¡i máº­t kháº©u'}
         </button>
       </form>
     </>
@@ -156,10 +158,11 @@ export default function ResetPasswordPage() {
   return (
     <div className="w-full max-w-md">
       <div className="card p-8">
-        <Suspense fallback={<div className="py-8 text-center text-sm text-gray-400">Đang tải...</div>}>
+        <Suspense fallback={<div className="py-8 text-center text-sm text-gray-400">Äang táº£i...</div>}>
           <ResetPasswordForm />
         </Suspense>
       </div>
     </div>
   )
 }
+

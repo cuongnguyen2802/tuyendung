@@ -1,4 +1,6 @@
-'use client'
+﻿'use client'
+
+export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
 import { signIn, useSession, getProviders } from 'next-auth/react'
@@ -10,8 +12,8 @@ import { z } from 'zod'
 import { EyeIcon, EyeOffIcon, Loader2Icon, ArrowRightIcon } from 'lucide-react'
 
 const schema = z.object({
-  email:    z.string().email('Email không hợp lệ'),
-  password: z.string().min(1, 'Vui lòng nhập mật khẩu'),
+  email:    z.string().email('Email khÃ´ng há»£p lá»‡'),
+  password: z.string().min(1, 'Vui lÃ²ng nháº­p máº­t kháº©u'),
 })
 type FormData = z.infer<typeof schema>
 
@@ -42,7 +44,7 @@ function LoginContent() {
 
   useEffect(() => {
     if (authError) {
-      setError('Đăng nhập bằng mạng xã hội thất bại. Vui lòng thử lại hoặc dùng email.')
+      setError('ÄÄƒng nháº­p báº±ng máº¡ng xÃ£ há»™i tháº¥t báº¡i. Vui lÃ²ng thá»­ láº¡i hoáº·c dÃ¹ng email.')
     }
   }, [authError])
 
@@ -69,8 +71,8 @@ function LoginContent() {
     if (res?.error) {
       setError(
         res.error === 'SERVER_UNAVAILABLE'
-          ? 'Máy chủ đang khởi động, vui lòng thử lại sau vài giây.'
-          : 'Email hoặc mật khẩu không đúng.',
+          ? 'MÃ¡y chá»§ Ä‘ang khá»Ÿi Ä‘á»™ng, vui lÃ²ng thá»­ láº¡i sau vÃ i giÃ¢y.'
+          : 'Email hoáº·c máº­t kháº©u khÃ´ng Ä‘Ãºng.',
       )
       return
     }
@@ -79,7 +81,7 @@ function LoginContent() {
 
   function handleOAuth(provider: string, label: string) {
     if (!enabledProviders.has(provider)) {
-      setSocialMsg(`Đăng nhập bằng ${label} chưa được cấu hình trên hệ thống.`)
+      setSocialMsg(`ÄÄƒng nháº­p báº±ng ${label} chÆ°a Ä‘Æ°á»£c cáº¥u hÃ¬nh trÃªn há»‡ thá»‘ng.`)
       return
     }
     setSocialMsg('')
@@ -100,14 +102,14 @@ function LoginContent() {
 
         {/* Title */}
         <h1 className="mb-6 text-center text-2xl font-bold text-gray-900">
-          Đăng nhập{' '}
+          ÄÄƒng nháº­p{' '}
           <span className="text-brand">TuyenDung</span>
           <span className="text-gray-900">.vn</span>
         </h1>
 
         {registered && (
           <div className="mb-4 rounded-lg bg-brand-50 border border-brand/30 p-3 text-center text-sm font-medium text-brand">
-            Tạo tài khoản thành công! Đăng nhập ngay.
+            Táº¡o tÃ i khoáº£n thÃ nh cÃ´ng! ÄÄƒng nháº­p ngay.
           </div>
         )}
 
@@ -119,7 +121,7 @@ function LoginContent() {
             className="flex w-full items-center justify-center gap-3 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition"
           >
             <GoogleIcon />
-            Đăng nhập bằng Google
+            ÄÄƒng nháº­p báº±ng Google
           </button>
 
           <div className="grid grid-cols-2 gap-3">
@@ -151,7 +153,7 @@ function LoginContent() {
         {/* Divider */}
         <div className="my-5 flex items-center gap-3">
           <div className="flex-1 border-t border-gray-200" />
-          <span className="text-xs text-gray-400">Hoặc đăng nhập bằng email</span>
+          <span className="text-xs text-gray-400">Hoáº·c Ä‘Äƒng nháº­p báº±ng email</span>
           <div className="flex-1 border-t border-gray-200" />
         </div>
 
@@ -162,7 +164,7 @@ function LoginContent() {
             <input
               {...register('email')}
               type="email"
-              placeholder="Nhập email của bạn"
+              placeholder="Nháº­p email cá»§a báº¡n"
               className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition"
             />
             {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
@@ -170,16 +172,16 @@ function LoginContent() {
 
           <div>
             <div className="mb-1.5 flex items-center justify-between">
-              <label className="text-sm font-semibold text-gray-700">Mật khẩu</label>
+              <label className="text-sm font-semibold text-gray-700">Máº­t kháº©u</label>
               <Link href="/forgot-password" className="text-sm font-semibold text-brand hover:underline">
-                Quên mật khẩu
+                QuÃªn máº­t kháº©u
               </Link>
             </div>
             <div className="relative">
               <input
                 {...register('password')}
                 type={showPw ? 'text' : 'password'}
-                placeholder="Nhập mật khẩu"
+                placeholder="Nháº­p máº­t kháº©u"
                 className="w-full rounded-xl border border-gray-300 px-4 py-3 pr-11 text-sm text-gray-800 placeholder:text-gray-400 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition"
               />
               <button
@@ -208,33 +210,33 @@ function LoginContent() {
             {isSubmitting ? (
               <Loader2Icon className="h-4 w-4 animate-spin" />
             ) : (
-              <>Đăng nhập <ArrowRightIcon className="h-4 w-4" /></>
+              <>ÄÄƒng nháº­p <ArrowRightIcon className="h-4 w-4" /></>
             )}
           </button>
         </form>
 
         {/* Register link */}
         <p className="mt-5 text-center text-sm text-gray-500">
-          Bạn chưa có tài khoản?{' '}
+          Báº¡n chÆ°a cÃ³ tÃ i khoáº£n?{' '}
           <Link href="/register" className="font-semibold text-brand hover:underline">
-            Đăng ký ngay
+            ÄÄƒng kÃ½ ngay
           </Link>
         </p>
       </div>
 
       {/* Helpline */}
       <p className="mt-4 text-center text-xs text-gray-400 px-2">
-        Bạn gặp khó khăn khi tạo tài khoản? Vui lòng gọi tới số{' '}
+        Báº¡n gáº·p khÃ³ khÄƒn khi táº¡o tÃ i khoáº£n? Vui lÃ²ng gá»i tá»›i sá»‘{' '}
         <span className="font-semibold text-brand">1900 068 889</span>
         {' | '}
-        <span className="font-semibold text-brand">Nhánh 2</span>
-        {' '}(giờ hành chính).
+        <span className="font-semibold text-brand">NhÃ¡nh 2</span>
+        {' '}(giá» hÃ nh chÃ­nh).
       </p>
     </div>
   )
 }
 
-// ── Social icons ──────────────────────────────────────────────────────────────
+// â”€â”€ Social icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function GoogleIcon() {
   return (
@@ -270,3 +272,4 @@ export default function LoginPage() {
     </Suspense>
   )
 }
+

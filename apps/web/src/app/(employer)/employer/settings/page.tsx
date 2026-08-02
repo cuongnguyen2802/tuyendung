@@ -1,4 +1,6 @@
-'use client'
+﻿'use client'
+
+export const dynamic = 'force-dynamic'
 
 import { useState, useRef, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
@@ -14,20 +16,20 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 
-// ── Nav items ─────────────────────────────────────────────────────────────────
+// â”€â”€ Nav items â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const NAV = [
-  { key: 'account',       label: 'Thông tin tài khoản',               icon: UserIcon,      href: null },
-  { key: 'password',      label: 'Đổi mật khẩu',                      icon: LockIcon,      href: null },
-  { key: 'documents',     label: 'Giấy đăng ký doanh nghiệp',         icon: FileTextIcon,  href: null },
-  { key: 'pdpa',          label: 'Văn bản xử lý Dữ liệu cá nhân',     icon: ShieldIcon,    href: null },
-  { key: 'company',       label: 'Thông tin công ty',                  icon: BuildingIcon,  href: '/employer/company' },
-  { key: 'recruitment',   label: 'Nhu cầu tuyển dụng',                 icon: BriefcaseIcon, href: null },
-  { key: 'notifications', label: 'Cài đặt thông báo',                  icon: BellIcon,      href: null },
-  { key: 'general',       label: 'Cài đặt',                            icon: SettingsIcon,  href: null },
+  { key: 'account',       label: 'ThÃ´ng tin tÃ i khoáº£n',               icon: UserIcon,      href: null },
+  { key: 'password',      label: 'Äá»•i máº­t kháº©u',                      icon: LockIcon,      href: null },
+  { key: 'documents',     label: 'Giáº¥y Ä‘Äƒng kÃ½ doanh nghiá»‡p',         icon: FileTextIcon,  href: null },
+  { key: 'pdpa',          label: 'VÄƒn báº£n xá»­ lÃ½ Dá»¯ liá»‡u cÃ¡ nhÃ¢n',     icon: ShieldIcon,    href: null },
+  { key: 'company',       label: 'ThÃ´ng tin cÃ´ng ty',                  icon: BuildingIcon,  href: '/employer/company' },
+  { key: 'recruitment',   label: 'Nhu cáº§u tuyá»ƒn dá»¥ng',                 icon: BriefcaseIcon, href: null },
+  { key: 'notifications', label: 'CÃ i Ä‘áº·t thÃ´ng bÃ¡o',                  icon: BellIcon,      href: null },
+  { key: 'general',       label: 'CÃ i Ä‘áº·t',                            icon: SettingsIcon,  href: null },
 ]
 
-// ── Shared input helpers ───────────────────────────────────────────────────────
+// â”€â”€ Shared input helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function PasswordInput({ label, value, onChange, placeholder }: {
   label: string; value: string; onChange: (v: string) => void; placeholder?: string
@@ -40,7 +42,7 @@ function PasswordInput({ label, value, onChange, placeholder }: {
         <input
           type={show ? 'text' : 'password'}
           className="input pr-10"
-          placeholder={placeholder ?? '••••••••'}
+          placeholder={placeholder ?? 'â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢'}
           value={value}
           onChange={e => onChange(e.target.value)}
         />
@@ -56,7 +58,7 @@ function PasswordInput({ label, value, onChange, placeholder }: {
   )
 }
 
-// ── Sections ──────────────────────────────────────────────────────────────────
+// â”€â”€ Sections â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function AccountSection() {
   const { data: session } = useSession()
@@ -80,8 +82,8 @@ function AccountSection() {
 
   const updateMutation = useMutation({
     mutationFn: (data: any) => api.put('/employers/me/company', data),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['my-company'] }); toast.success('Đã cập nhật thông tin') },
-    onError: () => toast.error('Có lỗi xảy ra'),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['my-company'] }); toast.success('ÄÃ£ cáº­p nháº­t thÃ´ng tin') },
+    onError: () => toast.error('CÃ³ lá»—i xáº£y ra'),
   })
 
   const avatarMutation = useMutation({
@@ -89,8 +91,8 @@ function AccountSection() {
       const fd = new FormData(); fd.append('file', file)
       return api.postForm('/employers/me/upload-logo', fd)
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['my-company'] }); toast.success('Đã cập nhật ảnh đại diện') },
-    onError: () => toast.error('Upload thất bại'),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['my-company'] }); toast.success('ÄÃ£ cáº­p nháº­t áº£nh Ä‘áº¡i diá»‡n') },
+    onError: () => toast.error('Upload tháº¥t báº¡i'),
   })
 
   // Verification level
@@ -107,26 +109,26 @@ function AccountSection() {
         <div className="flex items-center justify-between">
           <div>
             <p className="font-semibold text-gray-900">
-              Tài khoản xác thực:{' '}
-              <span className="text-brand">Cấp {level}/3</span>
+              TÃ i khoáº£n xÃ¡c thá»±c:{' '}
+              <span className="text-brand">Cáº¥p {level}/3</span>
             </p>
             <p className="mt-0.5 text-sm text-gray-500">
               {level < 3
-                ? `Tài khoản đã đạt cấp ${level}/3. Hoàn thiện thêm để tăng uy tín.`
-                : 'Tài khoản đã đạt cấp 3/3.'}
+                ? `TÃ i khoáº£n Ä‘Ã£ Ä‘áº¡t cáº¥p ${level}/3. HoÃ n thiá»‡n thÃªm Ä‘á»ƒ tÄƒng uy tÃ­n.`
+                : 'TÃ i khoáº£n Ä‘Ã£ Ä‘áº¡t cáº¥p 3/3.'}
             </p>
           </div>
           <a href="#" className="rounded-xl border border-brand px-4 py-2 text-sm font-medium text-brand transition hover:bg-brand/5">
-            Tìm hiểu thêm
+            TÃ¬m hiá»ƒu thÃªm
           </a>
         </div>
 
         {/* Level steps */}
         <div className="mt-4 flex items-center gap-0">
           {[
-            { label: 'Xác thực email', done: !!session?.user?.email },
-            { label: 'Xác minh công ty', done: !!company?.verified },
-            { label: 'Cung cấp mã số thuế', done: !!company?.taxCode },
+            { label: 'XÃ¡c thá»±c email', done: !!session?.user?.email },
+            { label: 'XÃ¡c minh cÃ´ng ty', done: !!company?.verified },
+            { label: 'Cung cáº¥p mÃ£ sá»‘ thuáº¿', done: !!company?.taxCode },
           ].map((step, i) => (
             <div key={step.label} className="flex flex-1 items-center">
               <div className="flex flex-col items-center gap-1">
@@ -149,12 +151,12 @@ function AccountSection() {
       {/* Update form */}
       <div className="card p-5">
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="font-semibold text-gray-900">Cập nhật thông tin tài khoản</h2>
+          <h2 className="font-semibold text-gray-900">Cáº­p nháº­t thÃ´ng tin tÃ i khoáº£n</h2>
           <button
-            onClick={() => toast.info('Tính năng xuất dữ liệu sẽ sớm ra mắt')}
+            onClick={() => toast.info('TÃ­nh nÄƒng xuáº¥t dá»¯ liá»‡u sáº½ sá»›m ra máº¯t')}
             className="rounded-xl border border-gray-200 px-3 py-1.5 text-sm text-gray-500 transition hover:border-gray-300 hover:bg-gray-50"
           >
-            Xuất dữ liệu
+            Xuáº¥t dá»¯ liá»‡u
           </button>
         </div>
 
@@ -195,9 +197,9 @@ function AccountSection() {
                   onClick={() => fileRef.current?.click()}
                   className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50"
                 >
-                  {avatarMutation.isPending ? 'Đang tải...' : 'Đổi avatar'}
+                  {avatarMutation.isPending ? 'Äang táº£i...' : 'Äá»•i avatar'}
                 </button>
-                <p className="mt-1 text-xs text-gray-400">JPG, PNG, WebP • Tối đa 5MB</p>
+                <p className="mt-1 text-xs text-gray-400">JPG, PNG, WebP â€¢ Tá»‘i Ä‘a 5MB</p>
               </div>
 
               {/* Email */}
@@ -208,7 +210,7 @@ function AccountSection() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="label">Họ và tên (đại diện)</label>
+                <label className="label">Há» vÃ  tÃªn (Ä‘áº¡i diá»‡n)</label>
                 <input
                   className="input"
                   value={form.companyName}
@@ -216,7 +218,7 @@ function AccountSection() {
                 />
               </div>
               <div>
-                <label className="label">Số điện thoại</label>
+                <label className="label">Sá»‘ Ä‘iá»‡n thoáº¡i</label>
                 <div className="relative">
                   <input
                     className="input pr-28"
@@ -226,7 +228,7 @@ function AccountSection() {
                   />
                   {company?.phone && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-brand">
-                      <CheckCircleIcon className="h-3.5 w-3.5" /> Đã xác thực
+                      <CheckCircleIcon className="h-3.5 w-3.5" /> ÄÃ£ xÃ¡c thá»±c
                     </div>
                   )}
                 </div>
@@ -239,7 +241,7 @@ function AccountSection() {
                 disabled={updateMutation.isPending}
                 className="btn-primary"
               >
-                {updateMutation.isPending ? 'Đang lưu...' : 'Lưu thay đổi'}
+                {updateMutation.isPending ? 'Äang lÆ°u...' : 'LÆ°u thay Ä‘á»•i'}
               </button>
             </div>
           </div>
@@ -259,11 +261,11 @@ function PasswordSection() {
       newPassword: form.next,
     }),
     onSuccess: () => {
-      toast.success('Đã đổi mật khẩu thành công')
+      toast.success('ÄÃ£ Ä‘á»•i máº­t kháº©u thÃ nh cÃ´ng')
       setForm({ current: '', next: '', confirm: '' })
     },
     onError: (err: any) => {
-      const msg = err?.response?.data?.message ?? 'Có lỗi xảy ra'
+      const msg = err?.response?.data?.message ?? 'CÃ³ lá»—i xáº£y ra'
       toast.error(msg)
     },
   })
@@ -271,27 +273,27 @@ function PasswordSection() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const errs: Record<string, string> = {}
-    if (!form.current) errs.current = 'Nhập mật khẩu hiện tại'
-    if (form.next.length < 8) errs.next = 'Mật khẩu mới phải từ 8 ký tự'
-    if (form.next !== form.confirm) errs.confirm = 'Xác nhận mật khẩu không khớp'
+    if (!form.current) errs.current = 'Nháº­p máº­t kháº©u hiá»‡n táº¡i'
+    if (form.next.length < 8) errs.next = 'Máº­t kháº©u má»›i pháº£i tá»« 8 kÃ½ tá»±'
+    if (form.next !== form.confirm) errs.confirm = 'XÃ¡c nháº­n máº­t kháº©u khÃ´ng khá»›p'
     setErrors(errs)
     if (Object.keys(errs).length === 0) mutation.mutate()
   }
 
   return (
     <div className="card max-w-lg p-6">
-      <h2 className="mb-5 font-semibold text-gray-900">Đổi mật khẩu</h2>
+      <h2 className="mb-5 font-semibold text-gray-900">Äá»•i máº­t kháº©u</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <PasswordInput label="Mật khẩu hiện tại" value={form.current} onChange={v => setForm(f => ({ ...f, current: v }))} />
+          <PasswordInput label="Máº­t kháº©u hiá»‡n táº¡i" value={form.current} onChange={v => setForm(f => ({ ...f, current: v }))} />
           {errors.current && <p className="mt-1 text-xs text-red-500">{errors.current}</p>}
         </div>
         <div>
-          <PasswordInput label="Mật khẩu mới" value={form.next} onChange={v => setForm(f => ({ ...f, next: v }))} placeholder="Tối thiểu 8 ký tự" />
+          <PasswordInput label="Máº­t kháº©u má»›i" value={form.next} onChange={v => setForm(f => ({ ...f, next: v }))} placeholder="Tá»‘i thiá»ƒu 8 kÃ½ tá»±" />
           {errors.next && <p className="mt-1 text-xs text-red-500">{errors.next}</p>}
         </div>
         <div>
-          <PasswordInput label="Xác nhận mật khẩu mới" value={form.confirm} onChange={v => setForm(f => ({ ...f, confirm: v }))} />
+          <PasswordInput label="XÃ¡c nháº­n máº­t kháº©u má»›i" value={form.confirm} onChange={v => setForm(f => ({ ...f, confirm: v }))} />
           {errors.confirm && <p className="mt-1 text-xs text-red-500">{errors.confirm}</p>}
         </div>
 
@@ -306,12 +308,12 @@ function PasswordSection() {
                 )
               })}
             </div>
-            <p className="text-xs text-gray-400">Mật khẩu mạnh hơn khi kết hợp chữ hoa, số và ký tự đặc biệt</p>
+            <p className="text-xs text-gray-400">Máº­t kháº©u máº¡nh hÆ¡n khi káº¿t há»£p chá»¯ hoa, sá»‘ vÃ  kÃ½ tá»± Ä‘áº·c biá»‡t</p>
           </div>
         )}
 
         <button type="submit" disabled={mutation.isPending} className="btn-primary w-full">
-          {mutation.isPending ? 'Đang cập nhật...' : 'Cập nhật mật khẩu'}
+          {mutation.isPending ? 'Äang cáº­p nháº­t...' : 'Cáº­p nháº­t máº­t kháº©u'}
         </button>
       </form>
     </div>
@@ -321,26 +323,26 @@ function PasswordSection() {
 function DocumentsSection() {
   return (
     <div className="card p-6 max-w-2xl">
-      <h2 className="mb-1 font-semibold text-gray-900">Giấy đăng ký doanh nghiệp</h2>
+      <h2 className="mb-1 font-semibold text-gray-900">Giáº¥y Ä‘Äƒng kÃ½ doanh nghiá»‡p</h2>
       <p className="mb-5 text-sm text-gray-500">
-        Tải lên giấy đăng ký doanh nghiệp để xác minh tài khoản và tăng độ tin cậy với ứng viên.
+        Táº£i lÃªn giáº¥y Ä‘Äƒng kÃ½ doanh nghiá»‡p Ä‘á»ƒ xÃ¡c minh tÃ i khoáº£n vÃ  tÄƒng Ä‘á»™ tin cáº­y vá»›i á»©ng viÃªn.
       </p>
 
       {/* Upload zone */}
       <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-10 text-center transition hover:border-brand/40 hover:bg-brand/3 cursor-pointer"
-        onClick={() => toast.info('Tính năng tải lên tài liệu sẽ sớm ra mắt')}>
+        onClick={() => toast.info('TÃ­nh nÄƒng táº£i lÃªn tÃ i liá»‡u sáº½ sá»›m ra máº¯t')}>
         <UploadIcon className="mb-3 h-8 w-8 text-gray-300" />
-        <p className="font-medium text-gray-600">Kéo thả file vào đây hoặc click để chọn</p>
-        <p className="mt-1 text-sm text-gray-400">PDF, JPG, PNG • Tối đa 10MB</p>
+        <p className="font-medium text-gray-600">KÃ©o tháº£ file vÃ o Ä‘Ã¢y hoáº·c click Ä‘á»ƒ chá»n</p>
+        <p className="mt-1 text-sm text-gray-400">PDF, JPG, PNG â€¢ Tá»‘i Ä‘a 10MB</p>
       </div>
 
       <div className="mt-5 rounded-xl bg-blue-50 p-4 text-sm text-blue-700">
-        <p className="font-semibold">Lưu ý quan trọng:</p>
+        <p className="font-semibold">LÆ°u Ã½ quan trá»ng:</p>
         <ul className="mt-1 list-inside list-disc space-y-1 text-blue-600">
-          <li>File phải rõ nét, đầy đủ thông tin</li>
-          <li>Giấy phép kinh doanh còn hiệu lực</li>
-          <li>Thông tin khớp với thông tin đăng ký tài khoản</li>
-          <li>Thời gian xét duyệt 1-3 ngày làm việc</li>
+          <li>File pháº£i rÃµ nÃ©t, Ä‘áº§y Ä‘á»§ thÃ´ng tin</li>
+          <li>Giáº¥y phÃ©p kinh doanh cÃ²n hiá»‡u lá»±c</li>
+          <li>ThÃ´ng tin khá»›p vá»›i thÃ´ng tin Ä‘Äƒng kÃ½ tÃ i khoáº£n</li>
+          <li>Thá»i gian xÃ©t duyá»‡t 1-3 ngÃ y lÃ m viá»‡c</li>
         </ul>
       </div>
     </div>
@@ -351,35 +353,35 @@ function PDPASection() {
   const [agreed, setAgreed] = useState(false)
   return (
     <div className="card p-6 max-w-2xl">
-      <h2 className="mb-1 font-semibold text-gray-900">Văn bản xử lý Dữ liệu cá nhân</h2>
+      <h2 className="mb-1 font-semibold text-gray-900">VÄƒn báº£n xá»­ lÃ½ Dá»¯ liá»‡u cÃ¡ nhÃ¢n</h2>
       <p className="mb-5 text-sm text-gray-500">
-        Theo Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân
+        Theo Nghá»‹ Ä‘á»‹nh 13/2023/NÄ-CP vá» báº£o vá»‡ dá»¯ liá»‡u cÃ¡ nhÃ¢n
       </p>
 
       <div className="max-h-64 overflow-y-auto rounded-xl border border-gray-200 p-4 text-sm text-gray-600 leading-relaxed space-y-3">
-        <p className="font-semibold text-gray-800">THỎA THUẬN XỬ LÝ DỮ LIỆU CÁ NHÂN</p>
-        <p>TuyenDung.vn cam kết bảo vệ thông tin cá nhân của bạn theo đúng quy định của pháp luật Việt Nam, đặc biệt là Nghị định 13/2023/NĐ-CP về Bảo vệ dữ liệu cá nhân.</p>
-        <p><strong>1. Dữ liệu chúng tôi thu thập:</strong> Thông tin đăng ký tài khoản, thông tin doanh nghiệp, lịch sử hoạt động trên nền tảng.</p>
-        <p><strong>2. Mục đích xử lý:</strong> Cung cấp dịch vụ tuyển dụng, cải thiện trải nghiệm người dùng, tuân thủ nghĩa vụ pháp lý.</p>
-        <p><strong>3. Thời gian lưu trữ:</strong> Dữ liệu được lưu trữ trong suốt thời gian tài khoản hoạt động và tối đa 3 năm sau khi xóa tài khoản.</p>
-        <p><strong>4. Quyền của bạn:</strong> Bạn có quyền truy cập, chỉnh sửa, xóa dữ liệu cá nhân và phản đối việc xử lý dữ liệu.</p>
-        <p><strong>5. Liên hệ:</strong> Gửi email đến privacy@tuyendung.vn để thực hiện các quyền liên quan đến dữ liệu cá nhân.</p>
+        <p className="font-semibold text-gray-800">THá»ŽA THUáº¬N Xá»¬ LÃ Dá»® LIá»†U CÃ NHÃ‚N</p>
+        <p>TuyenDung.vn cam káº¿t báº£o vá»‡ thÃ´ng tin cÃ¡ nhÃ¢n cá»§a báº¡n theo Ä‘Ãºng quy Ä‘á»‹nh cá»§a phÃ¡p luáº­t Viá»‡t Nam, Ä‘áº·c biá»‡t lÃ  Nghá»‹ Ä‘á»‹nh 13/2023/NÄ-CP vá» Báº£o vá»‡ dá»¯ liá»‡u cÃ¡ nhÃ¢n.</p>
+        <p><strong>1. Dá»¯ liá»‡u chÃºng tÃ´i thu tháº­p:</strong> ThÃ´ng tin Ä‘Äƒng kÃ½ tÃ i khoáº£n, thÃ´ng tin doanh nghiá»‡p, lá»‹ch sá»­ hoáº¡t Ä‘á»™ng trÃªn ná»n táº£ng.</p>
+        <p><strong>2. Má»¥c Ä‘Ã­ch xá»­ lÃ½:</strong> Cung cáº¥p dá»‹ch vá»¥ tuyá»ƒn dá»¥ng, cáº£i thiá»‡n tráº£i nghiá»‡m ngÆ°á»i dÃ¹ng, tuÃ¢n thá»§ nghÄ©a vá»¥ phÃ¡p lÃ½.</p>
+        <p><strong>3. Thá»i gian lÆ°u trá»¯:</strong> Dá»¯ liá»‡u Ä‘Æ°á»£c lÆ°u trá»¯ trong suá»‘t thá»i gian tÃ i khoáº£n hoáº¡t Ä‘á»™ng vÃ  tá»‘i Ä‘a 3 nÄƒm sau khi xÃ³a tÃ i khoáº£n.</p>
+        <p><strong>4. Quyá»n cá»§a báº¡n:</strong> Báº¡n cÃ³ quyá»n truy cáº­p, chá»‰nh sá»­a, xÃ³a dá»¯ liá»‡u cÃ¡ nhÃ¢n vÃ  pháº£n Ä‘á»‘i viá»‡c xá»­ lÃ½ dá»¯ liá»‡u.</p>
+        <p><strong>5. LiÃªn há»‡:</strong> Gá»­i email Ä‘áº¿n privacy@tuyendung.vn Ä‘á»ƒ thá»±c hiá»‡n cÃ¡c quyá»n liÃªn quan Ä‘áº¿n dá»¯ liá»‡u cÃ¡ nhÃ¢n.</p>
       </div>
 
       <div className="mt-4 flex items-start gap-3">
         <input type="checkbox" id="pdpa" checked={agreed} onChange={e => setAgreed(e.target.checked)}
           className="mt-0.5 h-4 w-4 rounded border-gray-300 text-brand" />
         <label htmlFor="pdpa" className="text-sm text-gray-600 cursor-pointer">
-          Tôi đã đọc, hiểu và đồng ý với các điều khoản xử lý dữ liệu cá nhân nêu trên.
+          TÃ´i Ä‘Ã£ Ä‘á»c, hiá»ƒu vÃ  Ä‘á»“ng Ã½ vá»›i cÃ¡c Ä‘iá»u khoáº£n xá»­ lÃ½ dá»¯ liá»‡u cÃ¡ nhÃ¢n nÃªu trÃªn.
         </label>
       </div>
 
       <button
-        onClick={() => agreed && toast.success('Đã xác nhận đồng ý')}
+        onClick={() => agreed && toast.success('ÄÃ£ xÃ¡c nháº­n Ä‘á»“ng Ã½')}
         disabled={!agreed}
         className="btn-primary mt-4 disabled:opacity-50"
       >
-        Xác nhận đồng ý
+        XÃ¡c nháº­n Ä‘á»“ng Ã½
       </button>
     </div>
   )
@@ -392,37 +394,37 @@ function RecruitmentNeedsSection() {
 
   return (
     <div className="card p-6 max-w-2xl">
-      <h2 className="mb-1 font-semibold text-gray-900">Nhu cầu tuyển dụng</h2>
-      <p className="mb-5 text-sm text-gray-500">Cho chúng tôi biết nhu cầu để gợi ý ứng viên phù hợp hơn</p>
+      <h2 className="mb-1 font-semibold text-gray-900">Nhu cáº§u tuyá»ƒn dá»¥ng</h2>
+      <p className="mb-5 text-sm text-gray-500">Cho chÃºng tÃ´i biáº¿t nhu cáº§u Ä‘á»ƒ gá»£i Ã½ á»©ng viÃªn phÃ¹ há»£p hÆ¡n</p>
 
       <div className="space-y-4">
         <div>
-          <label className="label">Vị trí thường tuyển</label>
+          <label className="label">Vá»‹ trÃ­ thÆ°á»ng tuyá»ƒn</label>
           <input className="input" placeholder="VD: Developer, Designer, Marketing..." value={form.positions}
             onChange={e => setForm(f => ({ ...f, positions: e.target.value }))} />
         </div>
         <div>
-          <label className="label">Địa điểm tuyển dụng</label>
-          <input className="input" placeholder="VD: Hà Nội, TP.HCM, Đà Nẵng..." value={form.locations}
+          <label className="label">Äá»‹a Ä‘iá»ƒm tuyá»ƒn dá»¥ng</label>
+          <input className="input" placeholder="VD: HÃ  Ná»™i, TP.HCM, ÄÃ  Náºµng..." value={form.locations}
             onChange={e => setForm(f => ({ ...f, locations: e.target.value }))} />
         </div>
         <div>
-          <label className="label">Lĩnh vực</label>
-          <input className="input" placeholder="VD: Công nghệ thông tin, Tài chính..." value={form.industries}
+          <label className="label">LÄ©nh vá»±c</label>
+          <input className="input" placeholder="VD: CÃ´ng nghá»‡ thÃ´ng tin, TÃ i chÃ­nh..." value={form.industries}
             onChange={e => setForm(f => ({ ...f, industries: e.target.value }))} />
         </div>
         <div>
-          <label className="label">Quy mô tuyển dụng hàng tháng</label>
+          <label className="label">Quy mÃ´ tuyá»ƒn dá»¥ng hÃ ng thÃ¡ng</label>
           <select className="input" value={form.scale} onChange={e => setForm(f => ({ ...f, scale: e.target.value }))}>
-            <option value="1-5">1-5 người</option>
-            <option value="6-20">6-20 người</option>
-            <option value="21-50">21-50 người</option>
-            <option value="50+">Trên 50 người</option>
+            <option value="1-5">1-5 ngÆ°á»i</option>
+            <option value="6-20">6-20 ngÆ°á»i</option>
+            <option value="21-50">21-50 ngÆ°á»i</option>
+            <option value="50+">TrÃªn 50 ngÆ°á»i</option>
           </select>
         </div>
         <div className="flex justify-end">
-          <button onClick={() => toast.success('Đã lưu nhu cầu tuyển dụng')} className="btn-primary">
-            Lưu thay đổi
+          <button onClick={() => toast.success('ÄÃ£ lÆ°u nhu cáº§u tuyá»ƒn dá»¥ng')} className="btn-primary">
+            LÆ°u thay Ä‘á»•i
           </button>
         </div>
       </div>
@@ -443,17 +445,17 @@ function NotificationsSection() {
     setSettings(s => ({ ...s, [key]: !s[key] }))
 
   const items = [
-    { key: 'newApplication', label: 'Ứng viên mới', desc: 'Khi có ứng viên nộp đơn vào tin của bạn' },
-    { key: 'statusUpdate', label: 'Cập nhật trạng thái', desc: 'Khi trạng thái đơn ứng tuyển thay đổi' },
-    { key: 'weeklyReport', label: 'Báo cáo hàng tuần', desc: 'Tóm tắt hoạt động tuyển dụng mỗi thứ 2' },
-    { key: 'promotions', label: 'Khuyến mãi & tính năng mới', desc: 'Thông tin về gói dịch vụ và tính năng' },
-    { key: 'systemAlerts', label: 'Cảnh báo hệ thống', desc: 'Bảo mật, đăng nhập lạ, cập nhật quan trọng' },
+    { key: 'newApplication', label: 'á»¨ng viÃªn má»›i', desc: 'Khi cÃ³ á»©ng viÃªn ná»™p Ä‘Æ¡n vÃ o tin cá»§a báº¡n' },
+    { key: 'statusUpdate', label: 'Cáº­p nháº­t tráº¡ng thÃ¡i', desc: 'Khi tráº¡ng thÃ¡i Ä‘Æ¡n á»©ng tuyá»ƒn thay Ä‘á»•i' },
+    { key: 'weeklyReport', label: 'BÃ¡o cÃ¡o hÃ ng tuáº§n', desc: 'TÃ³m táº¯t hoáº¡t Ä‘á»™ng tuyá»ƒn dá»¥ng má»—i thá»© 2' },
+    { key: 'promotions', label: 'Khuyáº¿n mÃ£i & tÃ­nh nÄƒng má»›i', desc: 'ThÃ´ng tin vá» gÃ³i dá»‹ch vá»¥ vÃ  tÃ­nh nÄƒng' },
+    { key: 'systemAlerts', label: 'Cáº£nh bÃ¡o há»‡ thá»‘ng', desc: 'Báº£o máº­t, Ä‘Äƒng nháº­p láº¡, cáº­p nháº­t quan trá»ng' },
   ] as const
 
   return (
     <div className="card p-6 max-w-2xl">
-      <h2 className="mb-1 font-semibold text-gray-900">Cài đặt thông báo</h2>
-      <p className="mb-5 text-sm text-gray-500">Chọn loại thông báo bạn muốn nhận</p>
+      <h2 className="mb-1 font-semibold text-gray-900">CÃ i Ä‘áº·t thÃ´ng bÃ¡o</h2>
+      <p className="mb-5 text-sm text-gray-500">Chá»n loáº¡i thÃ´ng bÃ¡o báº¡n muá»‘n nháº­n</p>
 
       <div className="divide-y divide-gray-100">
         {items.map(({ key, label, desc }) => (
@@ -479,8 +481,8 @@ function NotificationsSection() {
       </div>
 
       <div className="flex justify-end pt-2">
-        <button onClick={() => toast.success('Đã lưu cài đặt thông báo')} className="btn-primary">
-          Lưu cài đặt
+        <button onClick={() => toast.success('ÄÃ£ lÆ°u cÃ i Ä‘áº·t thÃ´ng bÃ¡o')} className="btn-primary">
+          LÆ°u cÃ i Ä‘áº·t
         </button>
       </div>
     </div>
@@ -493,29 +495,29 @@ function GeneralSection() {
   return (
     <div className="space-y-4 max-w-2xl">
       <div className="card p-6">
-        <h2 className="mb-4 font-semibold text-gray-900">Tuỳ chọn giao diện</h2>
+        <h2 className="mb-4 font-semibold text-gray-900">Tuá»³ chá»n giao diá»‡n</h2>
         <div>
-          <label className="label">Ngôn ngữ</label>
+          <label className="label">NgÃ´n ngá»¯</label>
           <select className="input max-w-xs" value={lang} onChange={e => setLang(e.target.value)}>
-            <option value="vi">Tiếng Việt</option>
+            <option value="vi">Tiáº¿ng Viá»‡t</option>
             <option value="en">English</option>
           </select>
         </div>
       </div>
 
       <div className="card p-6">
-        <h2 className="mb-4 font-semibold text-red-600">Vùng nguy hiểm</h2>
+        <h2 className="mb-4 font-semibold text-red-600">VÃ¹ng nguy hiá»ƒm</h2>
         <div className="space-y-3">
           <div className="flex items-center justify-between rounded-xl border border-red-100 bg-red-50/50 p-4">
             <div>
-              <p className="text-sm font-medium text-gray-900">Xóa tài khoản</p>
-              <p className="text-xs text-gray-500">Xóa vĩnh viễn tài khoản và toàn bộ dữ liệu. Không thể hoàn tác.</p>
+              <p className="text-sm font-medium text-gray-900">XÃ³a tÃ i khoáº£n</p>
+              <p className="text-xs text-gray-500">XÃ³a vÄ©nh viá»…n tÃ i khoáº£n vÃ  toÃ n bá»™ dá»¯ liá»‡u. KhÃ´ng thá»ƒ hoÃ n tÃ¡c.</p>
             </div>
             <button
-              onClick={() => toast.error('Vui lòng liên hệ support@tuyendung.vn để xóa tài khoản')}
+              onClick={() => toast.error('Vui lÃ²ng liÃªn há»‡ support@tuyendung.vn Ä‘á»ƒ xÃ³a tÃ i khoáº£n')}
               className="rounded-lg border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50"
             >
-              Xóa tài khoản
+              XÃ³a tÃ i khoáº£n
             </button>
           </div>
         </div>
@@ -524,7 +526,7 @@ function GeneralSection() {
   )
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+// â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const SECTION_COMPONENTS: Record<string, React.ComponentType> = {
   account:       AccountSection,
@@ -590,10 +592,11 @@ function SettingsContent() {
 export default function SettingsPage() {
   return (
     <div className="space-y-5">
-      <h1 className="text-xl font-bold text-gray-900">Cài đặt tài khoản</h1>
+      <h1 className="text-xl font-bold text-gray-900">CÃ i Ä‘áº·t tÃ i khoáº£n</h1>
       <Suspense fallback={<div className="h-96 animate-pulse rounded-2xl bg-gray-100" />}>
         <SettingsContent />
       </Suspense>
     </div>
   )
 }
+

@@ -1,4 +1,6 @@
-'use client'
+﻿'use client'
+
+export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
 import { useEffect, useState, useRef, Suspense } from 'react'
@@ -31,12 +33,12 @@ function VerifyEmailContent() {
           setStatus('success')
         } else {
           const body = await res.json().catch(() => ({}))
-          setErrorMsg(body?.message || 'Link xác thực không hợp lệ hoặc đã hết hạn.')
+          setErrorMsg(body?.message || 'Link xÃ¡c thá»±c khÃ´ng há»£p lá»‡ hoáº·c Ä‘Ã£ háº¿t háº¡n.')
           setStatus('error')
         }
       })
       .catch(() => {
-        setErrorMsg('Không thể kết nối server. Vui lòng thử lại.')
+        setErrorMsg('KhÃ´ng thá»ƒ káº¿t ná»‘i server. Vui lÃ²ng thá»­ láº¡i.')
         setStatus('error')
       })
   }, [token])
@@ -53,18 +55,18 @@ function VerifyEmailContent() {
     setResendLoading(false)
   }
 
-  // No token — show "check your inbox" info page
+  // No token â€” show "check your inbox" info page
   if (!token) {
     return (
       <>
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand/10">
           <MailIcon className="h-8 w-8 text-brand" />
         </div>
-        <h1 className="mb-2 text-xl font-bold text-gray-900">Xác thực email của bạn</h1>
+        <h1 className="mb-2 text-xl font-bold text-gray-900">XÃ¡c thá»±c email cá»§a báº¡n</h1>
         <p className="mb-6 text-sm text-gray-500">
-          Chúng tôi đã gửi email xác thực đến hộp thư của bạn. Vui lòng kiểm tra và nhấn vào link xác thực.
+          ChÃºng tÃ´i Ä‘Ã£ gá»­i email xÃ¡c thá»±c Ä‘áº¿n há»™p thÆ° cá»§a báº¡n. Vui lÃ²ng kiá»ƒm tra vÃ  nháº¥n vÃ o link xÃ¡c thá»±c.
         </p>
-        <p className="mb-4 text-xs text-gray-400">Không thấy email? Kiểm tra thư mục Spam hoặc gửi lại:</p>
+        <p className="mb-4 text-xs text-gray-400">KhÃ´ng tháº¥y email? Kiá»ƒm tra thÆ° má»¥c Spam hoáº·c gá»­i láº¡i:</p>
 
         {!resendSent ? (
           <div className="space-y-2">
@@ -72,7 +74,7 @@ function VerifyEmailContent() {
               type="email"
               value={resendEmail}
               onChange={(e) => setResendEmail(e.target.value)}
-              placeholder="Nhập email của bạn"
+              placeholder="Nháº­p email cá»§a báº¡n"
               className="input"
             />
             <button
@@ -81,18 +83,18 @@ function VerifyEmailContent() {
               disabled={resendLoading || !resendEmail}
               className="btn-primary w-full py-2.5 text-sm"
             >
-              {resendLoading ? 'Đang gửi...' : 'Gửi lại email xác thực'}
+              {resendLoading ? 'Äang gá»­i...' : 'Gá»­i láº¡i email xÃ¡c thá»±c'}
             </button>
           </div>
         ) : (
           <p className="rounded-lg bg-brand-50 p-3 text-sm text-brand">
-            Đã gửi lại! Kiểm tra hộp thư của bạn.
+            ÄÃ£ gá»­i láº¡i! Kiá»ƒm tra há»™p thÆ° cá»§a báº¡n.
           </p>
         )}
 
         <div className="mt-5">
           <Link href="/login" className="text-sm text-gray-500 hover:text-brand">
-            Quay lại đăng nhập →
+            Quay láº¡i Ä‘Äƒng nháº­p â†’
           </Link>
         </div>
       </>
@@ -105,8 +107,8 @@ function VerifyEmailContent() {
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand/10">
           <RefreshCwIcon className="h-8 w-8 animate-spin text-brand" />
         </div>
-        <h1 className="mb-2 text-xl font-bold text-gray-900">Đang xác thực...</h1>
-        <p className="text-sm text-gray-400">Vui lòng chờ trong giây lát.</p>
+        <h1 className="mb-2 text-xl font-bold text-gray-900">Äang xÃ¡c thá»±c...</h1>
+        <p className="text-sm text-gray-400">Vui lÃ²ng chá» trong giÃ¢y lÃ¡t.</p>
       </>
     )
   }
@@ -117,12 +119,12 @@ function VerifyEmailContent() {
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand-50">
           <CheckCircleIcon className="h-8 w-8 text-brand" />
         </div>
-        <h1 className="mb-2 text-xl font-bold text-gray-900">Email đã được xác thực!</h1>
+        <h1 className="mb-2 text-xl font-bold text-gray-900">Email Ä‘Ã£ Ä‘Æ°á»£c xÃ¡c thá»±c!</h1>
         <p className="mb-6 text-sm text-gray-500">
-          Tài khoản của bạn đã được kích hoạt. Bạn có thể đăng nhập ngay bây giờ.
+          TÃ i khoáº£n cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c kÃ­ch hoáº¡t. Báº¡n cÃ³ thá»ƒ Ä‘Äƒng nháº­p ngay bÃ¢y giá».
         </p>
         <Link href="/login" className="btn-primary px-8 py-2.5 text-sm">
-          Đăng nhập
+          ÄÄƒng nháº­p
         </Link>
       </>
     )
@@ -133,10 +135,10 @@ function VerifyEmailContent() {
       <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
         <XCircleIcon className="h-8 w-8 text-red-500" />
       </div>
-      <h1 className="mb-2 text-xl font-bold text-gray-900">Xác thực thất bại</h1>
+      <h1 className="mb-2 text-xl font-bold text-gray-900">XÃ¡c thá»±c tháº¥t báº¡i</h1>
       <p className="mb-6 text-sm text-gray-500">{errorMsg}</p>
       <Link href="/forgot-password" className="btn-primary px-6 py-2.5 text-sm">
-        Yêu cầu gửi lại
+        YÃªu cáº§u gá»­i láº¡i
       </Link>
     </>
   )
@@ -146,10 +148,11 @@ export default function VerifyEmailPage() {
   return (
     <div className="w-full max-w-md">
       <div className="card p-8 text-center">
-        <Suspense fallback={<div className="py-8 text-sm text-gray-400">Đang tải...</div>}>
+        <Suspense fallback={<div className="py-8 text-sm text-gray-400">Äang táº£i...</div>}>
           <VerifyEmailContent />
         </Suspense>
       </div>
     </div>
   )
 }
+
