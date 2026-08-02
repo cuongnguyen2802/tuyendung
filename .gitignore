@@ -35,5 +35,22 @@ pnpm-debug.log*
 # Test coverage
 coverage/
 
-# Prisma
+# Prisma generated client
 packages/database/generated/
+packages/database/src/generated/
+
+# Uploaded files (use S3 in prod)
+apps/api/uploads/
+
+# Temp / debug output files
+apps/api/out.txt
+apps/api/out2.txt
+apps/api/err.txt
+apps/api/err2.txt
+apps/web/web_out.txt
+apps/web/web_err.txt
+
+# Screenshots / random images at root
+*.jpg
+*.png
+*.jpeg
