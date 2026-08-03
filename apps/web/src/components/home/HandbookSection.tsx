@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { CalendarIcon, ArrowRightIcon, BookOpenIcon } from 'lucide-react'
+import { DB_TO_URL } from '@/lib/handbook'
 
 export interface ArticleCardData {
   id: string
@@ -45,10 +46,14 @@ function ArticleCard({ article, index }: { article: ArticleCardData; index: numb
   const gradient = PLACEHOLDER_GRADIENTS[index % PLACEHOLDER_GRADIENTS.length]
   const catColor = categoryColor(article.category?.slug)
   const date = fmtDate(article.publishedAt)
+  const urlCatSlug = article.category?.slug
+    ? (DB_TO_URL[article.category.slug] ?? article.category.slug)
+    : 'blog'
+  const articleHref = `/blog/${urlCatSlug}/${article.slug}`
 
   return (
     <Link
-      href={`/blog/${article.slug}`}
+      href={articleHref}
       className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand/20 hover:shadow-lg"
     >
       {/* Thumbnail */}

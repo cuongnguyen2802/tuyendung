@@ -18,6 +18,7 @@ import { ChatBadge } from './ChatBadge'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { JobCategoryDto } from '@tuyendung/types'
+import { DB_TO_URL } from '@/lib/handbook'
 
 // ── Static data ──────────────────────────────────────────────────────────────
 
@@ -133,6 +134,7 @@ interface FeaturedArticle {
   excerpt?: string | null
   slug: string
   imageUrl?: string | null
+  category?: { slug: string }
 }
 
 export function Navbar({ navConfig: navConfigData, categories = [], featuredArticles = [] }: {
@@ -516,7 +518,7 @@ function CvMegaMenu({ sections }: { sections?: MegaSection[] }) {
 
 // ── Mega menu: Cẩm nang nghề nghiệp ─────────────────────────────────────────
 
-function HandbookMegaMenu({ featuredArticles }: { featuredArticles: { title: string; excerpt?: string | null; slug: string; imageUrl?: string | null }[] }) {
+function HandbookMegaMenu({ featuredArticles }: { featuredArticles: { title: string; excerpt?: string | null; slug: string; imageUrl?: string | null; category?: { slug: string } }[] }) {
   const articles = featuredArticles.length > 0 ? featuredArticles : HANDBOOK_FEATURED.map(a => ({
     title: a.title, excerpt: a.excerpt, slug: a.href.replace('/blog/', ''), imageUrl: a.img,
   }))
@@ -548,8 +550,13 @@ function HandbookMegaMenu({ featuredArticles }: { featuredArticles: { title: str
         <div className="border-l border-gray-100 pl-5">
           <p className="mb-3 text-xs font-bold uppercase tracking-widest text-gray-400">Bài viết nổi bật</p>
           <div className="space-y-4">
-            {articles.slice(0, 2).map((article) => (
-              <Link key={article.slug} href={`/blog/${article.slug}`}
+            {articles.slice(0, 2).map((article) => {
+              const catUrl = article.category?.slug
+                ? (DB_TO_URL[article.category.slug] ?? article.category.slug)
+                : null
+              const articleHref = catUrl ? `/blog/${catUrl}/${article.slug}` : '/blog'
+              return (
+              <Link key={article.slug} href={articleHref}
                 className="group flex gap-3 transition hover:opacity-80">
                 {article.imageUrl && (
                   <img src={article.imageUrl} alt=""
@@ -564,7 +571,8 @@ function HandbookMegaMenu({ featuredArticles }: { featuredArticles: { title: str
                   )}
                 </div>
               </Link>
-            ))}
+              )
+            })}
           </div>
           <Link href="/blog"
             className="mt-4 block text-xs font-semibold text-brand hover:underline">

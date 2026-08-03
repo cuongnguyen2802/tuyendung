@@ -379,6 +379,42 @@ export class AdminService {
     return this.getSettings()
   }
 
+  // ── Page content ─────────────────────────────────────────────────────────────
+
+  private static readonly PAGE_SLUGS = [
+    'about', 'contact', 'faq', 'pricing', 'careers',
+    'press', 'privacy', 'terms', 'cv-review',
+  ]
+
+  async getPages() {
+    const rows = await this.prisma.systemSetting.findMany({
+      where: { key: { startsWith: 'page:' } },
+    })
+    const map = Object.fromEntries(rows.map(r => [r.key.replace('page:', ''), r]))
+    return AdminService.PAGE_SLUGS.map(slug => ({
+      slug,
+      updatedAt: map[slug]?.updatedAt ?? null,
+      hasContent: !!map[slug],
+    }))
+  }
+
+  async getPageContent(slug: string) {
+    const row = await this.prisma.systemSetting.findUnique({
+      where: { key: `page:${slug}` },
+    })
+    if (!row) return null
+    try { return JSON.parse(row.value) } catch { return null }
+  }
+
+  async updatePageContent(slug: string, data: Record<string, any>) {
+    await this.prisma.systemSetting.upsert({
+      where: { key: `page:${slug}` },
+      create: { key: `page:${slug}`, value: JSON.stringify(data) },
+      update: { value: JSON.stringify(data) },
+    })
+    return this.getPageContent(slug)
+  }
+
   // ── Skills management ─────────────────────────────────────────────────────────
 
   async getSkills(params: { keyword?: string; category?: string; page?: number; limit?: number }) {

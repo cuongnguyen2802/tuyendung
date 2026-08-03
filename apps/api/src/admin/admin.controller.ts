@@ -187,6 +187,26 @@ export class AdminController {
     return this.adminService.updateSettings(data)
   }
 
+  // ── Page content ──────────────────────────────────────────────────────────────
+
+  @Get('pages')
+  @ApiOperation({ summary: 'Danh sách trạng thái các trang tĩnh' })
+  getPages() {
+    return this.adminService.getPages()
+  }
+
+  @Get('pages/:slug')
+  @ApiOperation({ summary: 'Lấy nội dung trang tĩnh theo slug' })
+  getPageContent(@Param('slug') slug: string) {
+    return this.adminService.getPageContent(slug)
+  }
+
+  @Put('pages/:slug')
+  @ApiOperation({ summary: 'Cập nhật nội dung trang tĩnh' })
+  updatePageContent(@Param('slug') slug: string, @Body() data: Record<string, any>) {
+    return this.adminService.updatePageContent(slug, data)
+  }
+
   // ── Skills ────────────────────────────────────────────────────────────────────
 
   @Get('skills')

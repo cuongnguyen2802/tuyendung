@@ -5,7 +5,7 @@ import { readJsonCached } from '@/lib/read-json-cached'
 import { serverFetch } from '@/lib/server-fetch'
 import { JobCategoryDto } from '@tuyendung/types'
 
-type ArticlePreview = { title: string; excerpt?: string | null; slug: string; imageUrl?: string | null }
+type ArticlePreview = { title: string; excerpt?: string | null; slug: string; imageUrl?: string | null; category?: { slug: string } }
 
 export default async function CandidateLayout({ children }: { children: React.ReactNode }) {
   const navConfig = readJsonCached('nav-menu.json', { items: [] as { id: string; label?: string; visible: boolean; sections?: any[] }[] })

@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,17 +18,17 @@ import {
 } from 'lucide-react'
 
 const emailSchema = z.object({
-  email:           z.string().email('Email khÃ´ng há»£p lá»‡'),
-  password:        z.string().min(8, 'Máº­t kháº©u Ã­t nháº¥t 8 kÃ½ tá»±'),
+  email:           z.string().email('Email không hợp lệ'),
+  password:        z.string().min(8, 'Mật khẩu ít nhất 8 ký tự'),
   confirmPassword: z.string(),
   role:            z.enum([Role.CANDIDATE, Role.EMPLOYER]),
   fullName:        z.string().optional(),
   companyName:     z.string().optional(),
 }).refine(d => d.password === d.confirmPassword, {
-  message: 'Máº­t kháº©u xÃ¡c nháº­n khÃ´ng khá»›p',
+  message: 'Mật khẩu xác nhận không khớp',
   path: ['confirmPassword'],
 }).refine(d => d.role !== Role.EMPLOYER || !!d.companyName?.trim(), {
-  message: 'Vui lÃ²ng nháº­p tÃªn cÃ´ng ty',
+  message: 'Vui lòng nhập tên công ty',
   path: ['companyName'],
 })
 
@@ -54,7 +54,7 @@ function RegisterContent() {
 
   function handleOAuth(provider: string, label: string) {
     if (!enabledProviders.has(provider)) {
-      setSocialMsg(`ÄÄƒng kÃ½ báº±ng ${label} chÆ°a Ä‘Æ°á»£c cáº¥u hÃ¬nh trÃªn há»‡ thá»‘ng.`)
+      setSocialMsg(`Đăng ký bằng ${label} chưa được cấu hình trên hệ thống.`)
       return
     }
     setSocialMsg('')
@@ -83,10 +83,10 @@ function RegisterContent() {
 
         {/* Title */}
         <div className="mb-2 text-center">
-          <h1 className="text-2xl font-bold text-gray-900">ÄÄƒng kÃ½</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Đăng ký</h1>
           {step === 'social' && (
             <p className="mt-1 text-sm text-gray-500">
-              Táº¡o tÃ i khoáº£n miá»…n phÃ­, tÃ¬m kiáº¿m hÆ¡n 60.000 viá»‡c lÃ m.
+              Tạo tài khoản miễn phí, tìm kiếm hơn 60.000 việc làm.
             </p>
           )}
         </div>
@@ -101,7 +101,7 @@ function RegisterContent() {
                 className="flex w-full items-center justify-center gap-3 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition"
               >
                 <GoogleIcon />
-                ÄÄƒng kÃ½ báº±ng Google
+                Đăng ký bằng Google
               </button>
 
               <div className="grid grid-cols-2 gap-3">
@@ -133,7 +133,7 @@ function RegisterContent() {
             {/* Divider */}
             <div className="my-5 flex items-center gap-3">
               <div className="flex-1 border-t border-gray-200" />
-              <span className="text-xs text-gray-400">Hoáº·c</span>
+              <span className="text-xs text-gray-400">Hoặc</span>
               <div className="flex-1 border-t border-gray-200" />
             </div>
 
@@ -144,7 +144,7 @@ function RegisterContent() {
               className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
             >
               <MailIcon className="h-4 w-4 text-gray-500" />
-              ÄÄƒng kÃ½ báº±ng Email
+              Đăng ký bằng Email
             </button>
           </>
         ) : (
@@ -156,14 +156,14 @@ function RegisterContent() {
               className="mt-4 mb-5 flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition"
             >
               <ArrowLeftIcon className="h-3.5 w-3.5" />
-              Quay láº¡i
+              Quay lại
             </button>
 
             {/* Role selector */}
             <div className="mb-5 grid grid-cols-2 gap-2">
               {([
-                { value: Role.CANDIDATE as Role, label: 'TÃ¬m viá»‡c lÃ m', icon: UserIcon },
-                { value: Role.EMPLOYER  as Role, label: 'Tuyá»ƒn dá»¥ng',   icon: BriefcaseIcon },
+                { value: Role.CANDIDATE as Role, label: 'Tìm việc làm', icon: UserIcon },
+                { value: Role.EMPLOYER  as Role, label: 'Tuyển dụng',   icon: BriefcaseIcon },
               ] as const).map(opt => (
                 <button
                   key={opt.value}
@@ -187,10 +187,10 @@ function RegisterContent() {
 
               {role === Role.CANDIDATE && (
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-gray-700">Há» vÃ  tÃªn</label>
+                  <label className="mb-1.5 block text-sm font-semibold text-gray-700">Họ và tên</label>
                   <input
                     {...register('fullName')}
-                    placeholder="Nguyá»…n VÄƒn A"
+                    placeholder="Nguyễn Văn A"
                     className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm placeholder:text-gray-400 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition"
                   />
                 </div>
@@ -198,10 +198,10 @@ function RegisterContent() {
 
               {role === Role.EMPLOYER && (
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-gray-700">TÃªn cÃ´ng ty</label>
+                  <label className="mb-1.5 block text-sm font-semibold text-gray-700">Tên công ty</label>
                   <input
                     {...register('companyName')}
-                    placeholder="CÃ´ng ty ABC"
+                    placeholder="Công ty ABC"
                     className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm placeholder:text-gray-400 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition"
                   />
                   {errors.companyName && <p className="mt-1 text-xs text-red-500">{errors.companyName.message}</p>}
@@ -213,19 +213,19 @@ function RegisterContent() {
                 <input
                   {...register('email')}
                   type="email"
-                  placeholder="Nháº­p email cá»§a báº¡n"
+                  placeholder="Nhập email của bạn"
                   className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm placeholder:text-gray-400 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition"
                 />
                 {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
               </div>
 
               <div>
-                <label className="mb-1.5 block text-sm font-semibold text-gray-700">Máº­t kháº©u</label>
+                <label className="mb-1.5 block text-sm font-semibold text-gray-700">Mật khẩu</label>
                 <div className="relative">
                   <input
                     {...register('password')}
                     type={showPw ? 'text' : 'password'}
-                    placeholder="Ãt nháº¥t 8 kÃ½ tá»±"
+                    placeholder="Ít nhất 8 ký tự"
                     className="w-full rounded-xl border border-gray-300 px-4 py-3 pr-11 text-sm placeholder:text-gray-400 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition"
                   />
                   <button type="button" tabIndex={-1} onClick={() => setShowPw(v => !v)}
@@ -237,12 +237,12 @@ function RegisterContent() {
               </div>
 
               <div>
-                <label className="mb-1.5 block text-sm font-semibold text-gray-700">XÃ¡c nháº­n máº­t kháº©u</label>
+                <label className="mb-1.5 block text-sm font-semibold text-gray-700">Xác nhận mật khẩu</label>
                 <div className="relative">
                   <input
                     {...register('confirmPassword')}
                     type={showCPw ? 'text' : 'password'}
-                    placeholder="Nháº­p láº¡i máº­t kháº©u"
+                    placeholder="Nhập lại mật khẩu"
                     className="w-full rounded-xl border border-gray-300 px-4 py-3 pr-11 text-sm placeholder:text-gray-400 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition"
                   />
                   <button type="button" tabIndex={-1} onClick={() => setShowCPw(v => !v)}
@@ -264,7 +264,7 @@ function RegisterContent() {
                 disabled={isSubmitting}
                 className="flex w-full items-center justify-center gap-2 rounded-full bg-brand py-3.5 text-sm font-bold text-white shadow-sm hover:bg-brand disabled:opacity-60 transition"
               >
-                {isSubmitting ? <Loader2Icon className="h-4 w-4 animate-spin" /> : 'ÄÄƒng kÃ½'}
+                {isSubmitting ? <Loader2Icon className="h-4 w-4 animate-spin" /> : 'Đăng ký'}
               </button>
             </form>
           </>
@@ -272,26 +272,26 @@ function RegisterContent() {
 
         {/* Login link */}
         <p className="mt-5 text-center text-sm text-gray-500">
-          ÄÃ£ cÃ³ tÃ i khoáº£n?{' '}
+          Đã có tài khoản?{' '}
           <Link href="/login" className="font-semibold text-brand hover:underline">
-            ÄÄƒng nháº­p ngay
+            Đăng nhập ngay
           </Link>
         </p>
       </div>
 
       {/* Helpline */}
       <p className="mt-4 text-center text-xs text-gray-400 px-2">
-        Báº¡n gáº·p khÃ³ khÄƒn khi táº¡o tÃ i khoáº£n? Vui lÃ²ng gá»i tá»›i sá»‘{' '}
+        Bạn gặp khó khăn khi tạo tài khoản? Vui lòng gọi tới số{' '}
         <span className="font-semibold text-brand">1900 068 889</span>
         {' | '}
-        <span className="font-semibold text-brand">NhÃ¡nh 2</span>
-        {' '}(giá» hÃ nh chÃ­nh).
+        <span className="font-semibold text-brand">Nhánh 2</span>
+        {' '}(giờ hành chính).
       </p>
     </div>
   )
 }
 
-// â”€â”€ Social icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Social icons ──────────────────────────────────────────────────────────────
 
 function GoogleIcon() {
   return (
@@ -327,4 +327,3 @@ export default function RegisterPage() {
     </Suspense>
   )
 }
-

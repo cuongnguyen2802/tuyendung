@@ -109,7 +109,7 @@ export function TopIndustries({ categories }: { categories: JobCategoryDto[] }) 
         </div>
 
         {/* Carousel */}
-        <div className="overflow-hidden">
+        <div className="[overflow-x:clip]">
           <div
             className="flex transition-transform duration-500 ease-in-out"
             style={{ transform: `translateX(-${page * 100}%)` }}

@@ -102,8 +102,9 @@ export default async function CompanyDetailPage({ params }: PageProps) {
             <div className="absolute inset-0 bg-black/50" />
           </>
         ) : (
-          <div className="h-full w-full bg-[#0d1117]">
-            <svg className="absolute inset-0 h-full w-full opacity-[0.06]" xmlns="http://www.w3.org/2000/svg">
+          <div className="h-full w-full bg-gradient-to-br from-[#0d3d2a] via-[#0f4a32] to-[#1a3d2e]">
+            {/* Grid texture */}
+            <svg className="absolute inset-0 h-full w-full opacity-[0.08]" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
                   <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="1" />
@@ -111,8 +112,52 @@ export default async function CompanyDetailPage({ params }: PageProps) {
               </defs>
               <rect width="100%" height="100%" fill="url(#grid)" />
             </svg>
-            <div className="absolute left-1/4 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-brand/20 blur-3xl" />
-            <div className="absolute right-1/4 top-1/2 h-52 w-52 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-2xl" />
+
+            {/* Glow blobs */}
+            <div className="absolute left-1/4 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-brand/40 blur-3xl" />
+            <div className="absolute right-1/4 top-1/2 h-52 w-52 -translate-y-1/2 rounded-full bg-emerald-400/20 blur-2xl" />
+            <div className="absolute left-1/2 top-0 h-40 w-96 -translate-x-1/2 rounded-full bg-white/5 blur-2xl" />
+
+            {/* Large initial watermark */}
+            <div
+              aria-hidden="true"
+              className="absolute right-8 top-1/2 -translate-y-1/2 select-none font-black leading-none text-white/[0.05]"
+              style={{ fontSize: 'clamp(120px, 18vw, 220px)' }}
+            >
+              {company.companyName.charAt(0).toUpperCase()}
+            </div>
+
+            {/* Decorative abstract SVG — building silhouette */}
+            <svg
+              aria-hidden="true"
+              className="absolute bottom-0 right-0 h-full w-auto opacity-[0.04]"
+              viewBox="0 0 320 200"
+              fill="white"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect x="20"  y="80"  width="40" height="120" />
+              <rect x="70"  y="50"  width="55" height="150" />
+              <rect x="135" y="30"  width="70" height="170" />
+              <rect x="215" y="60"  width="45" height="140" />
+              <rect x="270" y="90"  width="35" height="110" />
+              <rect x="30"  y="100" width="6"  height="10" opacity="0.6" />
+              <rect x="44"  y="100" width="6"  height="10" opacity="0.6" />
+              <rect x="30"  y="118" width="6"  height="10" opacity="0.6" />
+              <rect x="44"  y="118" width="6"  height="10" opacity="0.6" />
+              <rect x="82"  y="65"  width="8"  height="12" opacity="0.6" />
+              <rect x="98"  y="65"  width="8"  height="12" opacity="0.6" />
+              <rect x="114" y="65"  width="8"  height="12" opacity="0.6" />
+              <rect x="82"  y="86"  width="8"  height="12" opacity="0.6" />
+              <rect x="98"  y="86"  width="8"  height="12" opacity="0.6" />
+              <rect x="114" y="86"  width="8"  height="12" opacity="0.6" />
+              <rect x="148" y="48"  width="10" height="14" opacity="0.6" />
+              <rect x="166" y="48"  width="10" height="14" opacity="0.6" />
+              <rect x="184" y="48"  width="10" height="14" opacity="0.6" />
+              <rect x="148" y="72"  width="10" height="14" opacity="0.6" />
+              <rect x="166" y="72"  width="10" height="14" opacity="0.6" />
+              <rect x="184" y="72"  width="10" height="14" opacity="0.6" />
+            </svg>
+
           </div>
         )}
 
@@ -145,13 +190,13 @@ export default async function CompanyDetailPage({ params }: PageProps) {
                       {company.companyName}
                     </h1>
                     {company.verified && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-brand/20 px-2.5 py-0.5 text-xs font-semibold text-brand/50 ring-1 ring-brand/30">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-xs font-semibold text-emerald-300 ring-1 ring-emerald-400/40">
                         <CheckCircleIcon className="h-3.5 w-3.5" />
                         Đã xác minh
                       </span>
                     )}
                   </div>
-                  <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-white/75">
+                  <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-white/80">
                     {company.industry && (
                       <span className="flex items-center gap-1">
                         <Building2Icon className="h-3.5 w-3.5" />
@@ -171,7 +216,7 @@ export default async function CompanyDetailPage({ params }: PageProps) {
                       </span>
                     )}
                     {jobCount > 0 && (
-                      <span className="flex items-center gap-1 font-semibold text-brand/50">
+                      <span className="flex items-center gap-1 font-semibold text-emerald-300">
                         <BriefcaseIcon className="h-3.5 w-3.5" />
                         {jobCount} vị trí đang tuyển
                       </span>
