@@ -1,0 +1,12 @@
+{
+  "installCommand": "cd ../.. && pnpm install && pnpm --filter @tuyendung/database db:generate",
+  "buildCommand": "cd ../.. && pnpm --filter @tuyendung/api build",
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 10
+    }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/index.js" }
+  ]
+}
