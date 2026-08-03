@@ -1,5 +1,5 @@
 {
-  "installCommand": "cd ../.. && pnpm install && pnpm --filter @tuyendung/database db:generate",
+  "installCommand": "cd ../.. && pnpm install && cd packages/database && npx prisma generate",
   "buildCommand": "cd ../.. && pnpm --filter @tuyendung/api build",
   "outputDirectory": ".",
   "functions": {
