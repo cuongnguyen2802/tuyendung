@@ -98,6 +98,9 @@ importers:
       compression:
         specifier: ^1.8.1
         version: 1.8.1
+      express:
+        specifier: ^4.21.2
+        version: 4.22.1
       keyv:
         specifier: ^5.6.0
         version: 5.6.0
