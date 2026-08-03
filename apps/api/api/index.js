@@ -1,7 +1,7 @@
 'use strict'
 
 // Entry point for Vercel serverless deployment.
-// NestJS is pre-compiled to dist/ by the build command (nest build).
-// This file is CommonJS so Vercel's Node.js runtime loads it directly.
-const { handler } = require('../dist/serverless')
+// dist/ is copied alongside this file during installCommand (cp -r apps/api/dist apps/api/api/dist)
+// so that @vercel/node can package it correctly.
+const { handler } = require('./dist/serverless')
 module.exports = handler
