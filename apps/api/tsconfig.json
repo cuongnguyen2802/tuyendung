@@ -12,6 +12,8 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "paths": {
+      "@tuyendung/types": ["../../packages/types/src/index.ts"],
+      "@tuyendung/utils": ["../../packages/utils/src/index.ts"],
       "meilisearch": ["./node_modules/meilisearch/dist/index"]
     }
   },
