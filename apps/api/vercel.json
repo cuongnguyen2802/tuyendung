@@ -1,15 +1,16 @@
 {
-  "installCommand": "cd ../.. && NODE_ENV=development pnpm install --shamefully-hoist",
-  "buildCommand": "cd ../.. && pnpm --filter @tuyendung/database db:generate && pnpm --filter @tuyendung/api build",
-  "functions": {
-    "api/index.js": {
-      "maxDuration": 10
+  "version": 2,
+  "installCommand": "cd ../.. && NODE_ENV=development pnpm install --shamefully-hoist && pnpm --filter @tuyendung/database db:generate && pnpm --filter @tuyendung/api build",
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
     }
-  },
+  ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/api/index.js"
+      "dest": "api/index.js"
     }
   ]
 }
