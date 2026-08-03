@@ -1,13 +1,12 @@
 {
   "version": 2,
-  "installCommand": "cd ../.. && NODE_ENV=development pnpm install",
-  "buildCommand": "cd ../.. && pnpm --filter @tuyendung/database db:generate && pnpm --filter @tuyendung/api build",
+  "installCommand": "cd ../.. && NODE_ENV=development pnpm install && pnpm --filter @tuyendung/database db:generate && pnpm --filter @tuyendung/api build",
   "builds": [
     {
       "src": "api/index.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["dist/**"]
+        "includeFiles": ["../dist/**"]
       }
     }
   ],
