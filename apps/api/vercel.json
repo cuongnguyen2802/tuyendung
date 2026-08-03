@@ -1,6 +1,6 @@
 {
   "installCommand": "cd ../.. && pnpm install",
-  "buildCommand": "cd ../.. && node_modules/.bin/prisma generate --schema=packages/database/prisma/schema.prisma && pnpm --filter @tuyendung/api build",
+  "buildCommand": "cd ../.. && pnpm --filter @tuyendung/database db:generate && pnpm --filter @tuyendung/api build",
   "outputDirectory": ".",
   "functions": {
     "api/index.js": {
