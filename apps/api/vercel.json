@@ -1,7 +1,6 @@
 {
   "installCommand": "cd ../.. && NODE_ENV=development pnpm install",
   "buildCommand": "cd ../.. && pnpm --filter @tuyendung/database db:generate && pnpm --filter @tuyendung/api build",
-  "outputDirectory": ".",
   "functions": {
     "api/index.js": {
       "maxDuration": 10
