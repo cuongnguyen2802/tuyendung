@@ -10,8 +10,8 @@ let _tokenExp = 0
 
 export function setApiToken(token: string | null) {
   _cachedToken = token
-  // Access token lifetime is 15 min; cache for 14 to be safe
-  _tokenExp = token ? Date.now() + 14 * 60 * 1000 : 0
+  // Access token lifetime is 1h; cache for 55 min to be safe
+  _tokenExp = token ? Date.now() + 55 * 60 * 1000 : 0
 }
 
 // Fallback: used only on the very first API call before SessionSync has run

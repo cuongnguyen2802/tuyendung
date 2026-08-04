@@ -5,7 +5,7 @@ import FacebookProvider from 'next-auth/providers/facebook'
 import LinkedInProvider from 'next-auth/providers/linkedin'
 import axios from 'axios'
 
-const ACCESS_TOKEN_TTL = 14 * 60 // 14 minutes in seconds
+const ACCESS_TOKEN_TTL = 55 * 60 // 55 minutes in seconds (matches 1h access token with 5-min buffer)
 
 async function refreshAccessToken(refreshToken: string) {
   try {
@@ -136,7 +136,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: { signIn: '/login', error: '/login' },
-  session: { strategy: 'jwt' },
+  session: { strategy: 'jwt', maxAge: 7 * 24 * 60 * 60, updateAge: 24 * 60 * 60 },
   secret: process.env.NEXTAUTH_SECRET,
 }
 

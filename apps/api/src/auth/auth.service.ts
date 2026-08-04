@@ -271,7 +271,7 @@ export class AuthService {
 
     const accessToken = this.jwt.sign(payload, {
       secret: this.config.getOrThrow('JWT_ACCESS_SECRET'),
-      expiresIn: this.config.get('JWT_ACCESS_EXPIRES_IN', '15m'),
+      expiresIn: this.config.get('JWT_ACCESS_EXPIRES_IN', '1h'),
     })
 
     const refreshToken = nanoid(64)
