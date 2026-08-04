@@ -130,8 +130,21 @@ export class MessagesService {
   async send(senderId: string, receiverId: string, content: string, applicationId?: string) {
     if (!content.trim()) throw new ForbiddenException('Tin nhắn không được trống')
 
-    const receiver = await this.prisma.user.findUnique({ where: { id: receiverId } })
+    const [receiver, senderUser] = await Promise.all([
+      this.prisma.user.findUnique({ where: { id: receiverId } }),
+      this.prisma.user.findUnique({ where: { id: senderId }, select: { role: true, plan: true } }),
+    ])
     if (!receiver) throw new NotFoundException('Người nhận không tồn tại')
+
+    // FREE employer can only reply — cannot initiate new conversations
+    if (senderUser?.role === 'EMPLOYER' && senderUser.plan === 'FREE') {
+      const priorMessageFromCandidate = await this.prisma.message.findFirst({
+        where: { senderId: receiverId, receiverId: senderId },
+      })
+      if (!priorMessageFromCandidate) {
+        throw new ForbiddenException('Gói Cơ bản không thể khởi tạo cuộc trò chuyện. Nâng cấp lên Pro để nhắn tin trực tiếp với ứng viên.')
+      }
+    }
 
     if (applicationId) {
       const app = await this.prisma.application.findFirst({

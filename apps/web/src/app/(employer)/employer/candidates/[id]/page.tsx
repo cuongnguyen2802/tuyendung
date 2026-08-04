@@ -109,6 +109,7 @@ export default function CandidateDetailPage() {
   })
 
   const canViewContact = planData?.canViewContactInfo ?? false
+  const canInitiateMessage = planData?.plan !== 'FREE'
   const profile = candidate?.profile
 
   // ── Loading ──
@@ -171,10 +172,18 @@ export default function CandidateDetailPage() {
               <DownloadIcon className="h-4 w-4" /> Tải CV
             </a>
           )}
-          <Link href={`/employer/messages?to=${candidate.id}`}
-            className="flex items-center gap-1.5 rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand/90 transition">
-            <MessageSquareIcon className="h-4 w-4" /> Nhắn tin
-          </Link>
+          {canInitiateMessage ? (
+            <Link href={`/employer/messages?to=${candidate.id}`}
+              className="flex items-center gap-1.5 rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand/90 transition">
+              <MessageSquareIcon className="h-4 w-4" /> Nhắn tin
+            </Link>
+          ) : (
+            <Link href="/employer/upgrade"
+              className="flex items-center gap-1.5 rounded-xl border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 shadow-sm hover:bg-amber-100 transition"
+              title="Nâng cấp lên Pro để nhắn tin trực tiếp với ứng viên">
+              <LockIcon className="h-4 w-4" /> Nâng cấp để nhắn tin
+            </Link>
+          )}
         </div>
       </div>
 
