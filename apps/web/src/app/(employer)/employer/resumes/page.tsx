@@ -6,7 +6,7 @@ import Link from 'next/link'
 import {
   SearchIcon, RotateCcwIcon, MapPinIcon, MailIcon, MessageSquareIcon,
   UserIcon, BriefcaseIcon, LockIcon, ChevronLeftIcon, ChevronRightIcon,
-  BadgeCheckIcon, DollarSignIcon,
+  BadgeCheckIcon, DollarSignIcon, ZapIcon,
 } from 'lucide-react'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
@@ -185,7 +185,12 @@ export default function TalentSearchPage() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {candidates.map(c => (
-            <CandidateCard key={c.id} candidate={c} canViewContact={canViewContact} />
+            <CandidateCard
+              key={c.id}
+              candidate={c}
+              canViewContact={canViewContact}
+              canInitiateMessage={planInfo?.plan !== 'FREE'}
+            />
           ))}
         </div>
       )}
@@ -242,7 +247,15 @@ export default function TalentSearchPage() {
   )
 }
 
-function CandidateCard({ candidate: c, canViewContact }: { candidate: Candidate; canViewContact: boolean }) {
+function CandidateCard({
+  candidate: c,
+  canViewContact,
+  canInitiateMessage,
+}: {
+  candidate: Candidate
+  canViewContact: boolean
+  canInitiateMessage: boolean
+}) {
   const p = c.profile
   const name = p?.fullName || c.email.split('@')[0]
   const skills = p?.skills?.map(s => s.skill) ?? []
@@ -337,13 +350,24 @@ function CandidateCard({ candidate: c, canViewContact }: { candidate: Candidate;
 
       {/* Actions */}
       <div className="mt-4 flex gap-2 border-t border-gray-100 pt-4">
-        <Link
-          href={`/employer/messages?to=${c.id}`}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-brand py-2 text-xs font-semibold text-brand hover:bg-brand/5 transition"
-        >
-          <MessageSquareIcon className="h-3.5 w-3.5" />
-          Nhắn tin
-        </Link>
+        {canInitiateMessage ? (
+          <Link
+            href={`/employer/messages?to=${c.id}`}
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-brand py-2 text-xs font-semibold text-brand hover:bg-brand/5 transition"
+          >
+            <MessageSquareIcon className="h-3.5 w-3.5" />
+            Nhắn tin
+          </Link>
+        ) : (
+          <Link
+            href="/employer/upgrade"
+            title="Nâng cấp lên Pro để nhắn tin trực tiếp với ứng viên"
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-amber-300 bg-amber-50 py-2 text-xs font-semibold text-amber-700 hover:bg-amber-100 transition"
+          >
+            <ZapIcon className="h-3.5 w-3.5" />
+            Nâng cấp
+          </Link>
+        )}
         <Link
           href={`/employer/candidates/${c.id}`}
           className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand py-2 text-xs font-semibold text-white hover:bg-brand/90 transition"
