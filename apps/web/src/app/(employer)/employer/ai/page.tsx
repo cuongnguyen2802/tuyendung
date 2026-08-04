@@ -35,18 +35,15 @@ function scoreLabel(score: number) {
   return                  { label: 'Thấp',        color: 'text-gray-500 bg-gray-100' }
 }
 
-function calcScore(candidate: any, job: Job): number {
+function calcScore(profileSkills: { skill: { name: string } }[], profileCity: string | undefined, job: Job): number {
   const jobSkills = new Set(job.skills.map(s => s.skill.name.toLowerCase()))
-  const cSkills: string[] = candidate?.skills?.map((s: any) =>
-    (typeof s === 'string' ? s : s?.skill?.name ?? s?.name ?? '').toLowerCase()
-  ) ?? []
+  const cSkills = profileSkills.map(s => s.skill.name.toLowerCase())
 
-  const skillMatch = cSkills.length > 0
-    ? (cSkills.filter(s => jobSkills.has(s)).length / Math.max(1, jobSkills.size)) * 100
+  const skillMatch = jobSkills.size > 0 && cSkills.length > 0
+    ? (cSkills.filter(s => jobSkills.has(s)).length / jobSkills.size) * 100
     : 50
 
-  // City bonus
-  const cityBonus = candidate?.profile?.city?.toLowerCase() === job.city?.toLowerCase() ? 15 : 0
+  const cityBonus = profileCity?.toLowerCase() === job.city?.toLowerCase() ? 15 : 0
   return Math.min(100, Math.round(skillMatch + cityBonus))
 }
 
@@ -69,14 +66,18 @@ export default function AIPage() {
     enabled: !!selectedJob,
   })
 
-  const candidates: Candidate[] = (candidatesData?.data ?? []).map((app: any) => ({
-    id: app.user?.id ?? app.id,
-    profile: app.user?.profile ?? null,
-    skills: app.user?.profile?.skills ?? [],
-    matchScore: calcScore(app.user, selectedJob!),
-    status: app.status,
-    appliedAt: app.appliedAt,
-  })).sort((a: Candidate, b: Candidate) => b.matchScore - a.matchScore)
+  const candidates: Candidate[] = (candidatesData?.data ?? []).map((app: any) => {
+    const profileSkills: { skill: { name: string } }[] = app.user?.profile?.skills ?? []
+    const profileCity: string | undefined = app.user?.profile?.city
+    return {
+      id: app.user?.id ?? app.id,
+      profile: app.user?.profile ?? null,
+      skills: profileSkills.map(s => s.skill.name),
+      matchScore: calcScore(profileSkills, profileCity, selectedJob!),
+      status: app.status,
+      appliedAt: app.appliedAt,
+    }
+  }).sort((a: Candidate, b: Candidate) => b.matchScore - a.matchScore)
 
   return (
     <div className="space-y-5">

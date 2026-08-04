@@ -112,6 +112,7 @@ export default function CandidatesPage() {
       api.patch(`/applications/${id}/status`, { status: newStatus }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['employer-applications'] })
+      qc.invalidateQueries({ queryKey: ['employer-dashboard'] })
       setOpenStatus(null)
     },
   })

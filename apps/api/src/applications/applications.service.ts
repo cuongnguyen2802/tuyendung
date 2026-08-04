@@ -138,7 +138,12 @@ export class ApplicationsService {
         include: {
           user: {
             include: {
-              profile: { select: { fullName: true, avatarUrl: true, title: true, city: true } },
+              profile: {
+                select: {
+                  fullName: true, avatarUrl: true, title: true, city: true,
+                  skills: { select: { skill: { select: { name: true } } } },
+                },
+              },
             },
           },
           resume: true,
