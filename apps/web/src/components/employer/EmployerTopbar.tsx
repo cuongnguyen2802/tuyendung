@@ -94,7 +94,7 @@ export function EmployerTopbar({ onMenuToggle }: { onMenuToggle?: () => void }) 
                 <Link
                   key={href}
                   href={href}
-                  className="mr-2 flex items-center gap-1.5 rounded-full border border-brand/60 px-4 py-1.5 text-sm font-semibold text-brand/60 transition hover:bg-brand/70/10"
+                  className="mr-2 flex items-center gap-1.5 rounded-full bg-brand px-4 py-1.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand/90"
                 >
                   <Icon className="h-3.5 w-3.5" />
                   {label}
