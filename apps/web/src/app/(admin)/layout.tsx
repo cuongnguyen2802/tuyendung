@@ -8,6 +8,7 @@ import {
   Building2Icon, ShieldIcon, HomeIcon, LogOutIcon, MenuIcon,
   PanelRightIcon, NewspaperIcon, TagsIcon, UserCircleIcon, ImagesIcon,
   ChevronRightIcon, BadgeDollarSignIcon, WrenchIcon, StarIcon, FileTextIcon,
+  ActivityIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -37,8 +38,9 @@ const NAV_GROUPS = [
   {
     label: 'Vận hành',
     items: [
-      { href: '/admin/revenue', label: 'Doanh thu & Gói',    icon: BadgeDollarSignIcon },
-      { href: '/admin/skills',  label: 'Quản lý kỹ năng',    icon: StarIcon            },
+      { href: '/admin/activity', label: 'Lịch sử hoạt động', icon: ActivityIcon         },
+      { href: '/admin/revenue',  label: 'Doanh thu & Gói',   icon: BadgeDollarSignIcon  },
+      { href: '/admin/skills',   label: 'Quản lý kỹ năng',   icon: StarIcon             },
     ],
   },
   {

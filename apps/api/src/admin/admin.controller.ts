@@ -207,6 +207,15 @@ export class AdminController {
     return this.adminService.updatePageContent(slug, data)
   }
 
+  // ── Activity feed ─────────────────────────────────────────────────────────────
+
+  @Get('activity')
+  @ApiOperation({ summary: 'Lịch sử hoạt động hệ thống' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  getActivity(@Query('limit') limit?: string) {
+    return this.adminService.getSystemActivity(limit ? parseInt(limit, 10) : 60)
+  }
+
   // ── Skills ────────────────────────────────────────────────────────────────────
 
   @Get('skills')

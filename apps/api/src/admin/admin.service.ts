@@ -463,6 +463,92 @@ export class AdminService {
     return this.prisma.skill.delete({ where: { id } })
   }
 
+  // ── System activity feed ─────────────────────────────────────────────────────
+
+  async getSystemActivity(limit = 60) {
+    const [recentUsers, recentJobs, recentApplications] = await Promise.all([
+      this.prisma.user.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+        select: {
+          id: true, email: true, role: true, createdAt: true,
+          profile: { select: { fullName: true, avatarUrl: true } },
+          employer: { select: { companyName: true, logoUrl: true, slug: true } },
+        },
+      }),
+      this.prisma.job.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+        select: {
+          id: true, title: true, slug: true, status: true, createdAt: true, publishedAt: true,
+          employer: { select: { companyName: true, slug: true, logoUrl: true } },
+        },
+      }),
+      this.prisma.application.findMany({
+        orderBy: { appliedAt: 'desc' },
+        take: limit,
+        select: {
+          id: true, status: true, appliedAt: true,
+          job: { select: { title: true, slug: true, employer: { select: { companyName: true } } } },
+          user: { select: { email: true, profile: { select: { fullName: true, avatarUrl: true } } } },
+        },
+      }),
+    ])
+
+    type ActivityEvent = {
+      id: string
+      type: 'new_candidate' | 'new_employer' | 'new_job' | 'job_approved' | 'new_application' | 'application_status'
+      title: string
+      description: string
+      meta?: Record<string, string | null>
+      timestamp: Date
+    }
+
+    const events: ActivityEvent[] = [
+      ...recentUsers
+        .filter(u => u.role !== 'ADMIN')
+        .map(u => ({
+          id: `user-${u.id}`,
+          type: (u.role === 'CANDIDATE' ? 'new_candidate' : 'new_employer') as ActivityEvent['type'],
+          title: u.role === 'CANDIDATE' ? 'Ứng viên mới đăng ký' : 'Nhà tuyển dụng mới đăng ký',
+          description: u.role === 'CANDIDATE'
+            ? (u.profile?.fullName ?? u.email)
+            : (u.employer?.companyName ?? u.email),
+          meta: u.role === 'EMPLOYER' && u.employer?.slug
+            ? { logoUrl: u.employer.logoUrl ?? null, slug: u.employer.slug }
+            : null as any,
+          timestamp: u.createdAt,
+        })),
+
+      ...recentJobs.map(j => ({
+        id: `job-${j.id}`,
+        type: (j.status === 'PUBLISHED' ? 'job_approved' : 'new_job') as ActivityEvent['type'],
+        title: j.status === 'PUBLISHED'
+          ? 'Tin tuyển dụng đã đăng'
+          : j.status === 'PENDING_APPROVAL'
+            ? 'Tin tuyển dụng chờ duyệt'
+            : j.status === 'REJECTED'
+              ? 'Tin tuyển dụng bị từ chối'
+              : 'Tin tuyển dụng cập nhật',
+        description: `${j.title} — ${j.employer?.companyName ?? ''}`,
+        meta: { slug: j.slug, logoUrl: j.employer?.logoUrl ?? null },
+        timestamp: j.createdAt,
+      })),
+
+      ...recentApplications.map(a => ({
+        id: `app-${a.id}`,
+        type: 'new_application' as ActivityEvent['type'],
+        title: 'Đơn ứng tuyển mới',
+        description: `${a.user?.profile?.fullName ?? a.user?.email ?? '?'} → ${a.job?.title ?? '?'}`,
+        meta: { status: a.status, avatarUrl: a.user?.profile?.avatarUrl ?? null },
+        timestamp: a.appliedAt,
+      })),
+    ]
+
+    events.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+    return events.slice(0, limit)
+  }
+
   private async getRevenueChart(months: number) {
     const PRICES: Record<string, number> = { PRO: 500000, PREMIUM: 1200000 }
     const now = new Date()
