@@ -10,8 +10,14 @@ import {
   SearchIcon, RotateCcwIcon, ChevronDownIcon, DownloadIcon,
   MailIcon, PhoneIcon, MessageSquareIcon, AlertTriangleIcon,
   FileTextIcon, MapPinIcon, SparklesIcon, BookmarkIcon,
-  MoreHorizontalIcon, UserIcon,
+  MoreHorizontalIcon, UserIcon, LockIcon, ZapIcon,
 } from 'lucide-react'
+import { EMPLOYER_PLAN_LIMITS } from '@tuyendung/types'
+
+interface PlanInfo {
+  plan: string
+  limits: typeof EMPLOYER_PLAN_LIMITS['FREE']
+}
 
 // ── Types & Helpers ───────────────────────────────────────────────────────────
 
@@ -91,6 +97,15 @@ export default function CandidatesPage() {
       return api.get(`/applications/employer/me?${p}`)
     },
   })
+
+  const { data: planInfo } = useQuery<PlanInfo>({
+    queryKey: ['employer-plan'],
+    queryFn: () => api.get('/employers/me/plan'),
+    staleTime: 5 * 60_000,
+  })
+
+  const canViewContact     = planInfo?.limits?.canViewContactInfo ?? false
+  const canInitiateMessage = planInfo?.plan !== 'FREE'
 
   const updateStatus = useMutation({
     mutationFn: ({ id, newStatus }: { id: string; newStatus: AppStatus }) =>
@@ -334,6 +349,8 @@ export default function CandidatesPage() {
                 onStatusOpen={() => setOpenStatus(v => v === app.id ? null : app.id)}
                 onStatusChange={(s) => updateStatus.mutate({ id: app.id, newStatus: s })}
                 updating={updateStatus.isPending && updateStatus.variables?.id === app.id}
+                canViewContact={canViewContact}
+                canInitiateMessage={canInitiateMessage}
               />
             ))}
           </div>
@@ -384,6 +401,8 @@ function ApplicationRow({
   onStatusOpen,
   onStatusChange,
   updating,
+  canViewContact,
+  canInitiateMessage,
 }: {
   app: Application
   selected: boolean
@@ -392,6 +411,8 @@ function ApplicationRow({
   onStatusOpen: () => void
   onStatusChange: (s: AppStatus) => void
   updating: boolean
+  canViewContact: boolean
+  canInitiateMessage: boolean
 }) {
   const profile = app.user.profile
   const name    = profile?.fullName || app.user.email.split('@')[0]
@@ -435,23 +456,43 @@ function ApplicationRow({
 
         <div className="min-w-0 flex-1">
           <p className="font-semibold text-gray-900 truncate">{name}</p>
-          <div className="mt-0.5 flex items-center gap-1 text-xs text-gray-500">
-            <MailIcon className="h-3 w-3 shrink-0" />
-            <span className="truncate">{app.user.email}</span>
-          </div>
-          {profile?.phone && (
-            <div className="mt-0.5 flex items-center gap-1 text-xs text-gray-500">
-              <PhoneIcon className="h-3 w-3 shrink-0" />
-              <span>{profile.phone}</span>
+          {canViewContact ? (
+            <>
+              <div className="mt-0.5 flex items-center gap-1 text-xs text-gray-500">
+                <MailIcon className="h-3 w-3 shrink-0" />
+                <span className="truncate">{app.user.email}</span>
+              </div>
+              {profile?.phone && (
+                <div className="mt-0.5 flex items-center gap-1 text-xs text-gray-500">
+                  <PhoneIcon className="h-3 w-3 shrink-0" />
+                  <span>{profile.phone}</span>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="mt-0.5 flex items-center gap-1 text-xs text-gray-400">
+              <LockIcon className="h-3 w-3 shrink-0" />
+              <span className="select-none blur-[3px]">email@hidden.com</span>
             </div>
           )}
-          <Link
-            href={`/employer/messages?to=${app.user.id}`}
-            className="mt-1 flex items-center gap-1 text-xs font-semibold text-brand hover:underline"
-          >
-            <MessageSquareIcon className="h-3 w-3" />
-            Chat với ứng viên
-          </Link>
+          {canInitiateMessage ? (
+            <Link
+              href={`/employer/messages?to=${app.user.id}`}
+              className="mt-1 flex items-center gap-1 text-xs font-semibold text-brand hover:underline"
+            >
+              <MessageSquareIcon className="h-3 w-3" />
+              Chat với ứng viên
+            </Link>
+          ) : (
+            <Link
+              href="/employer/upgrade"
+              title="Nâng cấp lên Pro để nhắn tin trực tiếp với ứng viên"
+              className="mt-1 flex items-center gap-1 text-xs font-semibold text-amber-600 hover:underline"
+            >
+              <ZapIcon className="h-3 w-3" />
+              Nâng cấp để nhắn tin
+            </Link>
+          )}
         </div>
       </div>
 
