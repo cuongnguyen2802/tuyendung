@@ -8,7 +8,7 @@ import {
   DownloadIcon, MessageSquareIcon, LockIcon, ExternalLinkIcon,
   FileTextIcon, CalendarIcon, DollarSignIcon, CheckCircleIcon,
 } from 'lucide-react'
-import { apiClient } from '@/lib/api'
+import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -27,7 +27,7 @@ interface CandidateProfile {
   id: string; email: string
   profile: {
     fullName: string; title: string | null; city: string | null
-    summary: string | null; avatar: string | null
+    summary: string | null; avatarUrl: string | null
     expectedSalaryMin: number | null; expectedSalaryMax: number | null
     openToWork: boolean
     linkedinUrl: string | null; githubUrl: string | null; portfolioUrl: string | null
@@ -60,7 +60,7 @@ function Avatar({ src, name, size = 80 }: { src: string | null; name: string; si
   if (src) return <img src={src} alt={name} style={{ width: size, height: size }} className="rounded-full object-cover ring-2 ring-white shadow" />
   const initials = name.split(' ').slice(-2).map(w => w[0]).join('').toUpperCase()
   return (
-    <div style={{ width: size, height: size }} className="rounded-full bg-gradient-to-br from-brand to-emerald-400 flex items-center justify-center text-white font-bold ring-2 ring-white shadow" style2={{ fontSize: size * 0.32 }}>
+    <div style={{ width: size, height: size, fontSize: size * 0.32 }} className="rounded-full bg-gradient-to-br from-brand to-emerald-400 flex items-center justify-center text-white font-bold ring-2 ring-white shadow">
       <span style={{ fontSize: size * 0.3 }}>{initials}</span>
     </div>
   )
@@ -88,13 +88,13 @@ export default function CandidateDetailPage() {
 
   const { data: candidate, isLoading: loadingCandidate } = useQuery<CandidateProfile>({
     queryKey: ['candidate', id],
-    queryFn: () => apiClient.get(`/candidates/${id}`).then(r => r.data.data ?? r.data),
+    queryFn: () => api.get(`/candidates/${id}`),
     enabled: !!id,
   })
 
   const { data: planData } = useQuery<PlanData>({
     queryKey: ['employer-plan'],
-    queryFn: () => apiClient.get('/employers/me/plan').then(r => r.data.data ?? r.data),
+    queryFn: () => api.get('/employers/me/plan'),
     staleTime: 60_000,
   })
 
@@ -164,7 +164,7 @@ export default function CandidateDetailPage() {
           <div className="h-24 bg-gradient-to-r from-brand/80 to-emerald-500/80" />
           <div className="px-6 pb-5">
             <div className="-mt-10 flex items-end gap-4">
-              <Avatar src={profile.avatar} name={profile.fullName} size={80} />
+              <Avatar src={profile.avatarUrl} name={profile.fullName} size={80} />
               <div className="flex-1 pb-1">
                 <div className="flex items-center gap-3 flex-wrap">
                   <h1 className="text-xl font-bold text-gray-900">{profile.fullName}</h1>
