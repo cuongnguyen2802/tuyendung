@@ -1,7 +1,7 @@
 "use strict";
 // ─── Enums ────────────────────────────────────────────────────────────────────
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VIETNAM_CITIES = exports.COMPANY_SIZE_LABELS = exports.APPLICATION_STATUS_LABELS = exports.WORK_MODE_LABELS = exports.JOB_TYPE_LABELS = exports.CompanySize = exports.ApplicationStatus = exports.JobStatus = exports.WorkMode = exports.JobType = exports.Role = void 0;
+exports.EMPLOYER_PLAN_PRICES = exports.EMPLOYER_PLAN_LIMITS = exports.PLAN_PRICES = exports.PLAN_LABELS = exports.PLAN_LIMITS = exports.UserPlan = exports.VIETNAM_CITIES = exports.COMPANY_SIZE_LABELS = exports.APPLICATION_STATUS_LABELS = exports.WORK_MODE_LABELS = exports.JOB_TYPE_LABELS = exports.NotificationType = exports.CompanySize = exports.ApplicationStatus = exports.JobStatus = exports.WorkMode = exports.JobType = exports.Role = void 0;
 var Role;
 (function (Role) {
     Role["CANDIDATE"] = "CANDIDATE";
@@ -48,6 +48,16 @@ var CompanySize;
     CompanySize["LARGE"] = "LARGE";
     CompanySize["ENTERPRISE"] = "ENTERPRISE";
 })(CompanySize || (exports.CompanySize = CompanySize = {}));
+var NotificationType;
+(function (NotificationType) {
+    NotificationType["APPLICATION_RECEIVED"] = "APPLICATION_RECEIVED";
+    NotificationType["APPLICATION_STATUS_CHANGED"] = "APPLICATION_STATUS_CHANGED";
+    NotificationType["JOB_INVITATION"] = "JOB_INVITATION";
+    NotificationType["JOB_EXPIRING"] = "JOB_EXPIRING";
+    NotificationType["NEW_MESSAGE"] = "NEW_MESSAGE";
+    NotificationType["JOB_RECOMMENDED"] = "JOB_RECOMMENDED";
+    NotificationType["SYSTEM"] = "SYSTEM";
+})(NotificationType || (exports.NotificationType = NotificationType = {}));
 // ─── Label maps (dùng cho UI) ─────────────────────────────────────────────────
 exports.JOB_TYPE_LABELS = {
     [JobType.FULL_TIME]: 'Toàn thời gian',
@@ -80,4 +90,36 @@ exports.VIETNAM_CITIES = [
     'Hà Nội', 'Hồ Chí Minh', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ',
     'Bình Dương', 'Đồng Nai', 'Khánh Hòa', 'Huế', 'Quảng Ninh',
 ];
+// ─── Upgrade / Plan ───────────────────────────────────────────────────────────
+var UserPlan;
+(function (UserPlan) {
+    UserPlan["FREE"] = "FREE";
+    UserPlan["PRO"] = "PRO";
+    UserPlan["PREMIUM"] = "PREMIUM";
+})(UserPlan || (exports.UserPlan = UserPlan = {}));
+exports.PLAN_LIMITS = {
+    FREE:    { maxResumes: 1,        maxApplyPerMonth: 5,        viewProfileViewers: false, prioritySearch: false },
+    PRO:     { maxResumes: 3,        maxApplyPerMonth: Infinity, viewProfileViewers: true,  prioritySearch: false },
+    PREMIUM: { maxResumes: Infinity, maxApplyPerMonth: Infinity, viewProfileViewers: true,  prioritySearch: true  },
+};
+exports.PLAN_LABELS = {
+    [UserPlan.FREE]:    'Miễn phí',
+    [UserPlan.PRO]:     'Pro',
+    [UserPlan.PREMIUM]: 'Premium',
+};
+exports.PLAN_PRICES = {
+    [UserPlan.FREE]:    0,
+    [UserPlan.PRO]:     99000,
+    [UserPlan.PREMIUM]: 199000,
+};
+exports.EMPLOYER_PLAN_LIMITS = {
+    FREE:    { maxActiveJobs: 3,        canViewContactInfo: false, featuredJobsPerMonth: 0,        aiSuggestions: false },
+    PRO:     { maxActiveJobs: 10,       canViewContactInfo: true,  featuredJobsPerMonth: 3,        aiSuggestions: false },
+    PREMIUM: { maxActiveJobs: Infinity, canViewContactInfo: true,  featuredJobsPerMonth: Infinity, aiSuggestions: true  },
+};
+exports.EMPLOYER_PLAN_PRICES = {
+    [UserPlan.FREE]:    0,
+    [UserPlan.PRO]:     500000,
+    [UserPlan.PREMIUM]: 1200000,
+};
 //# sourceMappingURL=index.js.map
