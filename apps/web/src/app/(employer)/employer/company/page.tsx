@@ -320,68 +320,78 @@ export default function CompanyProfilePage() {
     <div className="space-y-5 pb-10">
 
       {/* ── Company profile preview ────────────────────────────────────────── */}
-      <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-        {/* Cover */}
-        <div className="relative h-36 w-full overflow-hidden">
-          {coverUrl ? (
-            <img src={coverUrl} alt="" className="h-full w-full object-cover" />
-          ) : (
-            <div className="h-full w-full bg-gradient-to-r from-emerald-500 via-brand to-teal-600">
-              <div className="absolute inset-0 opacity-20"
-                style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 0%, transparent 50%), radial-gradient(circle at 80% 20%, white 0%, transparent 40%)' }}
-              />
-            </div>
-          )}
-          {/* Gradient fade at bottom */}
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/20 to-transparent" />
-          {/* Header action row */}
-          <div className="absolute right-4 top-4 flex items-center gap-2">
-            {company?.verified ? (
-              <span className="flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-brand shadow backdrop-blur-sm">
-                <BadgeCheckIcon className="h-3.5 w-3.5" />Đã xác minh
-              </span>
+      <div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
+
+        {/* Cover + logo overlay — relative wrapper so logo can be absolute */}
+        <div className="relative">
+          {/* Cover */}
+          <div className="relative h-36 w-full overflow-hidden rounded-t-2xl">
+            {coverUrl ? (
+              <img src={coverUrl} alt="" className="h-full w-full object-cover" />
             ) : (
-              <span className="flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-amber-600 shadow backdrop-blur-sm">
-                <ShieldCheckIcon className="h-3.5 w-3.5" />Chưa xác minh
-              </span>
+              <div className="h-full w-full bg-gradient-to-r from-emerald-500 via-brand to-teal-600">
+                <div className="absolute inset-0 opacity-20"
+                  style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 0%, transparent 50%), radial-gradient(circle at 80% 20%, white 0%, transparent 40%)' }}
+                />
+              </div>
             )}
+            {/* Bottom fade */}
+            <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/20 to-transparent" />
+            {/* Verified badge */}
+            <div className="absolute right-4 top-4">
+              {company?.verified ? (
+                <span className="flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-brand shadow backdrop-blur-sm">
+                  <BadgeCheckIcon className="h-3.5 w-3.5" />Đã xác minh
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-amber-600 shadow backdrop-blur-sm">
+                  <ShieldCheckIcon className="h-3.5 w-3.5" />Chưa xác minh
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Logo — anchored to bottom of cover, straddles the boundary */}
+          <div className="absolute bottom-0 left-5 z-10 translate-y-1/2">
+            <div className="h-20 w-20 overflow-hidden rounded-2xl border-4 border-white bg-white shadow-lg">
+              {logoUrl ? (
+                <img src={logoUrl} alt="" className="h-full w-full object-contain p-1.5" />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand/10 to-teal-50">
+                  <Building2Icon className="h-9 w-9 text-brand/30" />
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Logo + info bar */}
-        <div className="flex flex-wrap items-end gap-4 px-5 pb-4">
-          <div className="-mt-10 h-20 w-20 shrink-0 overflow-hidden rounded-2xl border-4 border-white bg-white shadow-lg">
-            {logoUrl ? (
-              <img src={logoUrl} alt="" className="h-full w-full object-contain p-1.5" />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand/10 to-teal-50">
-                <Building2Icon className="h-8 w-8 text-brand/40" />
+        {/* Info bar — padding-top makes room for the overlapping logo (h-20 / 2 = 40px = pt-10) */}
+        <div className="px-5 pb-4 pt-12">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="min-w-0">
+              <h1 className="text-lg font-bold leading-tight text-gray-900">{displayName}</h1>
+              <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
+                {displayCity && (
+                  <span className="flex items-center gap-1">
+                    <MapPinIcon className="h-3.5 w-3.5 text-gray-400" />{displayCity}
+                  </span>
+                )}
+                {displayWebsite && (
+                  <a href={displayWebsite} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-1 transition hover:text-brand">
+                    <GlobeIcon className="h-3.5 w-3.5 text-gray-400" />
+                    {displayWebsite.replace(/^https?:\/\//, '')}
+                  </a>
+                )}
+                <span className="flex items-center gap-1">
+                  <BriefcaseIcon className="h-3.5 w-3.5 text-gray-400" />{jobCount} tin đang tuyển
+                </span>
               </div>
-            )}
-          </div>
-          <div className="flex-1 min-w-0 pb-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-lg font-bold text-gray-900 leading-tight">{displayName}</h1>
             </div>
-            <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
-              {displayCity && (
-                <span className="flex items-center gap-1"><MapPinIcon className="h-3.5 w-3.5 text-gray-400" />{displayCity}</span>
-              )}
-              {displayWebsite && (
-                <a href={displayWebsite} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-1 hover:text-brand transition">
-                  <GlobeIcon className="h-3.5 w-3.5 text-gray-400" />
-                  {displayWebsite.replace(/^https?:\/\//, '')}
-                </a>
-              )}
-              <span className="flex items-center gap-1">
-                <BriefcaseIcon className="h-3.5 w-3.5 text-gray-400" />{jobCount} tin đang tuyển
-              </span>
+            {/* Completion meter */}
+            <div className="w-full sm:w-44">
+              <CompletionMeter pct={completionPct} />
             </div>
-          </div>
-          {/* Completion meter */}
-          <div className="w-full sm:w-48 pb-1">
-            <CompletionMeter pct={completionPct} />
           </div>
         </div>
       </div>
