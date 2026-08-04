@@ -92,34 +92,42 @@ export class AiService {
   }
 
   private mockSuggestJD(params: AISuggestParams): ParsedJD {
-    const { position, experienceMin, skills } = params
-    const expText = experienceMin ? `${experienceMin} năm` : 'phù hợp'
-    const skillText = skills?.length ? skills.slice(0, 3).join(', ') : 'các công nghệ liên quan'
+    const { position, experienceMin, skills, context } = params
+    const expText = experienceMin != null ? `${experienceMin} năm` : 'phù hợp'
+    const skillList = skills?.filter(Boolean) ?? []
+    const skillText = skillList.length ? skillList.slice(0, 4).join(', ') : 'các kỹ năng chuyên môn liên quan'
+    const skillItems = skillList.length
+      ? skillList.map(s => `  <li>Thành thạo <strong>${s}</strong></li>`).join('\n')
+      : `  <li>Thành thạo các kỹ năng chuyên môn liên quan đến vị trí ${position}</li>`
+    const contextNote = context ? `\n<p><em>${context}</em></p>` : ''
+
     return {
       title: position,
-      description: `<p>Chúng tôi đang tìm kiếm <strong>${position}</strong> có kinh nghiệm ${expText} để tham gia vào các dự án thú vị và có tầm ảnh hưởng lớn.</p>
-<h3>Bạn sẽ làm gì?</h3>
+      description: `<p>Chúng tôi đang tuyển <strong>${position}</strong> ${experienceMin ? `với ít nhất <strong>${expText} kinh nghiệm</strong>` : ''} để gia nhập đội ngũ đang phát triển nhanh.</p>${contextNote}
+<h3>Trách nhiệm chính</h3>
 <ul>
-  <li>Tham gia trực tiếp vào quá trình phát triển sản phẩm từ ý tưởng đến triển khai</li>
-  <li>Làm việc với ${skillText} trong môi trường Agile năng động</li>
-  <li>Đề xuất và áp dụng các giải pháp kỹ thuật tối ưu</li>
-  <li>Phối hợp chặt chẽ với các team liên quan để đảm bảo chất lượng sản phẩm</li>
+  <li>Đảm nhận các nhiệm vụ chuyên môn thuộc vị trí <strong>${position}</strong> theo yêu cầu của bộ phận</li>
+  <li>Sử dụng thành thạo ${skillText} trong công việc hàng ngày</li>
+  <li>Phối hợp với các phòng ban liên quan để hoàn thành mục tiêu chung</li>
+  <li>Đề xuất cải tiến quy trình, nâng cao hiệu suất công việc</li>
+  <li>Báo cáo kết quả định kỳ cho quản lý trực tiếp</li>
 </ul>`,
       requirements: `<ul>
-  <li>Kinh nghiệm ${expText} ở vị trí ${position} hoặc tương đương</li>
-  <li>Thành thạo ${skillText}</li>
-  <li>Tư duy logic, khả năng phân tích và giải quyết vấn đề tốt</li>
-  <li>Có tinh thần trách nhiệm, chủ động trong công việc</li>
-  <li>Kỹ năng giao tiếp và làm việc nhóm tốt</li>
-  <li>Ưu tiên ứng viên có portfolio hoặc dự án thực tế</li>
+  <li>Có ít nhất <strong>${expText} kinh nghiệm</strong> ở vị trí ${position} hoặc tương đương</li>
+${skillItems}
+  <li>Tư duy phân tích tốt, khả năng giải quyết vấn đề hiệu quả</li>
+  <li>Kỹ năng giao tiếp và làm việc nhóm xuất sắc</li>
+  <li>Tinh thần trách nhiệm cao, chủ động và tự quản lý tốt</li>
+  <li>Ưu tiên ứng viên có kinh nghiệm thực tế hoặc portfolio minh chứng</li>
 </ul>`,
       benefits: `<ul>
-  <li>Mức lương cạnh tranh, xem xét tăng lương định kỳ 6 tháng/lần</li>
-  <li>Thưởng hiệu suất và thưởng dự án</li>
-  <li>Bảo hiểm xã hội, bảo hiểm y tế theo quy định</li>
-  <li>Môi trường làm việc trẻ trung, sáng tạo và cởi mở</li>
-  <li>Hỗ trợ đào tạo và phát triển chuyên môn</li>
-  <li>Team building, du lịch hàng năm</li>
+  <li>Mức lương <strong>cạnh tranh</strong>, đánh giá và tăng lương mỗi 6 tháng</li>
+  <li>Thưởng hiệu suất theo quý, thưởng dự án và thưởng cuối năm</li>
+  <li>Bảo hiểm sức khỏe cao cấp (bản thân + người thân)</li>
+  <li>Môi trường làm việc năng động, cởi mở — <strong>ý kiến của bạn luôn được lắng nghe</strong></li>
+  <li>Ngân sách học tập & phát triển chuyên môn hàng năm</li>
+  <li>Team building, company trip trong và ngoài nước hàng năm</li>
+  <li>Lịch làm việc linh hoạt, cân bằng công việc — cuộc sống</li>
 </ul>`,
     }
   }
@@ -179,18 +187,28 @@ Chỉ trả về JSON, không giải thích thêm.`
     const contextText = context ? `Ghi chú thêm: ${context}` : ''
 
     const userPrompt = [
-      `Tạo nội dung JD cho vị trí: **${position}**`,
-      expText, skillsText, contextText,
+      `Vị trí tuyển dụng: ${position}`,
+      expText,
+      skillsText,
+      contextText,
     ].filter(Boolean).join('\n')
 
-    const systemPrompt = `Bạn là chuyên gia HR tại Việt Nam, chuyên viết JD hấp dẫn và chuyên nghiệp.
-Tạo nội dung JD bằng tiếng Việt cho vị trí được yêu cầu.
-Trả về JSON với đúng 3 trường:
-- description: string — mô tả chi tiết công việc, dùng HTML (<h3>, <ul><li>, <p>), khoảng 200-350 từ
-- requirements: string — yêu cầu ứng viên dạng HTML, 6-10 điểm dạng <ul><li>
-- benefits: string — quyền lợi hấp dẫn dạng HTML, 5-8 điểm dạng <ul><li>
+    const systemPrompt = `Bạn là chuyên gia HR tại Việt Nam với 10 năm kinh nghiệm viết JD chuyên nghiệp.
+Nhiệm vụ: Tạo nội dung JD bằng tiếng Việt, cụ thể và phù hợp với ĐÚNG vị trí được yêu cầu (không chung chung, không copy mẫu).
 
-Nội dung phải cụ thể, không chung chung. Chỉ trả về JSON thuần, không markdown code block.`
+Trả về JSON với đúng 3 trường (không thêm trường nào khác):
+{
+  "description": "<p>...</p><h3>...</h3><ul><li>...</li></ul>",
+  "requirements": "<ul><li>...</li></ul>",
+  "benefits": "<ul><li>...</li></ul>"
+}
+
+Quy tắc:
+- description: 150-300 từ. Dùng <p>, <h3>, <ul><li>. Mô tả cụ thể nhiệm vụ của vị trí này.
+- requirements: 6-9 điểm <ul><li>. Tập trung vào kỹ năng/kinh nghiệm cần có cho VỊ TRÍ NÀY.
+- benefits: 5-7 điểm <ul><li>. Quyền lợi hấp dẫn, thực tế.
+- Nội dung phải đặc trưng cho vị trí, KHÔNG dùng các câu mơ hồ như "tham gia vào quá trình phát triển sản phẩm" cho vị trí kế toán hay nhân sự.
+- Chỉ trả về JSON thuần. Không giải thích. Không markdown. Không code block.`
 
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
