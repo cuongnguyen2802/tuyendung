@@ -10,6 +10,10 @@ export const metadata: Metadata = {
   title: { default: 'TuyenDung.vn - Tìm việc làm nhanh nhất', template: '%s | TuyenDung.vn' },
   description: 'Nền tảng tuyển dụng hàng đầu Việt Nam — kết nối ứng viên với hàng nghìn nhà tuyển dụng uy tín.',
   keywords: ['tuyển dụng', 'việc làm', 'tìm việc', 'TopCV', 'tuyendung'],
+  icons: {
+    icon: '/icon.svg',
+    shortcut: '/icon.svg',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
