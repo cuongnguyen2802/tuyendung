@@ -12,7 +12,7 @@ import {
   ShoppingCartIcon, MegaphoneIcon, MessageSquareIcon, HistoryIcon,
   SettingsIcon, BellIcon, ZapIcon,
   ReceiptIcon, FileTextIcon, CreditCardIcon, TrendingUpIcon, UsersIcon,
-  ShieldCheckIcon,
+  ShieldCheckIcon, HomeIcon,
 } from 'lucide-react'
 import { UserPlan } from '@tuyendung/types'
 import { cn } from '@/lib/utils'
@@ -53,6 +53,7 @@ type NavSection = { divider?: boolean; items: NavItem[] }
 const NAV_SECTIONS: NavSection[] = [
   {
     items: [
+      { href: '/',                   label: 'Trang chủ',    icon: HomeIcon,             exact: true },
       { href: '/employer/dashboard', label: 'Bảng tin',     icon: LayoutDashboardIcon, exact: true },
       { href: '/employer/insights',  label: 'Insights',      icon: BarChart3Icon },
       { href: '/employer/rewards',   label: 'Phần thưởng',   icon: TrophyIcon },
