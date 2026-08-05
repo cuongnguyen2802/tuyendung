@@ -6,7 +6,8 @@ import { useForm, useFieldArray } from 'react-hook-form'
 import { api } from '@/lib/api'
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { PlusIcon, TrashIcon, CheckIcon, EyeIcon, PencilIcon } from 'lucide-react'
+import { PlusIcon, TrashIcon, CheckIcon, EyeIcon, PencilIcon, PaletteIcon } from 'lucide-react'
+import { CVTemplatePreview, POSITION_VARIANTS, POSITIONS, type Variant, type PositionData } from '@/components/cv/CVTemplateEngine'
 
 interface WorkExperience {
   company: string
@@ -75,10 +76,20 @@ export default function CVBuilderPage() {
 function CVBuilderInner() {
   const queryClient = useQueryClient()
   const searchParams = useSearchParams()
-  const resumeId = searchParams.get('id')
+  const resumeId      = searchParams.get('id')
+  const templateSlug  = searchParams.get('template')  // e.g. "sales", "developer"
+  const variantId     = searchParams.get('variant')   // e.g. "s1", "d3"
+  const createMode    = searchParams.get('mode') ?? 'template'  // "template" | "blank"
 
   const [saved, setSaved] = useState(false)
   const [preview, setPreview] = useState(!!resumeId) // start in preview when viewing existing
+
+  // Resolve template variant once
+  const templateVariants = templateSlug ? (POSITION_VARIANTS[templateSlug] ?? null) : null
+  const resolvedVariant: Variant | null = templateVariants
+    ? (templateVariants.find(v => v.id === variantId) ?? templateVariants[0])
+    : null
+  const templatePosition: PositionData | null = templateSlug ? (POSITIONS[templateSlug] ?? null) : null
 
   const { data: profile } = useQuery<any>({
     queryKey: ['candidate-profile'],
@@ -119,6 +130,8 @@ function CVBuilderInner() {
     mutationFn: (data: CVForm) => {
       const payload = {
         title: data.title,
+        templateSlug: templateSlug ?? undefined,
+        variantId: resolvedVariant?.id ?? undefined,
         content: {
           summary: data.summary,
           experiences: data.experiences,
@@ -140,6 +153,28 @@ function CVBuilderInner() {
     },
   })
 
+  // Build a PositionData merging user's real info into the template's sample
+  function buildPreviewData(): PositionData {
+    const base = templatePosition ?? POSITIONS.simple
+    const firstExp  = formData.experiences[0]
+    const firstEdu  = formData.educations[0]
+    return {
+      ...base,
+      sample: {
+        name:    profile?.fullName   || base.sample.name,
+        role:    profile?.title      || formData.title || base.sample.role,
+        company: firstExp?.company   || base.sample.company,
+        period:  firstExp
+          ? `${firstExp.startDate ? firstExp.startDate.substring(0, 7) : ''} – ${firstExp.current ? 'Hiện tại' : (firstExp.endDate ? firstExp.endDate.substring(0, 7) : '')}`
+          : base.sample.period,
+        school:  firstEdu?.school    || base.sample.school,
+        degree:  firstEdu
+          ? [firstEdu.degree, firstEdu.field].filter(Boolean).join(' — ')
+          : base.sample.degree,
+      },
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -147,7 +182,20 @@ function CVBuilderInner() {
           <h1 className="text-xl font-bold text-gray-900">
             {resumeId ? formData.title || 'CV của tôi' : 'CV Builder'}
           </h1>
-          {resumeId && (
+          {resolvedVariant && (
+            <p className="mt-0.5 flex items-center gap-1.5 text-sm text-gray-500">
+              <PaletteIcon className="h-3.5 w-3.5" />
+              Mẫu: <span className="font-medium text-brand">{templatePosition?.title ?? templateSlug}</span>
+              {' · '}
+              <span
+                className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold text-white"
+                style={{ background: resolvedVariant.sidebar }}
+              >
+                {resolvedVariant.label}
+              </span>
+            </p>
+          )}
+          {resumeId && !resolvedVariant && (
             <p className="text-sm text-gray-500">Xem và chỉnh sửa CV</p>
           )}
         </div>
@@ -175,7 +223,15 @@ function CVBuilderInner() {
       </div>
 
       {preview ? (
-        <CVPreview data={formData} profile={profile} existingContent={existingResume?.content} />
+        resolvedVariant ? (
+          // ── Template-specific preview ──────────────────────────────────────
+          <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md">
+            <CVTemplatePreview variant={resolvedVariant} data={buildPreviewData()} />
+          </div>
+        ) : (
+          // ── Generic preview ────────────────────────────────────────────────
+          <CVPreview data={formData} profile={profile} existingContent={existingResume?.content} />
+        )
       ) : (
         <div className="space-y-4">
           {/* Basic info */}
@@ -340,14 +396,13 @@ function CVBuilderInner() {
   )
 }
 
-// ── CV Preview ────────────────────────────────────────────────────────────────
+// ── Generic CV Preview (used when no template selected) ───────────────────────
 
 function CVPreview({ data, profile, existingContent }: {
   data: CVForm
   profile: any
   existingContent?: any
 }) {
-  // Merge: prefer form data, fall back to existingContent for personalInfo fields
   const pi = existingContent?.personalInfo ?? {}
   const fullName = profile?.fullName || pi.fullName || 'Họ và Tên'
   const jobTitle = profile?.title || pi.title || ''
@@ -407,14 +462,12 @@ function CVPreview({ data, profile, existingContent }: {
         </div>
       </div>
 
-      {/* Summary */}
       {summary && (
         <Section title="Mục tiêu nghề nghiệp">
           <p className="text-sm leading-relaxed text-gray-600 whitespace-pre-line">{summary}</p>
         </Section>
       )}
 
-      {/* Experience */}
       {experiences.length > 0 && (
         <Section title="Kinh nghiệm làm việc">
           <div className="space-y-5">
@@ -438,7 +491,6 @@ function CVPreview({ data, profile, existingContent }: {
         </Section>
       )}
 
-      {/* Education */}
       {educations.length > 0 && (
         <Section title="Học vấn">
           <div className="space-y-3">
@@ -459,7 +511,6 @@ function CVPreview({ data, profile, existingContent }: {
         </Section>
       )}
 
-      {/* Skills */}
       {skills.length > 0 && (
         <Section title="Kỹ năng">
           <div className="flex flex-wrap gap-2">
@@ -472,7 +523,6 @@ function CVPreview({ data, profile, existingContent }: {
         </Section>
       )}
 
-      {/* Languages (from existing content) */}
       {existingContent?.languages?.length > 0 && (
         <Section title="Ngôn ngữ">
           <div className="space-y-1">
@@ -486,7 +536,6 @@ function CVPreview({ data, profile, existingContent }: {
         </Section>
       )}
 
-      {/* Certifications */}
       {data.certifications && (
         <Section title="Chứng chỉ / Giải thưởng">
           <p className="text-sm leading-relaxed text-gray-600 whitespace-pre-line">{data.certifications}</p>
@@ -509,7 +558,6 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function formatDate(dateStr?: string): string {
   if (!dateStr) return ''
-  // ISO date "2022-06" → "06/2022"; full ISO → "MM/YYYY"
   const d = new Date(dateStr)
   if (isNaN(d.getTime())) return dateStr
   return `${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`
