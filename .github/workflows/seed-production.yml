@@ -1,0 +1,60 @@
+name: Seed Production Database
+
+on:
+  # Trigger thủ công từ GitHub UI (Actions tab → Run workflow)
+  workflow_dispatch:
+    inputs:
+      script:
+        description: 'Script cần chạy'
+        required: true
+        default: 'seed-articles'
+        type: choice
+        options:
+          - seed-articles
+          - seed-jobs
+          - seed          # full seed (cẩn thận!)
+
+  # Tự động sau mỗi push lên main (chỉ khi có thay đổi seed files)
+  push:
+    branches: [main]
+    paths:
+      - 'packages/database/src/seed-articles.ts'
+      - 'packages/database/src/seed-jobs.ts'
+
+jobs:
+  seed:
+    name: Run DB seed
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm --filter database db:generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Run seed script
+        working-directory: packages/database
+        run: |
+          SCRIPT="${{ github.event.inputs.script || 'seed-articles' }}"
+          echo "▶ Running: $SCRIPT"
+          npx tsx src/${SCRIPT}.ts
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
