@@ -14,8 +14,10 @@
     "db:seed": "pnpm --filter database db:seed",
     "db:studio": "pnpm --filter database db:studio"
   },
+  "dependencies": {
+    "@nestjs/cli": "^10.4.8"
+  },
   "devDependencies": {
-    "@nestjs/cli": "^10.4.8",
     "prettier": "^3.3.3",
     "prisma": "^5.22.0",
     "turbo": "^2.3.3",
