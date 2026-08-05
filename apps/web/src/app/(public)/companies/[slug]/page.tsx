@@ -14,6 +14,7 @@ import { ShowMore } from '@/components/companies/ShowMore'
 import { CompanyJobsList } from '@/components/companies/CompanyJobsList'
 import { CopyLinkButton } from '@/components/companies/CopyLinkButton'
 import { ContactEmployerButton } from '@/components/common/ContactEmployerButton'
+import { FollowCompanyButton } from '@/components/companies/FollowCompanyButton'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -233,12 +234,7 @@ export default async function CompanyDetailPage({ params }: PageProps) {
                   label="Nhắn tin"
                   className="border-0 bg-white text-gray-900 hover:bg-gray-100"
                 />
-                <button
-                  type="button"
-                  className="w-fit rounded-xl border-2 border-white/60 px-5 py-2 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white hover:bg-white hover:text-gray-900"
-                >
-                  + Theo dõi công ty
-                </button>
+                <FollowCompanyButton employerId={company.id} variant="hero" />
               </div>
             </div>
           </div>

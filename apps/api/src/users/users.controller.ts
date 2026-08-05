@@ -158,6 +158,26 @@ export class UsersController {
     return this.usersService.upgradePlan(user.sub, dto.plan, dto.months ?? 1)
   }
 
+  // ─── Follow companies ───────────────────────────────────────────────────────
+
+  @Get('me/followed-companies')
+  @Roles(Role.CANDIDATE)
+  @ApiOperation({ summary: 'Danh sách công ty đang theo dõi' })
+  getFollowedCompanies(
+    @CurrentUser() user: JwtPayload,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
+  ) {
+    return this.usersService.getFollowedCompanies(user.sub, page, limit)
+  }
+
+  @Post('me/follow-companies/:employerId')
+  @Roles(Role.CANDIDATE)
+  @ApiOperation({ summary: 'Theo dõi / bỏ theo dõi công ty' })
+  toggleFollowCompany(@CurrentUser() user: JwtPayload, @Param('employerId') employerId: string) {
+    return this.usersService.toggleFollowCompany(user.sub, employerId)
+  }
+
   @Get('me/notification-preferences')
   @Roles(Role.CANDIDATE, Role.EMPLOYER)
   @ApiOperation({ summary: 'Lấy cài đặt thông báo' })

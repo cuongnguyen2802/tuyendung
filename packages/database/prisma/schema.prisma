@@ -175,6 +175,7 @@ model User {
   applications     Application[]
   resumes          Resume[]
   savedJobs        SavedJob[]
+  followedCompanies FollowedCompany[]
   refreshTokens    RefreshToken[]
   notifications    Notification[]
   sentMessages     Message[]        @relation("SentMessages")
@@ -328,6 +329,7 @@ model Employer {
   campaigns    Campaign[]
   orders       Order[]
   members      EmployerMember[]
+  followers    FollowedCompany[]
 
   @@index([city])
   @@index([industry])
@@ -444,6 +446,17 @@ model SavedJob {
   savedAt DateTime @default(now())
 
   @@id([userId, jobId])
+}
+
+model FollowedCompany {
+  userId     String
+  employerId String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employer   Employer @relation(fields: [employerId], references: [id], onDelete: Cascade)
+  followedAt DateTime @default(now())
+
+  @@id([userId, employerId])
+  @@index([userId])
 }
 
 // ─── Notifications ────────────────────────────────────────────────────────────

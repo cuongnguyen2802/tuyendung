@@ -85,6 +85,28 @@ export class ApplicationsService {
     return application
   }
 
+  async getMyApplicationById(userId: string, applicationId: string) {
+    const app = await this.prisma.application.findFirst({
+      where: { id: applicationId, userId },
+      include: {
+        job: {
+          include: {
+            employer: {
+              select: {
+                id: true, companyName: true, logoUrl: true, slug: true,
+                city: true, website: true, industry: true, verified: true,
+              },
+            },
+            skills: { include: { skill: true } },
+          },
+        },
+        resume: { select: { id: true, title: true, fileUrl: true } },
+      },
+    })
+    if (!app) throw new NotFoundException('Đơn ứng tuyển không tồn tại')
+    return app
+  }
+
   async withdraw(userId: string, applicationId: string) {
     const app = await this.prisma.application.findFirst({
       where: { id: applicationId, userId },

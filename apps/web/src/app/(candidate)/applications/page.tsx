@@ -7,7 +7,7 @@ import { api } from '@/lib/api'
 import { ApplicationDto, APPLICATION_STATUS_LABELS, ApplicationStatus } from '@tuyendung/types'
 import { timeAgo } from '@/lib/utils'
 import { cn } from '@/lib/utils'
-import { BriefcaseIcon } from 'lucide-react'
+import { BriefcaseIcon, ChevronRightIcon } from 'lucide-react'
 
 const STATUS_COLORS: Record<ApplicationStatus, string> = {
   PENDING: 'bg-yellow-50 text-yellow-700',
@@ -45,7 +45,11 @@ export default function ApplicationsPage() {
       ) : (
         <div className="space-y-3">
           {applications.map((app) => (
-            <div key={app.id} className="card flex items-start gap-4 p-5">
+            <Link
+              key={app.id}
+              href={`/applications/${app.id}`}
+              className="card flex items-start gap-4 p-5 hover:shadow-md transition-shadow"
+            >
               <div className="h-12 w-12 shrink-0 rounded-lg border border-gray-100 bg-gray-50 overflow-hidden flex items-center justify-center">
                 {app.job?.employer.logoUrl ? (
                   <Image src={app.job.employer.logoUrl} alt={app.job.employer.companyName} width={48} height={48} />
@@ -55,17 +59,18 @@ export default function ApplicationsPage() {
               </div>
 
               <div className="flex-1 min-w-0">
-                <Link href={`/jobs/${app.job?.slug}`} className="font-semibold text-gray-900 hover:text-brand">
-                  {app.job?.title}
-                </Link>
+                <p className="font-semibold text-gray-900 hover:text-brand">{app.job?.title}</p>
                 <p className="text-sm text-gray-500">{app.job?.employer.companyName}</p>
                 <p className="mt-1 text-xs text-gray-400">Ứng tuyển {timeAgo(app.appliedAt)}</p>
               </div>
 
-              <span className={cn('badge shrink-0', STATUS_COLORS[app.status])}>
-                {APPLICATION_STATUS_LABELS[app.status]}
-              </span>
-            </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className={cn('badge', STATUS_COLORS[app.status])}>
+                  {APPLICATION_STATUS_LABELS[app.status]}
+                </span>
+                <ChevronRightIcon className="h-4 w-4 text-gray-300" />
+              </div>
+            </Link>
           ))}
         </div>
       )}

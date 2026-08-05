@@ -11,6 +11,7 @@ import * as bcrypt from 'bcryptjs'
 import { nanoid } from 'nanoid'
 import { PrismaService } from '../prisma/prisma.service'
 import { EmailService } from '../email/email.service'
+import { ActivityService } from '../activity/activity.service'
 import { Role, JwtPayload, AuthTokens } from '@tuyendung/types'
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
@@ -23,6 +24,7 @@ export class AuthService {
     private jwt: JwtService,
     private config: ConfigService,
     private email: EmailService,
+    private activity: ActivityService,
   ) {}
 
   // ─── Forgot / Reset password ──────────────────────────────────────────────
@@ -219,6 +221,11 @@ export class AuthService {
     }
 
     if (!user.isActive) throw new UnauthorizedException('Tài khoản đã bị khóa')
+
+    if (user.role === Role.EMPLOYER) {
+      this.logEmployerLogin(user.id, user.email)
+    }
+
     return this.generateTokens(user.id, user.email, user.role as Role)
   }
 
@@ -229,6 +236,10 @@ export class AuthService {
 
     const valid = await bcrypt.compare(dto.password, user.password)
     if (!valid) throw new UnauthorizedException('Email hoặc mật khẩu không đúng')
+
+    if (user.role === Role.EMPLOYER) {
+      this.logEmployerLogin(user.id, user.email)
+    }
 
     return this.generateTokens(user.id, user.email, user.role as Role)
   }
@@ -264,6 +275,22 @@ export class AuthService {
       },
     })
     return user
+  }
+
+  /** Fire-and-forget: look up employer.id then write a LOGIN activity log */
+  private logEmployerLogin(userId: string, email: string) {
+    this.prisma.employer.findUnique({ where: { userId }, select: { id: true } })
+      .then((employer) => {
+        if (!employer) return
+        return this.activity.record(
+          employer.id,
+          'LOGIN',
+          `Đăng nhập vào hệ thống (${email})`,
+          userId,
+          email,
+        )
+      })
+      .catch(() => {})
   }
 
   private async generateTokens(userId: string, email: string, role: Role): Promise<AuthTokens> {

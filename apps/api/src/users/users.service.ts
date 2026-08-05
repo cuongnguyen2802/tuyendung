@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
+import { buildSkipTake, buildPaginationMeta } from '../common/utils/pagination'
 import { UpdateProfileDto, AddExperienceDto, AddEducationDto, UpsertSkillsDto } from './dto/update-profile.dto'
 
 @Injectable()
@@ -210,6 +211,57 @@ export class UsersService {
       data: { plan, planExpiresAt: expiresAt },
       select: { id: true, plan: true, planExpiresAt: true },
     })
+  }
+
+  // ─── Follow companies ────────────────────────────────────────────────────────
+
+  async toggleFollowCompany(userId: string, employerId: string) {
+    const existing = await this.prisma.followedCompany.findUnique({
+      where: { userId_employerId: { userId, employerId } },
+    })
+
+    if (existing) {
+      await this.prisma.followedCompany.delete({
+        where: { userId_employerId: { userId, employerId } },
+      })
+      return { following: false }
+    }
+
+    await this.prisma.followedCompany.create({ data: { userId, employerId } })
+    return { following: true }
+  }
+
+  async getFollowedCompanies(userId: string, page = 1, limit = 20) {
+    const { skip, take } = buildSkipTake(page, limit)
+    const [items, total] = await Promise.all([
+      this.prisma.followedCompany.findMany({
+        where: { userId },
+        include: {
+          employer: {
+            select: {
+              id: true, companyName: true, slug: true, logoUrl: true,
+              city: true, industry: true, verified: true,
+              _count: { select: { jobs: { where: { status: 'PUBLISHED' } } } },
+            },
+          },
+        },
+        orderBy: { followedAt: 'desc' },
+        skip,
+        take,
+      }),
+      this.prisma.followedCompany.count({ where: { userId } }),
+    ])
+
+    return {
+      data: items.map((f) => ({
+        followedAt: f.followedAt,
+        employer: {
+          ...f.employer,
+          activeJobCount: (f.employer as any)._count?.jobs ?? 0,
+        },
+      })),
+      meta: buildPaginationMeta(total, page, limit),
+    }
   }
 
   async getNotificationPreferences(userId: string) {

@@ -201,6 +201,15 @@ export class JobsService {
     })
 
     await this.searchService.indexJob(updated)
+
+    this.activity.record(
+      job.employerId,
+      'JOB_UPDATED',
+      `Cập nhật tin tuyển dụng ${job.title}`,
+      job.id,
+      job.title,
+    )
+
     return updated
   }
 
@@ -213,6 +222,16 @@ export class JobsService {
       where: { id: job.id },
       data: { status: JobStatus.PENDING_APPROVAL },
     })
+
+    this.activity.record(
+      job.employerId,
+      'JOB_STATUS_CHANGED',
+      `Gửi duyệt tin tuyển dụng ${job.title}`,
+      job.id,
+      job.title,
+      { newStatus: JobStatus.PENDING_APPROVAL },
+    )
+
     return updated
   }
 
@@ -223,6 +242,16 @@ export class JobsService {
       data: { status: JobStatus.CLOSED },
     })
     await this.searchService.removeJob(job.id)
+
+    this.activity.record(
+      job.employerId,
+      'JOB_STATUS_CHANGED',
+      `Đóng tin tuyển dụng ${job.title}`,
+      job.id,
+      job.title,
+      { newStatus: JobStatus.CLOSED },
+    )
+
     return updated
   }
 
@@ -230,6 +259,15 @@ export class JobsService {
     const job = await this.getJobForEmployer(userId, jobId)
     await this.prisma.job.delete({ where: { id: job.id } })
     await this.searchService.removeJob(job.id)
+
+    this.activity.record(
+      job.employerId,
+      'JOB_STATUS_CHANGED',
+      `Xóa tin tuyển dụng ${job.title}`,
+      job.id,
+      job.title,
+    )
+
     return { message: 'Đã xóa tin tuyển dụng' }
   }
 

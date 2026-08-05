@@ -253,7 +253,7 @@ export class AdminService {
       this.prisma.employer.findMany({
         where,
         include: {
-          user: { select: { email: true, isActive: true, createdAt: true } },
+          user: { select: { id: true, email: true, isActive: true, createdAt: true } },
           _count: { select: { jobs: true } },
         },
         orderBy: { createdAt: 'desc' },

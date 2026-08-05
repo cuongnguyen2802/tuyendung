@@ -10,7 +10,7 @@ import {
   ChevronDownIcon, BookmarkIcon, ThumbsUpIcon, SlidersIcon,
   PenLineIcon, UsersIcon, EyeIcon, UserCircleIcon, ShieldIcon,
   SparklesIcon, LayoutDashboardIcon, CheckCircleIcon, MessageSquareIcon,
-  ZapIcon, CrownIcon,
+  ZapIcon, CrownIcon, Building2Icon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSession } from 'next-auth/react'
@@ -42,10 +42,11 @@ const NAV_SECTIONS: { id: string; label: string; icon: React.ElementType; items:
     label: 'Quản lý tìm việc',
     icon: BriefcaseIcon,
     items: [
-      { href: '/saved-jobs',            label: 'Việc làm đã lưu',              icon: BookmarkIcon },
-      { href: '/applications',          label: 'Việc làm đã ứng tuyển',        icon: FileTextIcon },
-      { href: '/jobs?recommended=true', label: 'Việc làm phù hợp với bạn',     icon: ThumbsUpIcon },
-      { href: '/settings/job-alerts',   label: 'Cài đặt gợi ý việc làm',       icon: SlidersIcon },
+      { href: '/saved-jobs',              label: 'Việc làm đã lưu',              icon: BookmarkIcon },
+      { href: '/applications',            label: 'Việc làm đã ứng tuyển',        icon: FileTextIcon },
+      { href: '/followed-companies',      label: 'Doanh nghiệp theo dõi',        icon: Building2Icon },
+      { href: '/jobs?recommended=true',   label: 'Việc làm phù hợp với bạn',    icon: ThumbsUpIcon },
+      { href: '/settings/job-alerts',     label: 'Cài đặt gợi ý việc làm',      icon: SlidersIcon },
     ],
   },
   {

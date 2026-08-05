@@ -5,8 +5,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import {
   SearchIcon, CheckCircleIcon, ChevronDownIcon, ChevronUpIcon, ChevronsUpDownIcon,
-  CheckSquareIcon, SquareIcon, MinusSquareIcon,
+  CheckSquareIcon, SquareIcon, MinusSquareIcon, KeyRoundIcon,
 } from 'lucide-react'
+import { ResetPasswordModal } from '@/components/admin/ResetPasswordModal'
 import { cn } from '@/lib/utils'
 import { formatDistanceToNow } from 'date-fns'
 import { vi } from 'date-fns/locale'
@@ -29,6 +30,7 @@ export default function AdminEmployersPage() {
   const [sortBy, setSortBy]     = useState<SortField>('createdAt')
   const [sortDir, setSortDir]   = useState<SortDir>('desc')
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [resetTarget, setResetTarget] = useState<{ id: string; name: string } | null>(null)
 
   const { data, isLoading, isError, error } = useQuery<any>({
     queryKey: ['admin-employers', keyword, verified, page],
@@ -113,6 +115,14 @@ export default function AdminEmployersPage() {
 
   return (
     <div className="space-y-4">
+      {resetTarget && (
+        <ResetPasswordModal
+          userId={resetTarget.id}
+          userName={resetTarget.name}
+          onClose={() => setResetTarget(null)}
+        />
+      )}
+
       <h1 className="text-2xl font-bold text-gray-900">Quản lý nhà tuyển dụng</h1>
 
       {/* Filters */}
@@ -222,6 +232,17 @@ export default function AdminEmployersPage() {
                               ) : (
                                 <button onClick={() => verifyMutation.mutate({ id: emp.id, verified: true })}
                                   className="text-brand hover:underline">Xác minh</button>
+                              )}
+                              {emp.user?.id && (
+                                <>
+                                  <span className="mx-1.5 text-gray-300">|</span>
+                                  <button
+                                    onClick={() => setResetTarget({ id: emp.user.id, name: emp.companyName })}
+                                    className="flex items-center gap-1 text-gray-500 hover:text-orange-600 hover:underline transition"
+                                  >
+                                    <KeyRoundIcon className="h-3 w-3" /> Reset mật khẩu
+                                  </button>
+                                </>
                               )}
                             </div>
                           </div>

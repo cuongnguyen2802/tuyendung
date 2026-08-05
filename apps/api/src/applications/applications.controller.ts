@@ -39,6 +39,13 @@ export class ApplicationsController {
     return this.applicationsService.getMyApplications(user.sub, page, limit)
   }
 
+  @Get(':id')
+  @Roles(Role.CANDIDATE)
+  @ApiOperation({ summary: 'Chi tiết đơn ứng tuyển của tôi' })
+  getMyApplicationById(@CurrentUser() user: JwtPayload, @Param('id') id: string) {
+    return this.applicationsService.getMyApplicationById(user.sub, id)
+  }
+
   @Patch(':id/withdraw')
   @Roles(Role.CANDIDATE)
   @ApiOperation({ summary: 'Rút đơn ứng tuyển' })

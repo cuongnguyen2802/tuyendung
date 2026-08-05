@@ -8,9 +8,10 @@ import { JwtStrategy } from './strategies/jwt.strategy'
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
 import { RolesGuard } from '../common/guards/roles.guard'
 import { EmailModule } from '../email/email.module'
+import { ActivityModule } from '../activity/activity.module'
 
 @Module({
-  imports: [PassportModule, JwtModule.register({}), EmailModule],
+  imports: [PassportModule, JwtModule.register({}), EmailModule, ActivityModule],
   controllers: [AuthController],
   providers: [
     AuthService,

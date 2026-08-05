@@ -6,11 +6,12 @@ import { api } from '@/lib/api'
 import {
   SearchIcon, ChevronDownIcon, ChevronUpIcon, ChevronsUpDownIcon,
   CheckSquareIcon, SquareIcon, MinusSquareIcon,
-  FileTextIcon, BriefcaseIcon, UserCheckIcon, UserXIcon,
+  FileTextIcon, BriefcaseIcon, UserCheckIcon, UserXIcon, KeyRoundIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { formatDistanceToNow } from 'date-fns'
 import { vi } from 'date-fns/locale'
+import { ResetPasswordModal } from '@/components/admin/ResetPasswordModal'
 
 type SortField = 'name' | 'applications' | 'resumes' | 'status' | 'createdAt'
 type SortDir   = 'asc' | 'desc'
@@ -30,6 +31,7 @@ export default function AdminCandidatesPage() {
   const [sortBy, setSortBy]   = useState<SortField>('createdAt')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [resetTarget, setResetTarget] = useState<{ id: string; name: string } | null>(null)
 
   const { data, isLoading } = useQuery<any>({
     queryKey: ['admin-candidates', keyword, status, page],
@@ -108,6 +110,13 @@ export default function AdminCandidatesPage() {
 
   return (
     <div className="space-y-4">
+      {resetTarget && (
+        <ResetPasswordModal
+          userId={resetTarget.id}
+          userName={resetTarget.name}
+          onClose={() => setResetTarget(null)}
+        />
+      )}
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -235,6 +244,13 @@ export default function AdminCandidatesPage() {
                                 className={cn('hover:underline', user.isActive ? 'text-orange-600' : 'text-brand')}
                               >
                                 {user.isActive ? 'Khóa tài khoản' : 'Mở khóa'}
+                              </button>
+                              <span className="text-gray-200">·</span>
+                              <button
+                                onClick={() => setResetTarget({ id: user.id, name: user.profile?.fullName ?? user.email })}
+                                className="flex items-center gap-1 text-gray-500 hover:text-orange-600 hover:underline transition"
+                              >
+                                <KeyRoundIcon className="h-3 w-3" /> Reset mật khẩu
                               </button>
                             </div>
                           </div>
