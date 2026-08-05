@@ -10,7 +10,7 @@ import {
   BuildingIcon,
 } from 'lucide-react'
 import Link from 'next/link'
-import Image from 'next/image'
+import { CompanyLogoImg } from '@/components/common/CompanyLogoImg'
 import { api } from '@/lib/api'
 import { formatSalary } from '@/lib/utils'
 
@@ -126,12 +126,12 @@ export default function ApplyPage({ params }: Props) {
           <div className="flex items-start gap-4">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
               {job.employer?.logoUrl ? (
-                <Image
+                <CompanyLogoImg
                   src={job.employer.logoUrl}
                   alt={job.employer.companyName}
-                  width={56}
-                  height={56}
-                  className="h-full w-full object-cover"
+                  fallbackLetter={job.employer?.companyName?.[0] ?? '?'}
+                  fallbackGradient="from-brand to-emerald-700"
+                  className="h-full w-full object-contain p-1"
                 />
               ) : (
                 <span className="text-xl font-bold text-gray-300">

@@ -1,7 +1,7 @@
 import { Suspense, type ReactNode } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { notFound } from 'next/navigation'
+import { CompanyLogoImg } from '@/components/common/CompanyLogoImg'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { serverFetch } from '@/lib/server-fetch'
@@ -330,15 +330,15 @@ export default async function JobOrCategoryPage({ params, searchParams }: PagePr
               <div className="flex items-start gap-4">
                 <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-gray-50 flex items-center justify-center">
                   {job.employer.logoUrl ? (
-                    <Image
+                    <CompanyLogoImg
                       src={job.employer.logoUrl}
                       alt={job.employer.companyName}
-                      width={64}
-                      height={64}
-                      className="h-full w-full object-cover"
+                      fallbackLetter={job.employer.companyName.charAt(0)}
+                      fallbackGradient="from-brand to-emerald-700"
+                      className="h-full w-full object-contain p-1"
                     />
                   ) : (
-                    <span className="text-2xl font-bold text-gray-200">
+                    <span className="text-2xl font-bold text-gray-300">
                       {job.employer.companyName.charAt(0)}
                     </span>
                   )}
@@ -486,15 +486,15 @@ export default async function JobOrCategoryPage({ params, searchParams }: PagePr
               <div className="mb-4 flex justify-center">
                 <div className="h-20 w-20 overflow-hidden rounded-xl border border-gray-100 bg-gray-50 flex items-center justify-center">
                   {job.employer.logoUrl ? (
-                    <Image
+                    <CompanyLogoImg
                       src={job.employer.logoUrl}
                       alt={job.employer.companyName}
-                      width={80}
-                      height={80}
-                      className="h-full w-full object-cover"
+                      fallbackLetter={job.employer.companyName.charAt(0)}
+                      fallbackGradient="from-brand to-emerald-700"
+                      className="h-full w-full object-contain p-2"
                     />
                   ) : (
-                    <span className="text-3xl font-bold text-gray-200">
+                    <span className="text-3xl font-bold text-gray-300">
                       {job.employer.companyName.charAt(0)}
                     </span>
                   )}
