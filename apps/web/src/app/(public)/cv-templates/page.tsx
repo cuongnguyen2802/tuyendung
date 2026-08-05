@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import {
+import { type LucideIcon,
   ChevronRightIcon, StarIcon, ArrowRightIcon, FileTextIcon,
   MonitorIcon, BarChart2Icon, BadgeDollarSignIcon, HandshakeIcon,
   UsersIcon, PaletteIcon, WrenchIcon, HeartPulseIcon,
@@ -14,16 +14,36 @@ export const metadata: Metadata = {
     'Hàng trăm mẫu CV chuyên nghiệp phân loại theo ngành nghề: IT, Marketing, Tài chính, Kinh doanh, Nhân sự, Thiết kế... Tải miễn phí và tạo CV ngay.',
 }
 
+// ── Types ────────────────────────────────────────────────────────────────────
+
+interface CVJob {
+  title: string
+  tag: string | null
+  layout: 'sidebar' | 'bold' | 'classic' | 'top'
+  href: string
+}
+
+interface Industry {
+  id: string
+  label: string
+  icon: LucideIcon
+  color: string
+  accent: string
+  accentText: string
+  border: string
+  count: number
+  jobs: CVJob[]
+}
+
 // ── Industry catalog ─────────────────────────────────────────────────────────
 
-const INDUSTRIES = [
+const INDUSTRIES: Industry[] = [
   {
     id: 'it',
     label: 'Công nghệ thông tin',
     icon: MonitorIcon,
     color: 'bg-brand/10 text-brand',
     accent: 'bg-brand',
-    accentLight: 'bg-brand/10',
     accentText: 'text-brand',
     border: 'border-brand/20',
     count: 24,
@@ -42,7 +62,6 @@ const INDUSTRIES = [
     icon: BarChart2Icon,
     color: 'bg-pink-50 text-pink-600',
     accent: 'bg-pink-500',
-    accentLight: 'bg-pink-50',
     accentText: 'text-pink-600',
     border: 'border-pink-200',
     count: 18,
@@ -61,7 +80,6 @@ const INDUSTRIES = [
     icon: BadgeDollarSignIcon,
     color: 'bg-teal-50 text-teal-700',
     accent: 'bg-teal-600',
-    accentLight: 'bg-teal-50',
     accentText: 'text-teal-700',
     border: 'border-teal-200',
     count: 16,
@@ -80,7 +98,6 @@ const INDUSTRIES = [
     icon: HandshakeIcon,
     color: 'bg-orange-50 text-orange-600',
     accent: 'bg-orange-500',
-    accentLight: 'bg-orange-50',
     accentText: 'text-orange-600',
     border: 'border-orange-200',
     count: 15,
@@ -99,7 +116,6 @@ const INDUSTRIES = [
     icon: UsersIcon,
     color: 'bg-violet-50 text-violet-600',
     accent: 'bg-violet-500',
-    accentLight: 'bg-violet-50',
     accentText: 'text-violet-600',
     border: 'border-violet-200',
     count: 12,
@@ -118,7 +134,6 @@ const INDUSTRIES = [
     icon: PaletteIcon,
     color: 'bg-fuchsia-50 text-fuchsia-600',
     accent: 'bg-fuchsia-500',
-    accentLight: 'bg-fuchsia-50',
     accentText: 'text-fuchsia-600',
     border: 'border-fuchsia-200',
     count: 14,
@@ -137,7 +152,6 @@ const INDUSTRIES = [
     icon: WrenchIcon,
     color: 'bg-slate-100 text-slate-700',
     accent: 'bg-slate-600',
-    accentLight: 'bg-slate-100',
     accentText: 'text-slate-700',
     border: 'border-slate-200',
     count: 20,
@@ -146,7 +160,7 @@ const INDUSTRIES = [
       { title: 'Kỹ sư cơ khí', tag: null, layout: 'top', href: '/resumes/templates/simple' },
       { title: 'Kỹ sư điện / điện tử', tag: null, layout: 'classic', href: '/resumes/templates/simple' },
       { title: 'Kỹ sư hóa học / môi trường', tag: null, layout: 'bold', href: '/resumes/templates/simple' },
-      { title: 'Quản lý sản xuất (Production Mgr)', tag: null, layout: 'top', href: '/resumes/templates/simple' },
+      { title: 'Quản lý sản xuất', tag: null, layout: 'top', href: '/resumes/templates/simple' },
       { title: 'Kỹ sư QA / QC', tag: null, layout: 'sidebar', href: '/resumes/templates/simple' },
     ],
   },
@@ -156,7 +170,6 @@ const INDUSTRIES = [
     icon: HeartPulseIcon,
     color: 'bg-red-50 text-red-600',
     accent: 'bg-red-500',
-    accentLight: 'bg-red-50',
     accentText: 'text-red-600',
     border: 'border-red-200',
     count: 10,
@@ -175,7 +188,6 @@ const INDUSTRIES = [
     icon: GraduationCapIcon,
     color: 'bg-amber-50 text-amber-700',
     accent: 'bg-amber-500',
-    accentLight: 'bg-amber-50',
     accentText: 'text-amber-700',
     border: 'border-amber-200',
     count: 8,
@@ -194,7 +206,6 @@ const INDUSTRIES = [
     icon: TruckIcon,
     color: 'bg-cyan-50 text-cyan-700',
     accent: 'bg-cyan-600',
-    accentLight: 'bg-cyan-50',
     accentText: 'text-cyan-700',
     border: 'border-cyan-200',
     count: 10,
@@ -202,7 +213,7 @@ const INDUSTRIES = [
       { title: 'Chuyên viên xuất nhập khẩu', tag: 'Phổ biến', layout: 'top', href: '/resumes/templates/simple' },
       { title: 'Supply Chain Manager', tag: null, layout: 'bold', href: '/resumes/templates/simple' },
       { title: 'Nhân viên kho vận (Warehouse)', tag: null, layout: 'classic', href: '/resumes/templates/simple' },
-      { title: 'Chuyên viên mua hàng (Purchasing)', tag: null, layout: 'top', href: '/resumes/templates/simple' },
+      { title: 'Chuyên viên mua hàng', tag: null, layout: 'top', href: '/resumes/templates/simple' },
       { title: 'Logistics Coordinator', tag: null, layout: 'sidebar', href: '/resumes/templates/simple' },
       { title: 'Trưởng phòng logistics', tag: null, layout: 'bold', href: '/resumes/templates/simple' },
     ],
@@ -213,12 +224,11 @@ const INDUSTRIES = [
     icon: ShoppingBagIcon,
     color: 'bg-indigo-50 text-indigo-600',
     accent: 'bg-indigo-500',
-    accentLight: 'bg-indigo-50',
     accentText: 'text-indigo-600',
     border: 'border-indigo-200',
     count: 12,
     jobs: [
-      { title: 'Nhân viên vận hành sàn TMĐT', tag: 'Phổ biến', layout: 'sidebar', href: '/resumes/templates/sales' },
+      { title: 'Vận hành sàn TMĐT', tag: 'Phổ biến', layout: 'sidebar', href: '/resumes/templates/sales' },
       { title: 'Category Manager', tag: null, layout: 'bold', href: '/resumes/templates/sales' },
       { title: 'E-commerce Executive', tag: null, layout: 'top', href: '/resumes/templates/sales' },
       { title: 'Quản lý cửa hàng', tag: null, layout: 'classic', href: '/resumes/templates/sales' },
@@ -232,7 +242,6 @@ const INDUSTRIES = [
     icon: BuildingIcon,
     color: 'bg-lime-50 text-lime-700',
     accent: 'bg-lime-600',
-    accentLight: 'bg-lime-50',
     accentText: 'text-lime-700',
     border: 'border-lime-200',
     count: 9,
@@ -245,7 +254,7 @@ const INDUSTRIES = [
       { title: 'Định giá BĐS', tag: null, layout: 'bold', href: '/resumes/templates/accountant' },
     ],
   },
-] as const
+]
 
 // ── Mini CV preview ───────────────────────────────────────────────────────────
 
@@ -291,10 +300,14 @@ function MiniPreview({ layout, accent }: { layout: string; accent: string }) {
         </div>
         <div className="flex-1 p-1.5">
           <div className="mb-1 flex gap-1.5">
-            {[30, 28, 32].map((w, i) => <div key={i} className="h-0.5 rounded bg-gray-200" style={{ width: `${w}%` }} />)}
+            {[30, 28, 32].map((w, i) => (
+              <div key={i} className="h-0.5 rounded bg-gray-200" style={{ width: `${w}%` }} />
+            ))}
           </div>
           <div className="space-y-0.5">
-            {LINES_B.map((w, i) => <div key={i} className="h-0.5 rounded bg-gray-100" style={{ width: `${w}%` }} />)}
+            {LINES_B.map((w, i) => (
+              <div key={i} className="h-0.5 rounded bg-gray-100" style={{ width: `${w}%` }} />
+            ))}
           </div>
         </div>
       </div>
@@ -309,21 +322,25 @@ function MiniPreview({ layout, accent }: { layout: string; accent: string }) {
           <div className="mx-auto mt-0.5 h-px w-full bg-gray-300" />
         </div>
         <div className="space-y-0.5">
-          {LINES_A.map((w, i) => <div key={i} className="h-0.5 rounded bg-gray-200" style={{ width: `${w}%` }} />)}
+          {LINES_A.map((w, i) => (
+            <div key={i} className="h-0.5 rounded bg-gray-200" style={{ width: `${w}%` }} />
+          ))}
         </div>
       </div>
     )
   }
-  // top (simple)
+  // top / simple
   return (
     <div className="flex h-full flex-col overflow-hidden bg-white">
-      <div className={cn('flex flex-col justify-end p-1.5', accent, 'h-10')}>
+      <div className={cn('flex h-10 flex-col justify-end p-1.5', accent)}>
         <div className="mb-0.5 h-1.5 w-1/2 rounded bg-white/50" />
         <div className="h-0.5 w-1/3 rounded bg-white/30" />
       </div>
       <div className="flex-1 p-1.5">
         <div className="space-y-0.5">
-          {LINES_B.map((w, i) => <div key={i} className="h-0.5 rounded bg-gray-100" style={{ width: `${w}%` }} />)}
+          {LINES_B.map((w, i) => (
+            <div key={i} className="h-0.5 rounded bg-gray-100" style={{ width: `${w}%` }} />
+          ))}
         </div>
       </div>
     </div>
@@ -332,17 +349,7 @@ function MiniPreview({ layout, accent }: { layout: string; accent: string }) {
 
 // ── CV Job Card ───────────────────────────────────────────────────────────────
 
-function CVJobCard({
-  job,
-  accent,
-  accentLight,
-  accentText,
-}: {
-  job: { title: string; tag: string | null; layout: string; href: string }
-  accent: string
-  accentLight: string
-  accentText: string
-}) {
+function CVJobCard({ job, accent, accentText }: { job: CVJob; accent: string; accentText: string }) {
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
       {job.tag && (
@@ -372,10 +379,7 @@ function CVJobCard({
         <p className="mb-2.5 text-sm font-semibold leading-snug text-gray-900">{job.title}</p>
         <Link
           href={job.href}
-          className={cn(
-            'block w-full rounded-xl py-1.5 text-center text-xs font-semibold text-white transition hover:opacity-90',
-            accent,
-          )}
+          className={cn('block w-full rounded-xl py-1.5 text-center text-xs font-semibold text-white transition hover:opacity-90', accent)}
         >
           Dùng mẫu này
         </Link>
@@ -392,10 +396,9 @@ export default function CVLibraryPage() {
   return (
     <div className="min-h-screen bg-gray-50">
 
-      {/* ── Hero ─────────────────────────────────────────────────────── */}
+      {/* ── Hero ─────────────────────────────────────────────────── */}
       <div className="border-b border-gray-200 bg-white">
         <div className="mx-auto max-w-6xl px-4 py-10">
-          {/* Breadcrumb */}
           <nav className="mb-5 flex items-center gap-1.5 text-xs text-gray-400">
             <Link href="/" className="hover:text-brand">Trang chủ</Link>
             <ChevronRightIcon className="h-3.5 w-3.5" />
@@ -409,11 +412,11 @@ export default function CVLibraryPage() {
                 <span className="text-brand">ngành nghề</span>
               </h1>
               <p className="mt-2 max-w-xl text-sm leading-relaxed text-gray-500">
-                Hơn <strong className="text-gray-700">{totalCount}+ mẫu CV</strong> được phân loại theo{' '}
-                <strong className="text-gray-700">{INDUSTRIES.length} nhóm ngành</strong>. Chọn đúng ngành, tải về PDF — miễn phí hoàn toàn.
+                Hơn <strong className="text-gray-700">{totalCount}+ mẫu CV</strong> phân loại theo{' '}
+                <strong className="text-gray-700">{INDUSTRIES.length} nhóm ngành</strong>.
+                Chọn đúng ngành, tải về PDF — miễn phí hoàn toàn.
               </p>
             </div>
-
             <div className="flex shrink-0 flex-wrap gap-2">
               <Link
                 href="/resumes/builder"
@@ -425,13 +428,13 @@ export default function CVLibraryPage() {
                 href="/resumes/templates"
                 className="rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-brand hover:text-brand"
               >
-                Mẫu CV theo phong cách
+                Mẫu theo phong cách
               </Link>
             </div>
           </div>
 
           {/* Stats */}
-          <div className="mt-6 flex flex-wrap gap-4">
+          <div className="mt-6 flex flex-wrap gap-3">
             {[
               { value: `${totalCount}+`, label: 'Mẫu CV miễn phí' },
               { value: `${INDUSTRIES.length}`, label: 'Nhóm ngành nghề' },
@@ -449,7 +452,7 @@ export default function CVLibraryPage() {
 
       <div className="mx-auto max-w-6xl px-4 py-8">
 
-        {/* ── Industry quick-nav ────────────────────────────────────── */}
+        {/* ── Industry quick-nav ───────────────────────────────────── */}
         <div className="mb-8 overflow-x-auto">
           <div className="flex min-w-max gap-2 pb-1">
             {INDUSTRIES.map((ind) => {
@@ -475,7 +478,7 @@ export default function CVLibraryPage() {
           </div>
         </div>
 
-        {/* ── Industry sections ─────────────────────────────────────── */}
+        {/* ── Industry sections ───────────────────────────────────── */}
         <div className="space-y-14">
           {INDUSTRIES.map((ind) => {
             const Icon = ind.icon
@@ -495,24 +498,20 @@ export default function CVLibraryPage() {
                     </div>
                   </div>
                   <Link
-                    href={`/resumes/templates`}
-                    className={cn(
-                      'hidden items-center gap-1 text-sm font-semibold transition hover:underline sm:flex',
-                      ind.accentText,
-                    )}
+                    href="/resumes/templates"
+                    className={cn('hidden items-center gap-1 text-sm font-semibold transition hover:underline sm:flex', ind.accentText)}
                   >
                     Xem tất cả <ArrowRightIcon className="h-3.5 w-3.5" />
                   </Link>
                 </div>
 
-                {/* Cards grid */}
+                {/* Cards */}
                 <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
                   {ind.jobs.map((job) => (
                     <CVJobCard
                       key={job.title}
                       job={job}
                       accent={ind.accent}
-                      accentLight={ind.accentLight}
                       accentText={ind.accentText}
                     />
                   ))}
@@ -523,7 +522,8 @@ export default function CVLibraryPage() {
                     href="/resumes/templates"
                     className={cn('flex items-center gap-1 text-sm font-semibold', ind.accentText)}
                   >
-                    Xem tất cả mẫu CV ngành {ind.label} <ArrowRightIcon className="h-3.5 w-3.5" />
+                    Xem tất cả mẫu CV ngành {ind.label}
+                    <ArrowRightIcon className="h-3.5 w-3.5" />
                   </Link>
                 </div>
               </section>
@@ -531,21 +531,21 @@ export default function CVLibraryPage() {
           })}
         </div>
 
-        {/* ── Tip banner ────────────────────────────────────────────── */}
+        {/* ── Tips banner ─────────────────────────────────────────── */}
         <div className="mt-14 overflow-hidden rounded-2xl border border-brand/20 bg-brand/5 p-6 md:p-8">
           <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
             <div>
               <div className="mb-2 flex items-center gap-2">
                 <FileTextIcon className="h-5 w-5 text-brand" />
-                <h3 className="font-bold text-gray-900">Mẹo chọn mẫu CV phù hợp với ngành nghề</h3>
+                <h3 className="font-bold text-gray-900">Mẹo chọn mẫu CV phù hợp ngành nghề</h3>
               </div>
               <ul className="space-y-1.5 text-sm text-gray-600">
                 {[
-                  'Ngành IT, Kỹ thuật: ưu tiên mẫu 2 cột hoặc bold header — nhà tuyển dụng tìm tech stack nhanh',
-                  'Ngành Thiết kế: chọn mẫu có visual phong phú, màu sắc để thể hiện cá tính sáng tạo',
-                  'Ngành Tài chính, Pháp lý: mẫu cổ điển (classic/Harvard) tạo cảm giác chuyên nghiệp và đáng tin',
-                  'Ngành Bán hàng, Marketing: mẫu sidebar nổi bật phần thành tích và con số KPI',
-                  'Ứng tuyển qua ATS: ưu tiên mẫu đơn giản (simple/top) để hệ thống đọc được toàn bộ nội dung',
+                  'Ngành IT, Kỹ thuật: chọn mẫu 2 cột hoặc bold header — nhà tuyển dụng tìm tech stack nhanh',
+                  'Ngành Thiết kế: mẫu có màu sắc phong phú để thể hiện cá tính sáng tạo',
+                  'Ngành Tài chính, Pháp lý: mẫu classic/Harvard tạo cảm giác chuyên nghiệp và đáng tin',
+                  'Ngành Bán hàng, Marketing: mẫu sidebar nổi bật phần thành tích và KPI',
+                  'Ứng tuyển qua ATS: ưu tiên mẫu đơn giản (simple) để hệ thống đọc được toàn bộ nội dung',
                 ].map((tip, i) => (
                   <li key={i} className="flex items-start gap-2">
                     <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-brand text-[9px] font-bold text-white">
@@ -563,52 +563,46 @@ export default function CVLibraryPage() {
               >
                 Tạo CV ngay
               </Link>
-              <Link
-                href="/blog/cv"
-                className="text-center text-sm font-medium text-brand hover:underline"
-              >
+              <Link href="/blog/cv" className="text-center text-sm font-medium text-brand hover:underline">
                 Đọc hướng dẫn viết CV →
               </Link>
             </div>
           </div>
         </div>
 
-        {/* ── Related links ─────────────────────────────────────────── */}
+        {/* ── Related links ───────────────────────────────────────── */}
         <div className="mt-10 grid gap-4 sm:grid-cols-3">
           {[
             {
               title: 'Review CV miễn phí',
               desc: 'Chuyên gia HR đánh giá CV của bạn và gợi ý cải thiện',
               href: '/cv-review',
-              color: 'border-brand/30 bg-brand/5',
-              textColor: 'text-brand',
+              colorClass: 'border-brand/30 bg-brand/5',
+              textClass: 'text-brand',
             },
             {
               title: 'Hướng dẫn viết CV A–Z',
               desc: 'Từ cấu trúc, cách viết đến tối ưu ATS — mọi thứ bạn cần biết',
               href: '/blog/cv',
-              color: 'border-violet-200 bg-violet-50/50',
-              textColor: 'text-violet-600',
+              colorClass: 'border-violet-200 bg-violet-50/50',
+              textClass: 'text-violet-600',
             },
             {
               title: 'Mẫu CV theo phong cách',
               desc: 'Đơn giản, Ấn tượng, Chuyên nghiệp, Harvard — chọn theo gu thiết kế',
               href: '/resumes/templates',
-              color: 'border-amber-200 bg-amber-50/50',
-              textColor: 'text-amber-700',
+              colorClass: 'border-amber-200 bg-amber-50/50',
+              textClass: 'text-amber-700',
             },
           ].map((card) => (
             <Link
               key={card.href}
               href={card.href}
-              className={cn(
-                'group rounded-2xl border p-5 transition hover:-translate-y-0.5 hover:shadow-sm',
-                card.color,
-              )}
+              className={cn('group rounded-2xl border p-5 transition hover:-translate-y-0.5 hover:shadow-sm', card.colorClass)}
             >
-              <p className={cn('mb-1 font-semibold', card.textColor)}>{card.title}</p>
+              <p className={cn('mb-1 font-semibold', card.textClass)}>{card.title}</p>
               <p className="text-xs leading-relaxed text-gray-500">{card.desc}</p>
-              <p className={cn('mt-3 flex items-center gap-1 text-xs font-semibold', card.textColor)}>
+              <p className={cn('mt-3 flex items-center gap-1 text-xs font-semibold', card.textClass)}>
                 Xem ngay <ArrowRightIcon className="h-3 w-3 transition group-hover:translate-x-0.5" />
               </p>
             </Link>
