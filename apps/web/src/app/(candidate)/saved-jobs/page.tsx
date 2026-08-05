@@ -1,10 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { formatSalary, timeAgo } from '@/lib/utils'
+import { resolveMediaUrl } from '@/lib/media'
 import { JobDto } from '@tuyendung/types'
 import { BookmarkIcon, MapPinIcon, DollarSignIcon, HeartIcon, SearchIcon } from 'lucide-react'
 
@@ -86,12 +86,10 @@ export default function SavedJobsPage() {
               {/* Logo */}
               <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
                 {job.employer.logoUrl ? (
-                  <Image
-                    src={job.employer.logoUrl}
+                  <img
+                    src={resolveMediaUrl(job.employer.logoUrl) ?? ''}
                     alt={job.employer.companyName}
-                    width={48}
-                    height={48}
-                    className="object-contain"
+                    className="h-full w-full object-contain"
                   />
                 ) : (
                   <span className="text-lg font-bold text-gray-300">

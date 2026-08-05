@@ -9,6 +9,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
+import { resolveMediaUrl } from '@/lib/media'
 import {
   LockIcon, UserIcon, FileTextIcon, ShieldIcon, BuildingIcon,
   BriefcaseIcon, RefreshCwIcon, SettingsIcon, CameraIcon,
@@ -183,7 +184,7 @@ function AccountSection() {
                 <div className="h-16 w-16 overflow-hidden rounded-full border-2 border-gray-200 bg-gray-100">
                   {company?.logoUrl && !logoError ? (
                     <img
-                      src={company.logoUrl}
+                      src={resolveMediaUrl(company.logoUrl) ?? ''}
                       alt=""
                       className="h-full w-full object-cover"
                       onError={() => setLogoError(true)}

@@ -2,12 +2,12 @@
 
 import { use } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { ApplicationStatus, APPLICATION_STATUS_LABELS } from '@tuyendung/types'
 import { cn, timeAgo } from '@/lib/utils'
+import { resolveMediaUrl } from '@/lib/media'
 import {
   ArrowLeftIcon, BuildingIcon, MapPinIcon, BriefcaseIcon,
   FileTextIcon, MessageSquareIcon, CheckCircle2Icon, CircleDotIcon,
@@ -236,7 +236,7 @@ export default function ApplicationDetailPage({ params }: { params: Promise<{ id
           {/* logo */}
           <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-gray-50 flex items-center justify-center">
             {app.job.employer.logoUrl ? (
-              <Image src={app.job.employer.logoUrl} alt={app.job.employer.companyName} width={56} height={56} className="object-contain p-1" />
+              <img src={resolveMediaUrl(app.job.employer.logoUrl) ?? ''} alt={app.job.employer.companyName} className="h-full w-full object-contain p-1" />
             ) : (
               <BuildingIcon className="h-6 w-6 text-gray-300" />
             )}

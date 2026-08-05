@@ -15,6 +15,7 @@ import {
   AlertCircleIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { resolveMediaUrl } from '@/lib/media'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -355,7 +356,7 @@ export default function CompanyProfilePage() {
           <div className="absolute bottom-0 left-5 z-10 translate-y-1/2">
             <div className="h-20 w-20 overflow-hidden rounded-2xl border-4 border-white bg-white shadow-lg">
               {logoUrl ? (
-                <img src={logoUrl} alt="" className="h-full w-full object-contain p-1.5" />
+                <img src={resolveMediaUrl(logoUrl) ?? ''} alt="" className="h-full w-full object-contain p-1.5" />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand/10 to-teal-50">
                   <Building2Icon className="h-9 w-9 text-brand/30" />

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { UserPlan } from '@tuyendung/types'
 import { cn } from '@/lib/utils'
+import { resolveMediaUrl } from '@/lib/media'
 import { useSystemNotifStore } from '@/store/systemNotifStore'
 
 interface Company {
@@ -147,7 +148,7 @@ export function EmployerSidebar() {
           <div className="relative h-12 w-12 shrink-0">
             <div className="h-12 w-12 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
               {company?.logoUrl ? (
-                <img src={company.logoUrl} alt="" className="h-full w-full object-contain p-0.5" />
+                <img src={resolveMediaUrl(company.logoUrl) ?? ''} alt="" className="h-full w-full object-contain p-0.5" />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-brand/10 text-base font-bold text-brand">
                   {initial}

@@ -1,11 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useQuery } from '@tanstack/react-query'
 import { EyeIcon, SparklesIcon, BuildingIcon, ClockIcon } from 'lucide-react'
 import { api } from '@/lib/api'
 import { timeAgo } from '@/lib/utils'
+import { resolveMediaUrl } from '@/lib/media'
 
 interface ViewerCompany {
   companyName: string
@@ -120,11 +120,9 @@ export default function ProfileViewsPage() {
               {/* Logo / anonymous */}
               <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
                 {view.viewer?.logoUrl ? (
-                  <Image
-                    src={view.viewer.logoUrl}
+                  <img
+                    src={resolveMediaUrl(view.viewer.logoUrl) ?? ''}
                     alt={view.viewer.companyName}
-                    width={48}
-                    height={48}
                     className="h-full w-full object-contain p-1"
                   />
                 ) : (

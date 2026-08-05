@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useQuery } from '@tanstack/react-query'
+import { resolveMediaUrl } from '@/lib/media'
 import { MapPinIcon } from 'lucide-react'
 import { format } from 'date-fns'
 import { vi } from 'date-fns/locale'
@@ -126,7 +126,7 @@ export function JobMarketSectionClient({ initialStats }: { initialStats: Stats }
                     >
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-white/10">
                         {job.employer.logoUrl ? (
-                          <Image src={job.employer.logoUrl} alt="" width={40} height={40} className="h-full w-full object-cover" />
+                          <img src={resolveMediaUrl(job.employer.logoUrl) ?? ''} alt="" className="h-full w-full object-cover" />
                         ) : (
                           <span className="text-xs font-bold text-white/50">
                             {job.employer.companyName.charAt(0)}

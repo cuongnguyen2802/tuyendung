@@ -1,13 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { Fragment } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import { api } from '@/lib/api'
 import { ApplicationDto, ApplicationStatus, CandidateProfileDto } from '@tuyendung/types'
 import { timeAgo, cn } from '@/lib/utils'
+import { resolveMediaUrl } from '@/lib/media'
 import {
   SendIcon, ClockIcon, CalendarCheckIcon, BookmarkIcon,
   BriefcaseIcon, UserCircleIcon, FileTextIcon, SearchIcon,
@@ -241,11 +241,10 @@ export default function CandidateDashboardPage() {
                     {/* Logo */}
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-slate-100 bg-slate-50">
                       {app.job?.employer?.logoUrl ? (
-                        <Image
-                          src={app.job.employer.logoUrl}
+                        <img
+                          src={resolveMediaUrl(app.job.employer.logoUrl) ?? ''}
                           alt={app.job.employer.companyName}
-                          width={40} height={40}
-                          className="object-contain"
+                          className="h-full w-full object-contain"
                         />
                       ) : (
                         <span className="text-sm font-bold text-slate-300">

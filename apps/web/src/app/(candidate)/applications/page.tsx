@@ -1,12 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { ApplicationDto, APPLICATION_STATUS_LABELS, ApplicationStatus } from '@tuyendung/types'
 import { timeAgo } from '@/lib/utils'
 import { cn } from '@/lib/utils'
+import { resolveMediaUrl } from '@/lib/media'
 import { BriefcaseIcon, ChevronRightIcon } from 'lucide-react'
 
 const STATUS_COLORS: Record<ApplicationStatus, string> = {
@@ -52,7 +52,7 @@ export default function ApplicationsPage() {
             >
               <div className="h-12 w-12 shrink-0 rounded-lg border border-gray-100 bg-gray-50 overflow-hidden flex items-center justify-center">
                 {app.job?.employer.logoUrl ? (
-                  <Image src={app.job.employer.logoUrl} alt={app.job.employer.companyName} width={48} height={48} />
+                  <img src={resolveMediaUrl(app.job.employer.logoUrl) ?? ''} alt={app.job.employer.companyName} className="h-full w-full object-contain" />
                 ) : (
                   <span className="font-bold text-gray-300">{app.job?.employer.companyName.charAt(0)}</span>
                 )}

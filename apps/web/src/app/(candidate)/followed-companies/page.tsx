@@ -1,9 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/api'
+import { resolveMediaUrl } from '@/lib/media'
 import {
   Building2Icon, MapPinIcon, BriefcaseIcon, BadgeCheckIcon,
   HeartIcon, ExternalLinkIcon, SearchIcon,
@@ -101,12 +101,10 @@ export default function FollowedCompaniesPage() {
                 <div className="flex items-start gap-3">
                   <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-white flex items-center justify-center">
                     {employer.logoUrl ? (
-                      <Image
-                        src={employer.logoUrl}
+                      <img
+                        src={resolveMediaUrl(employer.logoUrl) ?? ''}
                         alt={employer.companyName}
-                        width={48}
-                        height={48}
-                        className="object-contain p-1"
+                        className="h-full w-full object-contain p-1"
                       />
                     ) : (
                       <Building2Icon className="h-6 w-6 text-gray-300" />

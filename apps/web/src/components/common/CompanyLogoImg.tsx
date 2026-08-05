@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { resolveMediaUrl } from '@/lib/media'
 
 interface Props {
   src: string
@@ -13,7 +14,9 @@ interface Props {
 export function CompanyLogoImg({ src, alt, fallbackLetter, fallbackGradient, className }: Props) {
   const [failed, setFailed] = useState(false)
 
-  if (failed) {
+  const resolvedSrc = resolveMediaUrl(src)
+
+  if (failed || !resolvedSrc) {
     return (
       <div className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${fallbackGradient}`}>
         <span className="text-2xl font-bold text-white">{fallbackLetter}</span>
@@ -23,7 +26,7 @@ export function CompanyLogoImg({ src, alt, fallbackLetter, fallbackGradient, cla
 
   return (
     <img
-      src={src}
+      src={resolvedSrc}
       alt={alt}
       className={className ?? 'h-full w-full object-contain'}
       onError={() => setFailed(true)}

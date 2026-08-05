@@ -86,8 +86,11 @@ export class UploadService {
     const filename = `${Date.now()}-${Math.round(Math.random() * 1e6)}${ext}`
     fs.writeFileSync(path.join(dir, filename), file.buffer)
 
-    const apiUrl = this.config.get('API_URL', 'http://localhost:3001')
-    return `${apiUrl}/uploads/${folder}/${filename}`
+    // Return a relative path so the URL stays valid regardless of which
+    // hostname the API is deployed to. The frontend resolves it via
+    // NEXT_PUBLIC_API_URL. (Previously stored as full http://localhost:3001/...
+    // which broke in production.)
+    return `/uploads/${folder}/${filename}`
   }
 
   /** Map MIME type to a safe file extension derived server-side */
