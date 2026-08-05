@@ -30,7 +30,7 @@ const NAV_GROUPS = [
   {
     label: 'Người dùng',
     items: [
-      { href: '/admin/candidates',          label: 'Ứng viên',           icon: UserCircleIcon },
+      { href: '/admin/candidates',          label: 'Ứng viên',           icon: UserCircleIcon, exact: true },
       { href: '/admin/candidates/analysis', label: 'Phân tích ứng viên', icon: BarChart3Icon  },
       { href: '/admin/employers',           label: 'Nhà tuyển dụng',     icon: Building2Icon  },
       { href: '/admin/users',               label: 'Tất cả tài khoản',   icon: UsersIcon      },
@@ -91,8 +91,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <p className="mb-1 px-3 text-[10px] font-semibold uppercase tracking-widest text-slate-600">
                 {label}
               </p>
-              {items.map(({ href, label: itemLabel, icon: Icon }) => {
-                const active = pathname.startsWith(href)
+              {items.map(({ href, label: itemLabel, icon: Icon, exact }: any) => {
+                const active = exact ? pathname === href : pathname.startsWith(href)
                 return (
                   <Link
                     key={href}
