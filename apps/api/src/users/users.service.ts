@@ -264,6 +264,23 @@ export class UsersService {
     }
   }
 
+  // ─── Public suggestions ──────────────────────────────────────────────────────
+
+  async getPublicSuggestions() {
+    const keys = ['suggestions:groupA', 'suggestions:groupB', 'suggestions:workshops']
+    const rows = await this.prisma.systemSetting.findMany({ where: { key: { in: keys } } })
+    const map = Object.fromEntries(rows.map(r => [r.key, r.value]))
+    const parse = (key: string) => {
+      try { return (JSON.parse(map[key] ?? '[]') as any[]).filter(i => i.active !== false) }
+      catch { return [] }
+    }
+    return {
+      groupA: parse('suggestions:groupA'),
+      groupB: parse('suggestions:groupB'),
+      workshops: parse('suggestions:workshops'),
+    }
+  }
+
   async getNotificationPreferences(userId: string) {
     const existing = await this.prisma.notificationPreference.findUnique({ where: { userId } })
     if (existing) return existing

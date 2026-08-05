@@ -12,6 +12,7 @@ import {
 import { JobStatus, JobDto } from '@tuyendung/types'
 import { cn } from '@/lib/utils'
 import { timeAgo } from '@/lib/utils'
+import { SuggestionsWidget } from '@/components/common/SuggestionsWidget'
 
 interface DashboardStats {
   totalJobs: number
@@ -409,6 +410,9 @@ export default function EmployerDashboardPage() {
           </div>
         ))}
       </div>
+
+      {/* ── Suggestions (nhóm A) ──────────────────────────────────────── */}
+      <SuggestionsWidget group="groupA" />
 
     </div>
   )

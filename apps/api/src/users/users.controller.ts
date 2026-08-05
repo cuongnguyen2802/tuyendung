@@ -11,6 +11,7 @@ import { UploadService } from '../upload/upload.service'
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
 import { Roles } from '../common/decorators/roles.decorator'
 import { CurrentUser } from '../common/decorators/current-user.decorator'
+import { Public } from '../common/decorators/public.decorator'
 import { Role, JwtPayload } from '@tuyendung/types'
 import {
   UpdateProfileDto, AddExperienceDto, AddEducationDto, UpsertSkillsDto, UpgradePlanDto,
@@ -26,6 +27,13 @@ export class UsersController {
     private usersService: UsersService,
     private uploadService: UploadService,
   ) {}
+
+  @Get('suggestions')
+  @Public()
+  @ApiOperation({ summary: 'Gợi ý và quảng cáo (public, chỉ trả active items)' })
+  getPublicSuggestions() {
+    return this.usersService.getPublicSuggestions()
+  }
 
   @Get('me/profile')
   @Roles(Role.CANDIDATE)

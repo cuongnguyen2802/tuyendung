@@ -13,6 +13,7 @@ import {
   BriefcaseIcon, UserCircleIcon, FileTextIcon, SearchIcon,
   ArrowRightIcon, ChevronRightIcon, CheckCircleIcon, SparklesIcon,
 } from 'lucide-react'
+import { SuggestionsWidget } from '@/components/common/SuggestionsWidget'
 
 const STATUS_CFG: Record<ApplicationStatus, { label: string; dot: string; bg: string; text: string }> = {
   PENDING:   { label: 'Đã gửi',        dot: 'bg-yellow-400', bg: 'bg-yellow-50', text: 'text-yellow-700' },
@@ -357,6 +358,10 @@ export default function CandidateDashboardPage() {
 
         </div>
       </div>
+
+      {/* ── Suggestions & Workshops (nhóm B) ──────────────────────────── */}
+      <SuggestionsWidget group="groupB" showWorkshops />
+
     </div>
   )
 }
