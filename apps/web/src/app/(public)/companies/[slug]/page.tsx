@@ -1,6 +1,6 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { CompanyLogoImg } from '@/components/common/CompanyLogoImg'
+import { resolveMediaUrl } from '@/lib/media'
 import { notFound } from 'next/navigation'
 import {
   MapPinIcon, GlobeIcon, UsersIcon, CalendarIcon,
@@ -45,7 +45,8 @@ interface CompanyData {
 }
 
 async function getCompany(slug: string) {
-  return serverFetch<CompanyData>(`/employers/${slug}`, { revalidate: 120, tags: [`company-${slug}`] })
+  // revalidate: false → cache: 'no-store' — luôn fetch mới để logo/info cập nhật ngay
+  return serverFetch<CompanyData>(`/employers/${slug}`, { revalidate: false })
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -99,7 +100,8 @@ export default async function CompanyDetailPage({ params }: PageProps) {
         {/* Background */}
         {company.coverUrl ? (
           <>
-            <Image src={company.coverUrl} alt="" fill className="object-cover" priority />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={resolveMediaUrl(company.coverUrl) ?? ''} alt="" className="h-full w-full object-cover" />
             <div className="absolute inset-0 bg-black/50" />
           </>
         ) : (
@@ -286,11 +288,10 @@ export default async function CompanyDetailPage({ params }: PageProps) {
               <section className="rounded-xl border border-gray-200 bg-white p-6">
                 <h2 className="mb-4 text-base font-bold text-gray-900">Hình ảnh công ty</h2>
                 <div className="overflow-hidden rounded-xl">
-                  <Image
-                    src={company.coverUrl}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={resolveMediaUrl(company.coverUrl) ?? ''}
                     alt={company.companyName}
-                    width={800}
-                    height={350}
                     className="h-56 w-full object-cover"
                   />
                 </div>
