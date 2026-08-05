@@ -382,7 +382,7 @@ export class AdminService {
   // ── Page content ─────────────────────────────────────────────────────────────
 
   private static readonly PAGE_SLUGS = [
-    'about', 'contact', 'faq', 'pricing', 'careers',
+    'homepage', 'about', 'contact', 'faq', 'pricing', 'careers',
     'press', 'privacy', 'terms', 'cv-review',
   ]
 

@@ -47,65 +47,74 @@ async function getHandbookArticles(): Promise<ArticleCardData[]> {
   return data?.data ?? []
 }
 
-// ── Static data ───────────────────────────────────────────────────────────────
+interface HomepageContent {
+  badge?:             string
+  headline?:          string
+  headlineHighlight?: string
+  subheadline?:       string
+  popularSearches?:   string[]
+  howItWorks?:        { step: string; title: string; desc: string }[]
+  employerBenefits?:  string[]
+  employerStats?:     { value: string; label: string }[]
+}
 
-const POPULAR_SEARCHES = [
-  'Frontend Developer',
-  'Marketing Manager',
-  'Kế toán',
-  'Nhân sự',
-  'Remote',
-  'Product Manager',
+async function getHomepageContent(): Promise<HomepageContent> {
+  return (await serverFetch<HomepageContent>('/admin/pages/homepage', { revalidate: 60 })) ?? {}
+}
+
+// ── Static defaults (overridden by admin-saved content) ───────────────────────
+
+const DEFAULT_POPULAR_SEARCHES = [
+  'Frontend Developer', 'Marketing Manager', 'Kế toán', 'Nhân sự', 'Remote', 'Product Manager',
 ]
 
-const HOW_IT_WORKS = [
-  {
-    step: '01',
-    Icon: UserIcon,
-    title: 'Tạo hồ sơ chuyên nghiệp',
-    desc: 'Điền thông tin, kỹ năng và kinh nghiệm. Upload CV hoặc tạo CV trực tuyến ngay trên nền tảng chỉ trong vài phút.',
-  },
-  {
-    step: '02',
-    Icon: SearchIcon,
-    title: 'Khám phá cơ hội phù hợp',
-    desc: 'Tìm kiếm theo ngành nghề, địa điểm, mức lương. Lưu việc yêu thích và nhận thông báo việc làm mới mỗi ngày.',
-  },
-  {
-    step: '03',
-    Icon: CheckCircleIcon,
-    title: 'Ứng tuyển & thành công',
-    desc: 'Nộp đơn chỉ trong vài cú click. Theo dõi trạng thái ứng tuyển và nhận phản hồi trực tiếp từ nhà tuyển dụng.',
-  },
+// Icons cho 3 bước (cố định theo thứ tự)
+const HOW_IT_WORKS_ICONS = [UserIcon, SearchIcon, CheckCircleIcon]
+
+const DEFAULT_HOW_IT_WORKS = [
+  { step: '01', title: 'Tạo hồ sơ chuyên nghiệp',  desc: 'Điền thông tin, kỹ năng và kinh nghiệm. Upload CV hoặc tạo CV trực tuyến ngay trên nền tảng chỉ trong vài phút.' },
+  { step: '02', title: 'Khám phá cơ hội phù hợp',   desc: 'Tìm kiếm theo ngành nghề, địa điểm, mức lương. Lưu việc yêu thích và nhận thông báo việc làm mới mỗi ngày.' },
+  { step: '03', title: 'Ứng tuyển & thành công',     desc: 'Nộp đơn chỉ trong vài cú click. Theo dõi trạng thái ứng tuyển và nhận phản hồi trực tiếp từ nhà tuyển dụng.' },
 ]
 
-const EMPLOYER_BENEFITS = [
+const DEFAULT_EMPLOYER_BENEFITS = [
   'Đăng tin tuyển dụng miễn phí, không giới hạn ứng viên',
   'Tiếp cận 500,000+ ứng viên đang tích cực tìm việc',
   'Công cụ lọc CV thông minh, tiết kiệm thời gian sàng lọc',
   'Quản lý toàn bộ quy trình tuyển dụng tập trung một nơi',
 ]
 
-const EMPLOYER_STATS = [
-  { value: '500K+', label: 'Ứng viên tiềm năng' },
+const DEFAULT_EMPLOYER_STATS = [
+  { value: '500K+',  label: 'Ứng viên tiềm năng' },
   { value: '2,000+', label: 'Doanh nghiệp tin dùng' },
-  { value: '85%', label: 'Tìm được ứng viên trong 7 ngày' },
-  { value: '4.8★', label: 'Đánh giá từ nhà tuyển dụng' },
+  { value: '85%',    label: 'Tìm được ứng viên trong 7 ngày' },
+  { value: '4.8★',   label: 'Đánh giá từ nhà tuyển dụng' },
 ]
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
-  const [featuredJobs, companies, heroStats, jobCategories, handbookArticles] = await Promise.all([
+  const [featuredJobs, companies, heroStats, jobCategories, handbookArticles, cms] = await Promise.all([
     getFeaturedJobs(),
     getTopCompanies(),
     getJobStats(),
     getJobCategories(),
     getHandbookArticles(),
+    getHomepageContent(),
   ])
 
   const totalActive = heroStats?.totalActive ?? 10000
-  const newToday = heroStats?.newLast24h ?? 0
+  const newToday    = heroStats?.newLast24h ?? 0
+
+  // Merge admin content with defaults
+  const heroBadge           = cms.badge             ?? 'Nền tảng tuyển dụng tin cậy tại Việt Nam'
+  const heroHeadline        = cms.headline           ?? 'Tìm được việc làm'
+  const heroHighlight       = cms.headlineHighlight  ?? 'mơ ước của bạn'
+  const heroSub             = cms.subheadline        ?? 'Kết nối hàng nghìn ứng viên tài năng với những cơ hội nghề nghiệp tốt nhất tại Việt Nam'
+  const popularSearches     = cms.popularSearches?.length  ? cms.popularSearches  : DEFAULT_POPULAR_SEARCHES
+  const howItWorks          = cms.howItWorks?.length       ? cms.howItWorks       : DEFAULT_HOW_IT_WORKS
+  const employerBenefits    = cms.employerBenefits?.length ? cms.employerBenefits : DEFAULT_EMPLOYER_BENEFITS
+  const employerStats       = cms.employerStats?.length    ? cms.employerStats    : DEFAULT_EMPLOYER_STATS
 
   return (
     <>
@@ -139,19 +148,17 @@ export default async function HomePage() {
           {/* Status badge */}
           <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.07] px-4 py-1.5 backdrop-blur-sm">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-            <span className="text-xs font-semibold text-white/65">
-              Nền tảng tuyển dụng tin cậy tại Việt Nam
-            </span>
+            <span className="text-xs font-semibold text-white/65">{heroBadge}</span>
           </div>
 
           {/* Main headline */}
           <h1 className="mb-5 text-4xl font-extrabold leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">
-            Tìm được việc làm
+            {heroHeadline}
             <br />
-            <span className="text-emerald-400">mơ ước của bạn</span>
+            <span className="text-emerald-400">{heroHighlight}</span>
           </h1>
           <p className="mx-auto mb-9 max-w-xl text-base leading-relaxed text-white/50 md:text-lg">
-            Kết nối hàng nghìn ứng viên tài năng với những cơ hội nghề nghiệp tốt nhất tại Việt Nam
+            {heroSub}
           </p>
 
           {/* Search bar */}
@@ -162,7 +169,7 @@ export default async function HomePage() {
           {/* Popular searches */}
           <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
             <span className="text-xs text-white/35">Tìm nhiều nhất:</span>
-            {POPULAR_SEARCHES.map((tag) => (
+            {popularSearches.map((tag) => (
               <Link
                 key={tag}
                 href={`/jobs?keyword=${encodeURIComponent(tag)}`}
@@ -283,7 +290,9 @@ export default async function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {HOW_IT_WORKS.map(({ step, Icon, title, desc }, i) => (
+            {howItWorks.map(({ step, title, desc }, i) => {
+              const Icon = HOW_IT_WORKS_ICONS[i] ?? CheckCircleIcon
+              return (
               <div
                 key={i}
                 className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all duration-200 hover:border-brand/25 hover:shadow-md"
@@ -299,7 +308,8 @@ export default async function HomePage() {
                 <h3 className="relative mb-3 text-[17px] font-bold text-gray-900">{title}</h3>
                 <p className="relative text-sm leading-relaxed text-gray-500">{desc}</p>
               </div>
-            ))}
+              )
+            })}
           </div>
 
           <div className="mt-12 flex flex-wrap justify-center gap-4">
@@ -354,7 +364,7 @@ export default async function HomePage() {
               </p>
 
               <ul className="mb-9 space-y-3.5">
-                {EMPLOYER_BENEFITS.map((b) => (
+                {employerBenefits.map((b) => (
                   <li key={b} className="flex items-start gap-3">
                     <CheckCircleIcon className="mt-0.5 h-5 w-5 shrink-0 text-emerald-400" />
                     <span className="text-sm text-white/65">{b}</span>
@@ -380,7 +390,7 @@ export default async function HomePage() {
 
             {/* Right: stat cards */}
             <div className="grid grid-cols-2 gap-4">
-              {EMPLOYER_STATS.map(({ value, label }) => (
+              {employerStats.map(({ value, label }) => (
                 <div
                   key={label}
                   className="rounded-2xl border border-white/10 bg-white/[0.06] p-6 text-center backdrop-blur-sm"

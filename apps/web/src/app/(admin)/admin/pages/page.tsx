@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 
 const PAGE_META: Record<string, { title: string; desc: string; editable: boolean }> = {
+  homepage:  { title: 'Trang chủ',             desc: 'Hero, từ khóa hot, quy trình & lợi ích NTD', editable: true  },
   about:     { title: 'Giới thiệu',            desc: 'Câu chuyện, số liệu và giá trị cốt lõi',    editable: true  },
   contact:   { title: 'Liên hệ',               desc: 'Thông tin liên hệ, hotline, địa chỉ',        editable: true  },
   faq:       { title: 'Hỏi đáp',               desc: 'Câu hỏi thường gặp theo chủ đề',             editable: true  },
