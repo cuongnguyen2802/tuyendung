@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Inject } from '@nestjs/common'
+import { Injectable, NotFoundException, Inject, ForbiddenException, ConflictException, BadRequestException } from '@nestjs/common'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
 import { PrismaService } from '../prisma/prisma.service'
@@ -177,6 +177,123 @@ export class EmployersService {
       dailyTrend,
     }
   }
+
+  // ─── Employer Members ────────────────────────────────────────────────────────
+
+  private async getEmployerOrThrow(userId: string) {
+    const employer = await this.prisma.employer.findUnique({ where: { userId } })
+    if (!employer) throw new NotFoundException('Thông tin công ty không tồn tại')
+    return employer
+  }
+
+  async listMembers(userId: string) {
+    const employer = await this.getEmployerOrThrow(userId)
+    const members = await this.prisma.employerMember.findMany({
+      where: { employerId: employer.id },
+      orderBy: [{ role: 'asc' }, { invitedAt: 'asc' }],
+    })
+    // Prepend the owner (current account) at the top
+    const ownerUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { employer: true },
+    })
+    const ownerEntry = {
+      id: '__owner__',
+      employerId: employer.id,
+      email: ownerUser?.email ?? '',
+      fullName: (ownerUser as any)?.employer?.companyName ?? null,
+      role: 'OWNER' as const,
+      status: 'ACTIVE' as const,
+      invitedBy: null,
+      invitedAt: employer.createdAt,
+      joinedAt: employer.createdAt,
+      note: null,
+    }
+    return [ownerEntry, ...members]
+  }
+
+  async addMember(
+    userId: string,
+    dto: { email: string; fullName?: string; role?: string; note?: string },
+  ) {
+    const employer = await this.getEmployerOrThrow(userId)
+
+    // Cannot add owner's own email
+    const owner = await this.prisma.user.findUnique({ where: { id: userId } })
+    if (owner?.email?.toLowerCase() === dto.email.toLowerCase()) {
+      throw new BadRequestException('Không thể thêm chính mình làm quản trị viên')
+    }
+
+    const existing = await this.prisma.employerMember.findUnique({
+      where: { employerId_email: { employerId: employer.id, email: dto.email.toLowerCase() } },
+    })
+    if (existing) throw new ConflictException('Email này đã là thành viên của công ty')
+
+    const role = (dto.role as any) ?? 'RECRUITER'
+    if (!['ADMIN', 'RECRUITER'].includes(role)) {
+      throw new BadRequestException('Vai trò không hợp lệ')
+    }
+
+    const member = await this.prisma.employerMember.create({
+      data: {
+        employerId: employer.id,
+        email: dto.email.toLowerCase(),
+        fullName: dto.fullName,
+        role,
+        status: 'ACTIVE',
+        invitedBy: userId,
+        joinedAt: new Date(),
+        note: dto.note,
+      },
+    })
+
+    this.activity.record(
+      employer.id, 'COMPANY_UPDATED',
+      `Thêm quản trị viên ${dto.email}`, employer.id, employer.companyName,
+    ).catch(() => {})
+
+    return member
+  }
+
+  async updateMember(userId: string, memberId: string, dto: { role?: string; fullName?: string; note?: string }) {
+    const employer = await this.getEmployerOrThrow(userId)
+    const member = await this.prisma.employerMember.findFirst({
+      where: { id: memberId, employerId: employer.id },
+    })
+    if (!member) throw new NotFoundException('Thành viên không tồn tại')
+
+    if (dto.role && !['ADMIN', 'RECRUITER'].includes(dto.role)) {
+      throw new BadRequestException('Vai trò không hợp lệ')
+    }
+
+    return this.prisma.employerMember.update({
+      where: { id: memberId },
+      data: {
+        ...(dto.role && { role: dto.role as any }),
+        ...(dto.fullName !== undefined && { fullName: dto.fullName }),
+        ...(dto.note !== undefined && { note: dto.note }),
+      },
+    })
+  }
+
+  async removeMember(userId: string, memberId: string) {
+    const employer = await this.getEmployerOrThrow(userId)
+    const member = await this.prisma.employerMember.findFirst({
+      where: { id: memberId, employerId: employer.id },
+    })
+    if (!member) throw new NotFoundException('Thành viên không tồn tại')
+
+    await this.prisma.employerMember.delete({ where: { id: memberId } })
+
+    this.activity.record(
+      employer.id, 'COMPANY_UPDATED',
+      `Xóa quản trị viên ${member.email}`, employer.id, employer.companyName,
+    ).catch(() => {})
+
+    return { success: true }
+  }
+
+  // ─── Dashboard ────────────────────────────────────────────────────────────────
 
   async getDashboardStats(userId: string) {
     const employer = await this.prisma.employer.findUnique({ where: { userId } })

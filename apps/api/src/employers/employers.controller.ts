@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Put, Post, Body, Param, Query,
+  Controller, Get, Put, Post, Patch, Delete, Body, Param, Query,
   UseGuards, ParseIntPipe, DefaultValuePipe,
   UseInterceptors, UploadedFile, BadRequestException,
   ParseEnumPipe,
@@ -133,6 +133,47 @@ export class EmployersController {
   @ApiOperation({ summary: 'Nâng cấp tài khoản nhà tuyển dụng (mock)' })
   upgrade(@CurrentUser() user: JwtPayload, @Body() dto: UpgradePlanDto) {
     return this.plan.upgradePlan(user.sub, dto.plan, dto.months ?? 1)
+  }
+
+  // ─── Members ─────────────────────────────────────────────────────────────────
+
+  @Get('me/members')
+  @Roles(Role.EMPLOYER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Danh sách quản trị viên' })
+  listMembers(@CurrentUser() user: JwtPayload) {
+    return this.employersService.listMembers(user.sub)
+  }
+
+  @Post('me/members')
+  @Roles(Role.EMPLOYER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Thêm quản trị viên' })
+  addMember(
+    @CurrentUser() user: JwtPayload,
+    @Body() dto: { email: string; fullName?: string; role?: string; note?: string },
+  ) {
+    return this.employersService.addMember(user.sub, dto)
+  }
+
+  @Patch('me/members/:id')
+  @Roles(Role.EMPLOYER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Cập nhật vai trò quản trị viên' })
+  updateMember(
+    @CurrentUser() user: JwtPayload,
+    @Param('id') id: string,
+    @Body() dto: { role?: string; fullName?: string; note?: string },
+  ) {
+    return this.employersService.updateMember(user.sub, id, dto)
+  }
+
+  @Delete('me/members/:id')
+  @Roles(Role.EMPLOYER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Xóa quản trị viên' })
+  removeMember(@CurrentUser() user: JwtPayload, @Param('id') id: string) {
+    return this.employersService.removeMember(user.sub, id)
   }
 
   @Post('me/verify-request')
