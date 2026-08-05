@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useState, useRef, Suspense } from 'react'
+import { useState, useRef, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -78,6 +78,10 @@ function AccountSection() {
     setInitialized(true)
   }
 
+  const [logoError, setLogoError] = useState(false)
+  // Reset broken-image flag whenever the logoUrl changes (after a successful upload)
+  useEffect(() => { setLogoError(false) }, [company?.logoUrl])
+
   const fileRef = useRef<HTMLInputElement>(null)
 
   const updateMutation = useMutation({
@@ -88,11 +92,19 @@ function AccountSection() {
 
   const avatarMutation = useMutation({
     mutationFn: (file: File) => {
-      const fd = new FormData(); fd.append('file', file)
-      return api.postForm('/employers/me/upload-logo', fd)
+      const fd = new FormData()
+      fd.append('file', file)
+      // Use api.post with FormData — axios auto-sets Content-Type: multipart/form-data
+      return api.post('/employers/me/upload-logo', fd)
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['my-company'] }); toast.success('Đã cập nhật ảnh đại diện') },
-    onError: () => toast.error('Upload thất bại'),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['my-company'] })
+      toast.success('Đã cập nhật ảnh đại diện')
+    },
+    onError: (err: any) => {
+      const msg = err?.message ?? 'Upload thất bại. Vui lòng thử lại.'
+      toast.error(msg)
+    },
   })
 
   const level = [
@@ -169,8 +181,13 @@ function AccountSection() {
             <div className="flex items-center gap-4">
               <div className="relative">
                 <div className="h-16 w-16 overflow-hidden rounded-full border-2 border-gray-200 bg-gray-100">
-                  {company?.logoUrl ? (
-                    <img src={company.logoUrl} alt="" className="h-full w-full object-cover" />
+                  {company?.logoUrl && !logoError ? (
+                    <img
+                      src={company.logoUrl}
+                      alt=""
+                      className="h-full w-full object-cover"
+                      onError={() => setLogoError(true)}
+                    />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-brand/10 text-xl font-bold text-brand">
                       {company?.companyName?.[0]?.toUpperCase() ?? 'E'}
@@ -184,10 +201,19 @@ function AccountSection() {
                   <CameraIcon className="h-3 w-3" />
                 </button>
                 <input
-                  ref={fileRef} type="file" accept="image/*" className="hidden"
+                  ref={fileRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  className="hidden"
                   onChange={e => {
                     const f = e.target.files?.[0]
-                    if (f) avatarMutation.mutate(f)
+                    if (f) {
+                      if (f.size > 5 * 1024 * 1024) {
+                        toast.error('File quá lớn. Tối đa 5MB.')
+                        return
+                      }
+                      avatarMutation.mutate(f)
+                    }
                   }}
                 />
               </div>

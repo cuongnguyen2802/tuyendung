@@ -59,7 +59,7 @@ export class UploadService {
   }
 
   private async uploadToS3(file: Express.Multer.File, folder: string): Promise<string> {
-    const ext = path.extname(file.originalname)
+    const ext = this.mimeToExt(file.mimetype)
     const key = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`
 
     const upload = new Upload({
@@ -81,11 +81,27 @@ export class UploadService {
     const dir = path.join(process.cwd(), 'uploads', folder)
     fs.mkdirSync(dir, { recursive: true })
 
-    const ext = path.extname(file.originalname)
+    // Derive extension from mimetype — never trust client-supplied filename
+    const ext = this.mimeToExt(file.mimetype)
     const filename = `${Date.now()}-${Math.round(Math.random() * 1e6)}${ext}`
     fs.writeFileSync(path.join(dir, filename), file.buffer)
 
     const apiUrl = this.config.get('API_URL', 'http://localhost:3001')
     return `${apiUrl}/uploads/${folder}/${filename}`
+  }
+
+  /** Map MIME type to a safe file extension derived server-side */
+  private mimeToExt(mime: string): string {
+    const map: Record<string, string> = {
+      'image/jpeg':    '.jpg',
+      'image/png':     '.png',
+      'image/webp':    '.webp',
+      'image/gif':     '.gif',
+      'application/pdf': '.pdf',
+      'text/plain':    '.txt',
+      'application/msword': '.doc',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
+    }
+    return map[mime] ?? '.bin'
   }
 }
