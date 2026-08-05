@@ -11,6 +11,7 @@ import {
   BadgeCheckIcon, ShieldAlertIcon, FolderOpenIcon, TrophyIcon,
   ShoppingCartIcon, MegaphoneIcon, MessageSquareIcon, HistoryIcon,
   SettingsIcon, BellIcon, ZapIcon,
+  ReceiptIcon, FileTextIcon, CreditCardIcon, TrendingUpIcon, UsersIcon,
 } from 'lucide-react'
 import { UserPlan } from '@tuyendung/types'
 import { cn } from '@/lib/utils'
@@ -64,6 +65,21 @@ const NAV_SECTIONS: NavSection[] = [
       { href: '/employer/campaigns', label: 'Chiến dịch',   icon: MegaphoneIcon },
       { href: '/employer/jobs',      label: 'Tin tuyển dụng',     icon: BriefcaseIcon },
       { href: '/employer/jobs/new',  label: 'Đăng tin mới',       icon: PlusCircleIcon,       exact: true },
+    ],
+  },
+  {
+    divider: true,
+    items: [
+      { href: '/employer/billing/orders',   label: 'Đơn hàng / Dịch vụ',      icon: ReceiptIcon },
+      { href: '/employer/billing/invoices', label: 'Hóa đơn',                  icon: FileTextIcon },
+      { href: '/employer/billing/payments', label: 'Lịch sử thanh toán',       icon: CreditCardIcon },
+    ],
+  },
+  {
+    divider: true,
+    items: [
+      { href: '/employer/reports/jobs',       label: 'Báo cáo việc làm',   icon: TrendingUpIcon },
+      { href: '/employer/reports/candidates', label: 'Báo cáo ứng viên',   icon: UsersIcon },
     ],
   },
   {

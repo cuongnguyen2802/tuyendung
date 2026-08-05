@@ -18,6 +18,7 @@ on:
   push:
     branches: [main]
     paths:
+      - 'packages/database/src/seed.ts'
       - 'packages/database/src/seed-articles.ts'
       - 'packages/database/src/seed-jobs.ts'
 

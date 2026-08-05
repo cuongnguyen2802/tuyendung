@@ -54,3 +54,6 @@ apps/web/web_err.txt
 *.jpg
 *.png
 *.jpeg
+
+.vercel
+.env*
