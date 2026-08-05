@@ -52,7 +52,7 @@ export class ResumesController {
     @Body('title') title: string,
   ) {
     if (!file) throw new BadRequestException('Vui lòng chọn file CV')
-    const fileUrl = await this.uploadService.uploadFile(file, 'resumes')
+    const fileUrl = await this.uploadService.uploadFile(file, `candidates/${user.sub}/resumes`)
     const resume = await this.resumesService.create(user.sub, {
       title: title || file.originalname,
       content: null,

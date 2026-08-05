@@ -79,7 +79,10 @@ export class EmployersController {
   @UseInterceptors(FileInterceptor('file', { storage: memoryStorage(), fileFilter: imageFilter, limits: { fileSize: 5 * 1024 * 1024 } }))
   async uploadLogo(@CurrentUser() user: JwtPayload, @UploadedFile() file: Express.Multer.File) {
     if (!file) throw new BadRequestException('Vui lòng chọn file ảnh')
-    const logoUrl = await this.uploadService.uploadFile(file, 'logos')
+    const employer = await this.employersService.getMyCompany(user.sub)
+    // Xóa logo cũ trước khi lưu logo mới
+    if (employer.logoUrl) await this.uploadService.deleteFile(employer.logoUrl).catch(() => {})
+    const logoUrl = await this.uploadService.uploadFile(file, `employers/${employer.id}/logo`)
     await this.employersService.updateCompany(user.sub, { logoUrl })
     return { url: logoUrl }
   }
@@ -92,7 +95,10 @@ export class EmployersController {
   @UseInterceptors(FileInterceptor('file', { storage: memoryStorage(), fileFilter: imageFilter, limits: { fileSize: 10 * 1024 * 1024 } }))
   async uploadCover(@CurrentUser() user: JwtPayload, @UploadedFile() file: Express.Multer.File) {
     if (!file) throw new BadRequestException('Vui lòng chọn file ảnh')
-    const coverUrl = await this.uploadService.uploadFile(file, 'covers')
+    const employer = await this.employersService.getMyCompany(user.sub)
+    // Xóa ảnh bìa cũ trước khi lưu ảnh mới
+    if (employer.coverUrl) await this.uploadService.deleteFile(employer.coverUrl).catch(() => {})
+    const coverUrl = await this.uploadService.uploadFile(file, `employers/${employer.id}/cover`)
     await this.employersService.updateCompany(user.sub, { coverUrl })
     return { url: coverUrl }
   }

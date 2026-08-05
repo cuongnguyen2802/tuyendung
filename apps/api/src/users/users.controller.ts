@@ -119,7 +119,10 @@ export class UsersController {
   }))
   async uploadAvatar(@CurrentUser() user: JwtPayload, @UploadedFile() file: Express.Multer.File) {
     if (!file) throw new BadRequestException('Vui lòng chọn file ảnh')
-    const avatarUrl = await this.uploadService.uploadFile(file, 'avatars')
+    // Xóa avatar cũ trước khi lưu avatar mới
+    const profile = await this.usersService.getProfile(user.sub).catch(() => null)
+    if (profile?.avatarUrl) await this.uploadService.deleteFile(profile.avatarUrl).catch(() => {})
+    const avatarUrl = await this.uploadService.uploadFile(file, `candidates/${user.sub}/avatar`)
     await this.usersService.updateProfile(user.sub, { avatarUrl })
     return { url: avatarUrl }
   }

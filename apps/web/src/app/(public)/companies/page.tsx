@@ -199,9 +199,6 @@ function CompanyCard({ company }: { company: EmployerDto }) {
       href={`/companies/${company.slug}`}
       className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white transition hover:-translate-y-0.5 hover:border-brand/50 hover:shadow-lg hover:shadow-brand/10"
     >
-      {/* Top colour strip */}
-      <div className={`h-2 w-full bg-gradient-to-r ${gradient} opacity-80`} />
-
       <div className="flex flex-1 flex-col p-5">
         {/* Logo + verified */}
         <div className="mb-4 flex items-start justify-between">
