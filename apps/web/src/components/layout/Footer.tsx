@@ -17,7 +17,7 @@ const FOOTER_COLS = [
     heading: 'Hồ sơ và CV',
     links: [
       { label: 'Quản lý CV của bạn', href: '/profile/resumes' },
-      { label: 'Hướng dẫn viết CV', href: '/blog/huong-dan-viet-cv' },
+      { label: 'Hướng dẫn viết CV', href: '/blog/tips/huong-dan-viet-cv' },
       { label: 'Thư viện CV theo ngành nghề', href: '/cv-templates' },
       { label: 'Review CV', href: '/cv-review' },
     ],
