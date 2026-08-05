@@ -8,7 +8,7 @@ import {
   Building2Icon, ShieldIcon, HomeIcon, LogOutIcon, MenuIcon,
   PanelRightIcon, NewspaperIcon, TagsIcon, UserCircleIcon, ImagesIcon,
   ChevronRightIcon, BadgeDollarSignIcon, WrenchIcon, StarIcon, FileTextIcon,
-  ActivityIcon,
+  ActivityIcon, BarChart3Icon, SparklesIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -30,15 +30,17 @@ const NAV_GROUPS = [
   {
     label: 'Người dùng',
     items: [
-      { href: '/admin/candidates', label: 'Ứng viên',          icon: UserCircleIcon },
-      { href: '/admin/employers',  label: 'Nhà tuyển dụng',    icon: Building2Icon  },
-      { href: '/admin/users',      label: 'Tất cả tài khoản',  icon: UsersIcon      },
+      { href: '/admin/candidates',          label: 'Ứng viên',           icon: UserCircleIcon },
+      { href: '/admin/candidates/analysis', label: 'Phân tích ứng viên', icon: BarChart3Icon  },
+      { href: '/admin/employers',           label: 'Nhà tuyển dụng',     icon: Building2Icon  },
+      { href: '/admin/users',               label: 'Tất cả tài khoản',   icon: UsersIcon      },
     ],
   },
   {
     label: 'Vận hành',
     items: [
       { href: '/admin/activity', label: 'Lịch sử hoạt động', icon: ActivityIcon         },
+      { href: '/admin/matching', label: 'Module Matching',    icon: SparklesIcon         },
       { href: '/admin/revenue',  label: 'Doanh thu & Gói',   icon: BadgeDollarSignIcon  },
       { href: '/admin/skills',   label: 'Quản lý kỹ năng',   icon: StarIcon             },
     ],

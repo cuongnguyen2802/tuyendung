@@ -207,6 +207,53 @@ export class AdminController {
     return this.adminService.updatePageContent(slug, data)
   }
 
+  // ── 4.3: Candidate analysis ───────────────────────────────────────────────────
+
+  @Get('candidates/stats')
+  @ApiOperation({ summary: 'Thống kê phân tích ứng viên' })
+  getCandidateStats() {
+    return this.adminService.getCandidateStats()
+  }
+
+  @Get('candidates/analysis')
+  @ApiOperation({ summary: 'Danh sách ứng viên với điểm hoàn thiện hồ sơ' })
+  @ApiQuery({ name: 'keyword', required: false })
+  @ApiQuery({ name: 'degree', required: false })
+  @ApiQuery({ name: 'completeness', required: false, description: 'complete | partial | none' })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  getCandidateAnalysis(
+    @Query('keyword') keyword?: string,
+    @Query('degree') degree?: string,
+    @Query('completeness') completeness?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.adminService.getCandidateAnalysis({
+      keyword, degree, completeness,
+      page: page ? parseInt(page, 10) : 1,
+      limit: limit ? parseInt(limit, 10) : 20,
+    })
+  }
+
+  // ── 4.4: Matching module ──────────────────────────────────────────────────────
+
+  @Get('matching/jobs')
+  @ApiOperation({ summary: 'Danh sách tin tuyển dụng cho matching' })
+  getJobsForMatching() {
+    return this.adminService.getJobsForMatching()
+  }
+
+  @Get('matching/candidates/:jobId')
+  @ApiOperation({ summary: 'Ứng viên phù hợp với tin tuyển dụng' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  getMatchingCandidates(
+    @Param('jobId') jobId: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.adminService.getMatchingCandidates(jobId, limit ? parseInt(limit, 10) : 20)
+  }
+
   // ── Activity feed ─────────────────────────────────────────────────────────────
 
   @Get('activity')
