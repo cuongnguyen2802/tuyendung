@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@nestjs/cli':
+        specifier: ^10.4.8
+        version: 10.4.9(@swc/cli@0.8.1(@swc/core@1.15.41)(chokidar@3.6.0))(@swc/core@1.15.41)
       prettier:
         specifier: ^3.3.3
         version: 3.8.4
