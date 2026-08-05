@@ -566,6 +566,10 @@ export class AdminService {
   }
 
   async updateSuggestions(key: string, items: any[]) {
+    const ALLOWED_KEYS = ['groupA', 'groupB', 'workshops'] as const
+    if (!(ALLOWED_KEYS as readonly string[]).includes(key)) {
+      throw new Error(`Invalid suggestions key: ${key}`)
+    }
     const fullKey = `suggestions:${key}`
     await this.prisma.systemSetting.upsert({
       where: { key: fullKey },

@@ -3,10 +3,15 @@ import {
   Param, Query, Body, UseGuards,
 } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger'
+import { IsString, MinLength, MaxLength } from 'class-validator'
 import { AdminService } from './admin.service'
 import { Roles } from '../common/decorators/roles.decorator'
 import { RolesGuard } from '../common/guards/roles.guard'
 import { Role } from '@tuyendung/types'
+
+class AdminResetPasswordDto {
+  @IsString() @MinLength(8) @MaxLength(128) password: string
+}
 
 @ApiTags('Admin')
 @ApiBearerAuth()
@@ -104,8 +109,8 @@ export class AdminController {
 
   @Patch('users/:id/reset-password')
   @ApiOperation({ summary: 'Đặt lại mật khẩu người dùng (không áp dụng cho Admin)' })
-  resetUserPassword(@Param('id') id: string, @Body('password') password: string) {
-    return this.adminService.resetUserPassword(id, password)
+  resetUserPassword(@Param('id') id: string, @Body() dto: AdminResetPasswordDto) {
+    return this.adminService.resetUserPassword(id, dto.password)
   }
 
   @Delete('users/:id')

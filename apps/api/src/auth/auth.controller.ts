@@ -1,5 +1,7 @@
-import { Controller, Post, Body, Get, Query, UseGuards, HttpCode, HttpStatus, Put } from '@nestjs/common'
+import { Controller, Post, Body, Get, Headers, UseGuards, HttpCode, HttpStatus, Put } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger'
+import { Throttle } from '@nestjs/throttler'
+import { IsString, MinLength, MaxLength } from 'class-validator'
 import { AuthService } from './auth.service'
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
@@ -12,6 +14,11 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
 import { CurrentUser } from '../common/decorators/current-user.decorator'
 import { Public } from '../common/decorators/public.decorator'
 import { JwtPayload } from '@tuyendung/types'
+
+class ChangePasswordDto {
+  @IsString() @MinLength(1) currentPassword: string
+  @IsString() @MinLength(8) @MaxLength(128) newPassword: string
+}
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -29,6 +36,7 @@ export class AuthController {
   @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @ApiOperation({ summary: 'Đăng nhập' })
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto)
@@ -38,8 +46,11 @@ export class AuthController {
   @Post('oauth')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Đăng nhập / đăng ký bằng OAuth (Google / Facebook / LinkedIn)' })
-  oauth(@Body() dto: OAuthLoginDto) {
-    return this.authService.oauthLogin(dto)
+  oauth(
+    @Body() dto: OAuthLoginDto,
+    @Headers('x-internal-token') internalToken?: string,
+  ) {
+    return this.authService.oauthLogin(dto, internalToken)
   }
 
   @Public()
@@ -71,9 +82,9 @@ export class AuthController {
   @ApiOperation({ summary: 'Đổi mật khẩu (đã đăng nhập)' })
   async changePassword(
     @CurrentUser() user: JwtPayload,
-    @Body() body: { currentPassword: string; newPassword: string },
+    @Body() dto: ChangePasswordDto,
   ) {
-    await this.authService.changePassword(user.sub, body.currentPassword, body.newPassword)
+    await this.authService.changePassword(user.sub, dto.currentPassword, dto.newPassword)
     return { message: 'Mật khẩu đã được cập nhật thành công.' }
   }
 
@@ -82,6 +93,7 @@ export class AuthController {
   @Public()
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { ttl: 60000, limit: 3 } })
   @ApiOperation({ summary: 'Yêu cầu đặt lại mật khẩu' })
   async forgotPassword(@Body() dto: ForgotPasswordDto) {
     await this.authService.forgotPassword(dto.email)
@@ -111,6 +123,7 @@ export class AuthController {
   @Public()
   @Post('resend-verification')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { ttl: 60000, limit: 3 } })
   @ApiOperation({ summary: 'Gửi lại email xác thực' })
   async resendVerification(@Body() dto: ResendVerificationDto) {
     await this.authService.resendVerification(dto.email)

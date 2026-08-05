@@ -32,20 +32,23 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter())
   app.useGlobalInterceptors(new ResponseInterceptor())
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('TuyenDung API')
-    .setDescription('API cho nền tảng tuyển dụng')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build()
+  // Only expose Swagger docs in non-production environments
+  if (process.env.NODE_ENV !== 'production') {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('TuyenDung API')
+      .setDescription('API cho nền tảng tuyển dụng')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build()
 
-  const document = SwaggerModule.createDocument(app, swaggerConfig)
-  SwaggerModule.setup('api/docs', app, document)
+    const document = SwaggerModule.createDocument(app, swaggerConfig)
+    SwaggerModule.setup('api/docs', app, document)
+    console.log(`Swagger docs: http://localhost:${process.env.API_PORT || 3001}/api/docs`)
+  }
 
   const port = process.env.API_PORT || 3001
   await app.listen(port)
   console.log(`API running on http://localhost:${port}`)
-  console.log(`Swagger docs: http://localhost:${port}/api/docs`)
 }
 
 bootstrap()

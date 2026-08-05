@@ -178,15 +178,22 @@ export class AuthService {
 
       return this.generateTokens(user.id, user.email, user.role as Role)
     } catch (err: any) {
-      console.error('[register] Prisma error:', err?.code, err?.message, err?.meta)
+      // Log full detail server-side but never expose internal messages to the client
+      console.error('[register] error:', err?.code, err?.meta)
       if (err?.code === 'P2002') {
         throw new ConflictException('Email hoặc thông tin công ty đã tồn tại')
       }
-      throw new BadRequestException(err?.message || 'Không thể tạo tài khoản, vui lòng thử lại')
+      throw new BadRequestException('Không thể tạo tài khoản, vui lòng thử lại')
     }
   }
 
-  async oauthLogin(dto: OAuthLoginDto): Promise<AuthTokens> {
+  async oauthLogin(dto: OAuthLoginDto, internalSecret?: string): Promise<AuthTokens> {
+    // Validate the shared secret so only the NextAuth backend can call this endpoint
+    const expectedSecret = this.config.get<string>('OAUTH_INTERNAL_SECRET')
+    if (expectedSecret && internalSecret !== expectedSecret) {
+      throw new UnauthorizedException('Invalid internal secret')
+    }
+
     let user = await this.prisma.user.findFirst({
       where: { provider: dto.provider, providerId: dto.providerId },
     })
@@ -194,10 +201,18 @@ export class AuthService {
     if (!user) {
       const existing = await this.prisma.user.findUnique({ where: { email: dto.email } })
       if (existing) {
-        user = await this.prisma.user.update({
-          where: { id: existing.id },
-          data: { provider: dto.provider, providerId: dto.providerId },
-        })
+        // Only link the OAuth provider if this account has no provider yet (local account).
+        // Prevents attackers from hijacking an existing OAuth account by spoofing its email.
+        if (existing.provider) {
+          // Email already linked to a different provider — return tokens for the existing account
+          // without overwriting its provider (the user will be signed in as the same person).
+          user = existing
+        } else {
+          user = await this.prisma.user.update({
+            where: { id: existing.id },
+            data: { provider: dto.provider, providerId: dto.providerId },
+          })
+        }
       } else {
         const role = dto.role ?? Role.CANDIDATE
         user = await this.prisma.user.create({

@@ -90,6 +90,12 @@ export const authOptions: NextAuthOptions = {
             email: user.email,
             name: user.name,
             avatar: user.image,
+          }, {
+            // Send the shared internal secret so the backend can verify this call
+            // comes from our NextAuth server, not an external attacker.
+            headers: process.env.OAUTH_INTERNAL_SECRET
+              ? { 'x-internal-token': process.env.OAUTH_INTERNAL_SECRET }
+              : {},
           })
           const { accessToken, refreshToken } = res.data.data
           const meRes = await axios.get(`${process.env.API_URL}/api/v1/auth/me`, {

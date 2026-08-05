@@ -19,7 +19,8 @@ import { Role, JwtPayload } from '@tuyendung/types'
 import { UpgradePlanDto } from '../users/dto/update-profile.dto'
 
 function imageFilter(req: any, file: Express.Multer.File, cb: any) {
-  if (!file.mimetype.match(/^image\/(jpg|jpeg|png|gif|webp|svg\+xml)$/)) {
+  // SVG is intentionally excluded — it can embed <script> tags (stored XSS vector)
+  if (!file.mimetype.match(/^image\/(jpg|jpeg|png|gif|webp)$/)) {
     return cb(new BadRequestException('Chỉ chấp nhận file ảnh (jpg, png, webp, gif)'), false)
   }
   cb(null, true)

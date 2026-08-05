@@ -1,7 +1,7 @@
 import {
   Controller, Get, Post, Put, Delete, Patch, Body, Param,
   Query, UseGuards, DefaultValuePipe, ParseIntPipe,
-  UploadedFile, UseInterceptors, Req,
+  UploadedFile, UseInterceptors, Req, BadRequestException,
 } from '@nestjs/common'
 import { Request } from 'express'
 import { JwtService } from '@nestjs/jwt'
@@ -92,14 +92,28 @@ export class JobsController {
   @Post('parse-jd')
   @Roles(Role.EMPLOYER)
   @ApiBearerAuth()
-  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 10 * 1024 * 1024 } }))
+  @UseInterceptors(FileInterceptor('file', {
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+      const allowed = [
+        'text/plain',
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      ]
+      if (!allowed.includes(file.mimetype)) {
+        return cb(new BadRequestException('Chỉ chấp nhận file .txt, .pdf, .doc, .docx'), false)
+      }
+      cb(null, true)
+    },
+  }))
   @ApiOperation({ summary: 'Phân tích JD từ văn bản hoặc file' })
   async parseJD(
     @Body('text') text?: string,
     @UploadedFile() file?: Express.Multer.File,
   ) {
     const content = file ? file.buffer.toString('utf-8') : (text ?? '')
-    if (!content.trim()) throw new Error('Vui lòng cung cấp nội dung JD')
+    if (!content.trim()) throw new BadRequestException('Vui lòng cung cấp nội dung JD')
     return this.aiService.parseJD(content)
   }
 
