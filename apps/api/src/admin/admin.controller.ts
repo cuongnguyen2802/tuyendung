@@ -254,6 +254,20 @@ export class AdminController {
     return this.adminService.getMatchingCandidates(jobId, limit ? parseInt(limit, 10) : 20)
   }
 
+  // ── Suggestions / Ads ────────────────────────────────────────────────────────
+
+  @Get('suggestions')
+  @ApiOperation({ summary: 'Lấy cấu hình gợi ý/quảng cáo cho nhóm A và B' })
+  getSuggestions() {
+    return this.adminService.getSuggestions()
+  }
+
+  @Put('suggestions')
+  @ApiOperation({ summary: 'Cập nhật gợi ý/quảng cáo' })
+  updateSuggestions(@Body() data: { key: string; items: any[] }) {
+    return this.adminService.updateSuggestions(data.key, data.items)
+  }
+
   // ── Activity feed ─────────────────────────────────────────────────────────────
 
   @Get('activity')

@@ -549,6 +549,32 @@ export class AdminService {
     return events.slice(0, limit)
   }
 
+  // ── Suggestions / Ads ────────────────────────────────────────────────────────
+
+  private static readonly SUGGESTION_KEYS = ['suggestions:groupA', 'suggestions:groupB', 'suggestions:workshops']
+
+  async getSuggestions() {
+    const rows = await this.prisma.systemSetting.findMany({
+      where: { key: { in: AdminService.SUGGESTION_KEYS } },
+    })
+    const map = Object.fromEntries(rows.map(r => [r.key, r.value]))
+    return {
+      groupA: map['suggestions:groupA'] ? JSON.parse(map['suggestions:groupA']) : [],
+      groupB: map['suggestions:groupB'] ? JSON.parse(map['suggestions:groupB']) : [],
+      workshops: map['suggestions:workshops'] ? JSON.parse(map['suggestions:workshops']) : [],
+    }
+  }
+
+  async updateSuggestions(key: string, items: any[]) {
+    const fullKey = `suggestions:${key}`
+    await this.prisma.systemSetting.upsert({
+      where: { key: fullKey },
+      create: { key: fullKey, value: JSON.stringify(items) },
+      update: { value: JSON.stringify(items) },
+    })
+    return this.getSuggestions()
+  }
+
   // ── 4.3: Candidate analysis ──────────────────────────────────────────────────
 
   async getCandidateStats() {
