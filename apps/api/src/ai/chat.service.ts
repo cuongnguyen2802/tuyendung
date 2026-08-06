@@ -24,21 +24,22 @@ Phong cách:
 // ── Mock responses (fallback khi không có API key) ─────────────────────────────
 
 const MOCK_RESPONSES: Record<string, string> = {
-  job: `Để tìm việc phù hợp, bạn cần:
+  job: `Để tìm việc phù hợp với yêu cầu của bạn:
 
-**1. Xác định mục tiêu**
-• Vị trí, ngành nghề, địa điểm mong muốn
-• Mức lương kỳ vọng
+**Bước 1 — Tìm kiếm trên TuyenDung.vn**
+• Nhập từ khóa vị trí + lọc theo mức lương mong muốn
+• Lọc thêm: kinh nghiệm, địa điểm, remote/onsite
 
-**2. Chuẩn bị hồ sơ**
-• CV cập nhật, tập trung vào thành tích cụ thể
-• Bật **"Đang tìm việc"** trên profile TuyenDung.vn
+**Bước 2 — Đánh giá tin tuyển dụng**
+• Ưu tiên công ty có mô tả rõ ràng, ghi mức lương cụ thể
+• Xem review công ty từ nhân viên cũ
 
-**3. Tìm kiếm hiệu quả**
-• Dùng bộ lọc: ngành, lương, kinh nghiệm, remote/onsite
-• Bật thông báo việc làm mới theo keyword
+**Bước 3 — Nộp hồ sơ hiệu quả**
+• Tailored CV theo từng JD — đừng dùng CV chung
+• Viết cover letter ngắn (3-4 câu) nêu đúng điểm họ cần
+• Nộp sớm trong 3 ngày đầu đăng tin
 
-Bạn đang tìm vị trí nào? Tôi tư vấn cụ thể hơn được!`,
+💡 Bật thông báo việc làm để nhận tin mới nhất theo keyword!`,
 
   salary: `Mức lương tham khảo tại Việt Nam (2025):
 
@@ -89,11 +90,22 @@ Hãy đặt câu hỏi cụ thể hơn nhé!`,
 
 function getMockResponse(message: string): string {
   const lower = message.toLowerCase()
-  if (lower.includes('cv') || lower.includes('hồ sơ') || lower.includes('resume')) return MOCK_RESPONSES.cv
-  if (lower.includes('phỏng vấn') || lower.includes('interview')) return MOCK_RESPONSES.interview
-  if (lower.includes('lương') || lower.includes('salary') || lower.includes('đàm phán')) return MOCK_RESPONSES.salary
-  if (lower.includes('tìm việc') || lower.includes('tìm job') || lower.includes('việc làm') || lower.includes('muốn làm')) return MOCK_RESPONSES.job
-  if (lower.includes('tuyển dụng') || lower.includes('đăng tin') || lower.includes('employer')) return MOCK_RESPONSES.employer
+
+  // CV / resume
+  if (/cv|hồ sơ|resume|xin việc|portfolio/.test(lower)) return MOCK_RESPONSES.cv
+
+  // Interview
+  if (/phỏng vấn|interview|câu hỏi phỏng|buổi phỏng|thi tuyển/.test(lower)) return MOCK_RESPONSES.interview
+
+  // Salary / negotiation — bắt cả "18tr", "20tr", "tr/th", số + triệu
+  if (/lương|salary|tiền|đàm phán|thương lượng|\d+\s*(tr|triệu|m\/|k\/|mil)|mức thu nhập/.test(lower)) return MOCK_RESPONSES.salary
+
+  // Job search — bắt cả tên vị trí cụ thể
+  if (/tìm việc|tìm job|việc làm|muốn làm|vị trí|lập trình|developer|kỹ sư|kế toán|marketing|bán hàng|thiết kế|data|devops|frontend|backend|fullstack|nhân viên|quản lý|trưởng phòng|intern|thực tập/.test(lower)) return MOCK_RESPONSES.job
+
+  // Employer / posting
+  if (/tuyển dụng|đăng tin|tuyển nhân|employer|nhà tuyển|hr|nhân sự/.test(lower)) return MOCK_RESPONSES.employer
+
   return MOCK_RESPONSES.fallback
 }
 
