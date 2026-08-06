@@ -2,10 +2,48 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
-import {
-  BotMessageSquareIcon, XIcon, RotateCcwIcon, SendIcon,
-} from 'lucide-react'
+import { XIcon, RotateCcwIcon, SendIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+// ── Custom bot-face SVG icon ──────────────────────────────────────────────────
+
+function RobotIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 24 24"
+      fill="none" aria-hidden="true"
+    >
+      {/* Antenna stem */}
+      <line x1="12" y1="1.5" x2="12" y2="4.5"
+        stroke="white" strokeWidth="1.6" strokeLinecap="round" />
+      {/* Antenna ball */}
+      <circle cx="12" cy="1.25" r="1.25" fill="white" />
+
+      {/* Head */}
+      <rect x="2" y="4.5" width="20" height="15" rx="4.5"
+        fill="rgba(255,255,255,0.15)" stroke="white" strokeWidth="1.75" />
+
+      {/* Left ear tab */}
+      <rect x="0" y="9.25" width="2.25" height="5.5" rx="1.125" fill="white" />
+      {/* Right ear tab */}
+      <rect x="21.75" y="9.25" width="2.25" height="5.5" rx="1.125" fill="white" />
+
+      {/* Left eye — horizontal pill (cute style) */}
+      <rect x="5.25" y="9.5" width="5.25" height="3.75" rx="1.875" fill="white" />
+      {/* Left pupil gleam */}
+      <circle cx="7.25" cy="10.5" r="0.75" fill="rgba(0,0,0,0.25)" />
+
+      {/* Right eye */}
+      <rect x="13.5" y="9.5" width="5.25" height="3.75" rx="1.875" fill="white" />
+      {/* Right pupil gleam */}
+      <circle cx="15.5" cy="10.5" r="0.75" fill="rgba(0,0,0,0.25)" />
+
+      {/* Smile */}
+      <path d="M8.5 16.25 Q12 18.75 15.5 16.25"
+        stroke="white" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+    </svg>
+  )
+}
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -65,7 +103,7 @@ function Cursor() {
 function AiAvatar() {
   return (
     <div className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand">
-      <BotMessageSquareIcon className="h-3.5 w-3.5 text-white" strokeWidth={2} />
+      <RobotIcon size={15} />
     </div>
   )
 }
@@ -228,7 +266,7 @@ export function ChatWidget() {
           <div className="flex shrink-0 items-center gap-3 bg-brand px-4 py-3">
             {/* Avatar */}
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/20 ring-1 ring-white/30">
-              <BotMessageSquareIcon className="h-4 w-4 text-white" strokeWidth={2} />
+              <RobotIcon size={20} />
             </div>
 
             <div className="flex-1 min-w-0">
@@ -385,7 +423,7 @@ export function ChatWidget() {
         {open ? (
           <XIcon className="h-6 w-6 text-white" />
         ) : (
-          <BotMessageSquareIcon className="h-6 w-6 text-white" strokeWidth={1.75} />
+          <RobotIcon size={28} />
         )}
 
         {/* Active session indicator */}
