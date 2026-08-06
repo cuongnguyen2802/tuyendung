@@ -4,6 +4,7 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler'
 import { CacheModule } from '@nestjs/cache-manager'
 import { APP_GUARD } from '@nestjs/core'
 import KeyvRedis from '@keyv/redis'
+import { AiModule } from './ai/ai.module'
 import { AuthModule } from './auth/auth.module'
 import { UsersModule } from './users/users.module'
 import { EmployersModule } from './employers/employers.module'
@@ -42,6 +43,7 @@ import { JobAlertsModule } from './job-alerts/job-alerts.module'
       },
     }),
     PrismaModule,
+    AiModule,
     AuthModule,
     UsersModule,
     EmployersModule,
