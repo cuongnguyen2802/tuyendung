@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import {
-  SparklesIcon, XIcon, RotateCcwIcon, SendIcon,
+  BotMessageSquareIcon, XIcon, RotateCcwIcon, SendIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -65,7 +65,7 @@ function Cursor() {
 function AiAvatar() {
   return (
     <div className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand">
-      <SparklesIcon className="h-3.5 w-3.5 text-white" strokeWidth={2} />
+      <BotMessageSquareIcon className="h-3.5 w-3.5 text-white" strokeWidth={2} />
     </div>
   )
 }
@@ -228,7 +228,7 @@ export function ChatWidget() {
           <div className="flex shrink-0 items-center gap-3 bg-brand px-4 py-3">
             {/* Avatar */}
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/20 ring-1 ring-white/30">
-              <SparklesIcon className="h-4 w-4 text-white" strokeWidth={2} />
+              <BotMessageSquareIcon className="h-4 w-4 text-white" strokeWidth={2} />
             </div>
 
             <div className="flex-1 min-w-0">
@@ -385,7 +385,7 @@ export function ChatWidget() {
         {open ? (
           <XIcon className="h-6 w-6 text-white" />
         ) : (
-          <SparklesIcon className="h-6 w-6 text-white" strokeWidth={1.75} />
+          <BotMessageSquareIcon className="h-6 w-6 text-white" strokeWidth={1.75} />
         )}
 
         {/* Active session indicator */}
