@@ -212,21 +212,36 @@ export class ChatService {
           systemInstruction: SYSTEM_PROMPT,
         })
 
-        // Convert stored messages to Gemini history format
-        // Gemini uses 'user' / 'model' roles (not 'assistant')
         const history: Content[] = session.messages.map(m => ({
           role: m.role === 'USER' ? 'user' : 'model',
           parts: [{ text: m.content }],
         }))
 
-        const chat   = model.startChat({ history })
-        const result = await chat.sendMessageStream(message)
+        try {
+          const chat   = model.startChat({ history })
+          const result = await chat.sendMessageStream(message)
 
-        for await (const chunk of result.stream) {
-          const text = chunk.text()
-          if (text) {
-            fullResponse += text
-            sendEvent({ token: text })
+          for await (const chunk of result.stream) {
+            const text = chunk.text()
+            if (text) {
+              fullResponse += text
+              sendEvent({ token: text })
+            }
+          }
+        } catch (geminiErr: any) {
+          const msg: string = geminiErr?.message ?? ''
+          this.logger.warn('Gemini error, falling back to mock:', msg)
+
+          // Rate limit → fallback mock + friendly notice
+          if (msg.includes('429') || msg.includes('quota') || msg.includes('Too Many')) {
+            const mockText = getMockResponse(message)
+            const notice   = '\n\n_⚠️ AI đang bận, đây là câu trả lời tạm thời. Thử lại sau ít phút để được hỗ trợ đầy đủ hơn._'
+            for await (const char of mockStream(mockText + notice)) {
+              fullResponse += char
+              sendEvent({ token: char })
+            }
+          } else {
+            throw geminiErr   // re-throw other errors
           }
         }
       }
