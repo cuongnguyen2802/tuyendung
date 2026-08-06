@@ -27,47 +27,107 @@ Phong cách:
 // ── Mock streaming helpers ─────────────────────────────────────────────────────
 
 const MOCK_RESPONSES: Record<string, string> = {
-  default: `Xin chào! Tôi là trợ lý AI của TuyenDung.vn. Tôi có thể giúp bạn:
+  job: `Để tìm việc phù hợp, bạn cần làm rõ một số điểm:
 
-• Tư vấn viết CV chuyên nghiệp
-• Chuẩn bị cho buổi phỏng vấn
-• Tìm kiếm việc làm phù hợp
-• Đàm phán mức lương
-• Giải đáp thắc mắc về thị trường lao động
+**1. Xác định mục tiêu**
+• Vị trí bạn nhắm đến là gì? (Senior, Junior, Manager...)
+• Ngành nghề ưu tiên?
+• Địa điểm: Hà Nội, TP.HCM hay remote?
 
-Bạn cần hỗ trợ gì hôm nay?`,
-  cv: `Dưới đây là những bí quyết để viết CV ấn tượng:
+**2. Chuẩn bị hồ sơ**
+• CV cập nhật, tập trung vào thành tích cụ thể
+• LinkedIn đầy đủ thông tin, ảnh chuyên nghiệp
 
-• **Thông tin cá nhân**: Họ tên, email chuyên nghiệp, số điện thoại, LinkedIn
+**3. Tìm kiếm hiệu quả trên TuyenDung.vn**
+• Dùng bộ lọc: ngành nghề, mức lương, kinh nghiệm
+• Bật **Thông báo việc làm** để nhận tin mới mỗi ngày
+• Đánh dấu ❤️ các tin yêu thích để theo dõi
+
+Bạn đang tìm vị trí nào? Tôi có thể tư vấn cụ thể hơn!`,
+
+  salary: `Mức lương tham khảo tại thị trường Việt Nam (2025):
+
+**IT / Công nghệ**
+• Junior Dev: 12–20 triệu
+• Senior Dev: 25–50 triệu
+• Tech Lead / Architect: 50–100 triệu+
+
+**Marketing / Sales**
+• Executive: 8–15 triệu
+• Manager: 20–40 triệu
+
+**Kế toán / Tài chính**
+• Nhân viên: 8–15 triệu
+• Trưởng phòng: 20–35 triệu
+
+**Mẹo đàm phán lương:**
+• Nghiên cứu mức lương thị trường trước
+• Đề xuất mức cao hơn 10-20% kỳ vọng thực tế
+• Nhấn mạnh vào giá trị bạn mang lại, không chỉ kinh nghiệm`,
+
+  cv: `Bí quyết viết CV ấn tượng:
+
+• **Thông tin cá nhân**: Họ tên, email chuyên nghiệp, SĐT, LinkedIn
 • **Tóm tắt nghề nghiệp**: 2-3 câu nêu bật điểm mạnh và mục tiêu
-• **Kinh nghiệm làm việc**: Dùng con số cụ thể (tăng 30% doanh thu, quản lý 10 nhân viên...)
-• **Kỹ năng**: Liệt kê cả hard skills lẫn soft skills liên quan đến vị trí
-• **Học vấn**: Tên trường, chuyên ngành, năm tốt nghiệp, GPA (nếu cao)
+• **Kinh nghiệm**: Dùng con số cụ thể — "tăng 30% doanh thu", "quản lý team 10 người"
+• **Kỹ năng**: Hard skills + soft skills phù hợp vị trí ứng tuyển
+• **Học vấn**: Trường, chuyên ngành, năm tốt nghiệp
 
-💡 Bạn có thể dùng **CV Builder** của TuyenDung.vn để tạo CV chuyên nghiệp miễn phí!`,
-  interview: `Để chuẩn bị phỏng vấn thành công, hãy chú ý:
+**Lưu ý quan trọng:**
+• Giữ CV trong 1-2 trang
+• Tailored CV cho từng vị trí, đừng dùng CV chung
+• Xuất PDF, đặt tên file rõ ràng: "HoTen_ViTri_CV.pdf"
+
+💡 Dùng **CV Builder** của TuyenDung.vn để tạo CV đẹp miễn phí!`,
+
+  interview: `Chuẩn bị phỏng vấn hiệu quả:
 
 **Trước buổi phỏng vấn:**
-• Nghiên cứu kỹ về công ty (sản phẩm, văn hóa, tin tức gần đây)
-• Luyện tập trả lời câu hỏi STAR (Situation - Task - Action - Result)
-• Chuẩn bị 2-3 câu hỏi thông minh để hỏi lại nhà tuyển dụng
+• Nghiên cứu kỹ công ty: sản phẩm, văn hóa, tin tức gần đây
+• Luyện tập câu trả lời theo phương pháp STAR
+• Chuẩn bị 2-3 câu hỏi để hỏi lại nhà tuyển dụng
 
 **Trong buổi phỏng vấn:**
-• Đến đúng giờ hoặc sớm 10 phút
-• Lắng nghe kỹ câu hỏi trước khi trả lời
-• Dùng ví dụ thực tế để minh họa câu trả lời
+• Đến sớm 10-15 phút
+• Lắng nghe kỹ, không ngắt lời
+• Dùng ví dụ thực tế để minh họa
 
 **Câu hỏi thường gặp:**
-• "Điểm mạnh/yếu của bạn là gì?"
-• "Tại sao bạn muốn làm việc tại đây?"
-• "Bạn kỳ vọng mức lương bao nhiêu?"`,
+• "Điểm mạnh/yếu của bạn?" → Chuẩn bị trả lời trung thực + giải pháp cải thiện
+• "Kỳ vọng lương?" → Nghiên cứu thị trường trước, đưa ra khoảng
+• "Tại sao muốn làm ở đây?" → Thể hiện hiểu biết về công ty`,
+
+  employer: `Để tuyển dụng hiệu quả trên TuyenDung.vn:
+
+**Viết tin tuyển dụng hấp dẫn:**
+• Tiêu đề rõ ràng, có mức lương cụ thể (tăng 40% ứng tuyển)
+• Mô tả công việc chi tiết, tránh copy mẫu chung chung
+• Nêu rõ quyền lợi nổi bật: remote, thưởng, bảo hiểm...
+
+**Quy trình tuyển chọn:**
+• Phản hồi ứng viên trong 3-5 ngày làm việc
+• Phỏng vấn tối đa 2-3 vòng
+• Gửi offer letter bằng văn bản rõ ràng
+
+Bạn đang tuyển vị trí nào? Tôi có thể giúp tối ưu tin đăng!`,
+
+  fallback: `Tôi hiểu bạn đang cần hỗ trợ về vấn đề này.
+
+Hiện tôi đang chạy ở chế độ demo. Để nhận câu trả lời chính xác và chi tiết nhất, vui lòng liên hệ:
+• **Hotline**: 1900 1234 (T2-T6, 8:00-18:00)
+• **Email**: support@tuyendung.vn
+
+Hoặc thử hỏi tôi về: **tìm việc**, **viết CV**, **chuẩn bị phỏng vấn**, **mức lương**, **đăng tuyển dụng**.`,
 }
 
 function getMockResponse(message: string): string {
   const lower = message.toLowerCase()
   if (lower.includes('cv') || lower.includes('hồ sơ') || lower.includes('resume')) return MOCK_RESPONSES.cv
   if (lower.includes('phỏng vấn') || lower.includes('interview')) return MOCK_RESPONSES.interview
-  return MOCK_RESPONSES.default
+  if (lower.includes('lương') || lower.includes('salary') || lower.includes('tiền') || lower.includes('đàm phán')) return MOCK_RESPONSES.salary
+  if (lower.includes('tìm việc') || lower.includes('tìm job') || lower.includes('việc làm') || lower.includes('tuyển dụng') || lower.includes('ứng tuyển')) return MOCK_RESPONSES.job
+  if (lower.includes('nhà tuyển dụng') || lower.includes('đăng tin') || lower.includes('tuyển nhân') || lower.includes('employer')) return MOCK_RESPONSES.employer
+  return MOCK_RESPONSES.fallback
 }
 
 async function* mockStream(text: string, delayMs = 18) {
