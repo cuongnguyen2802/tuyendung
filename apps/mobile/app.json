@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "TuyenDung",
+    "slug": "tuyendung",
+    "version": "1.0.0",
+    "scheme": "tuyendung",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#19734E"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "vn.tuyendung.app"
+    },
+    "android": {
+      "package": "vn.tuyendung.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#19734E"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/icon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-splash-screen",
+        { "backgroundColor": "#19734E", "image": "./assets/icon.png", "imageWidth": 120 }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
