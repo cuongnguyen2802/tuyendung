@@ -8,7 +8,7 @@ import {
   Building2Icon, ShieldIcon, HomeIcon, LogOutIcon, MenuIcon,
   PanelRightIcon, NewspaperIcon, TagsIcon, UserCircleIcon, ImagesIcon,
   ChevronRightIcon, BadgeDollarSignIcon, WrenchIcon, StarIcon, FileTextIcon,
-  ActivityIcon, BarChart3Icon, SparklesIcon, MegaphoneIcon,
+  ActivityIcon, BarChart3Icon, SparklesIcon, MegaphoneIcon, DatabaseIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -59,6 +59,7 @@ const NAV_GROUPS = [
       { href: '/admin/media',    label: 'Thư viện media',    icon: ImagesIcon     },
       { href: '/admin/menu',     label: 'Quản lý menu',      icon: MenuIcon       },
       { href: '/admin/widgets',  label: 'Nút nổi',           icon: PanelRightIcon },
+      { href: '/admin/backup',   label: 'Backup & Restore',  icon: DatabaseIcon   },
     ],
   },
 ]

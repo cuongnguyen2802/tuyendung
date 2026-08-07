@@ -26,6 +26,7 @@ import { ActivityModule } from './activity/activity.module'
 import { CampaignsModule } from './campaigns/campaigns.module'
 import { CoverLettersModule } from './cover-letters/cover-letters.module'
 import { JobAlertsModule } from './job-alerts/job-alerts.module'
+import { BackupModule } from './backup/backup.module'
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { JobAlertsModule } from './job-alerts/job-alerts.module'
     CampaignsModule,
     CoverLettersModule,
     JobAlertsModule,
+    BackupModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
