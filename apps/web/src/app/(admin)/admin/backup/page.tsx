@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { getSession } from 'next-auth/react'
 import { api } from '@/lib/api'
 import {
   DatabaseIcon, DownloadIcon, Trash2Icon, RefreshCwIcon,
@@ -84,7 +85,9 @@ function StatTile({ icon: Icon, label, value, color = 'slate' }: {
 
 export default function BackupPage() {
   const queryClient = useQueryClient()
-  const [deletingFile, setDeletingFile] = useState<string | null>(null)
+  const [deletingFile,  setDeletingFile]  = useState<string | null>(null)
+  const [downloading,   setDownloading]   = useState<string | null>(null)
+  const [downloadError, setDownloadError] = useState<string | null>(null)
 
   const { data: status, isLoading: loadingStatus } = useQuery<BackupStatus>({
     queryKey: ['backup-status'],
@@ -122,9 +125,38 @@ export default function BackupPage() {
     },
   })
 
-  const handleDownload = (filename: string) => {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1'
-    window.open(`${baseUrl}/admin/backup/${filename}/download`, '_blank')
+  // Download via fetch (sends JWT header) → blob → trigger <a> click
+  const handleDownload = async (filename: string) => {
+    setDownloading(filename)
+    setDownloadError(null)
+    try {
+      const session = await getSession()
+      const token   = (session as any)?.accessToken as string | undefined
+      const baseUrl = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001') + '/api/v1'
+
+      const res = await fetch(`${baseUrl}/admin/backup/${encodeURIComponent(filename)}/download`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      })
+
+      if (!res.ok) {
+        const err = await res.text()
+        throw new Error(`Server trả về ${res.status}: ${err}`)
+      }
+
+      const blob = await res.blob()
+      const url  = URL.createObjectURL(blob)
+      const a    = document.createElement('a')
+      a.href     = url
+      a.download = filename
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    } catch (err: any) {
+      setDownloadError(err?.message ?? 'Tải xuống thất bại')
+    } finally {
+      setDownloading(null)
+    }
   }
 
   return (
@@ -162,7 +194,14 @@ export default function BackupPage() {
       {createMutation.isError && (
         <div className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           <AlertTriangleIcon className="h-4 w-4 shrink-0" />
-          {(createMutation.error as any)?.message ?? 'Backup thất bại. Kiểm tra pg_dump đã được cài đặt chưa.'}
+          {(createMutation.error as any)?.message ?? 'Backup thất bại'}
+        </div>
+      )}
+      {downloadError && (
+        <div className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <AlertTriangleIcon className="h-4 w-4 shrink-0" />
+          <span><strong>Tải xuống lỗi:</strong> {downloadError}</span>
+          <button onClick={() => setDownloadError(null)} className="ml-auto text-red-400 hover:text-red-600">✕</button>
         </div>
       )}
 
@@ -295,10 +334,13 @@ export default function BackupPage() {
                   {b.status === 'success' && (
                     <button
                       onClick={() => handleDownload(b.filename)}
-                      className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-brand hover:text-brand"
+                      disabled={downloading === b.filename}
+                      className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-brand hover:text-brand disabled:opacity-60"
                     >
-                      <DownloadIcon className="h-3.5 w-3.5" />
-                      Tải xuống
+                      {downloading === b.filename
+                        ? <RefreshCwIcon className="h-3.5 w-3.5 animate-spin" />
+                        : <DownloadIcon className="h-3.5 w-3.5" />}
+                      {downloading === b.filename ? 'Đang tải...' : 'Tải xuống'}
                     </button>
                   )}
 
