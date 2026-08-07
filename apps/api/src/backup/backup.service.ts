@@ -9,7 +9,7 @@ import {
   mkdirSync, unlinkSync, statSync,
   readFileSync, writeFileSync,
 } from 'fs'
-import { createGzip } from 'zlib'
+import { createGzip, gunzipSync } from 'zlib'
 import { pipeline } from 'stream/promises'
 import { Readable } from 'stream'
 import { join } from 'path'
@@ -213,6 +213,72 @@ export class BackupService implements OnModuleInit, OnModuleDestroy {
   private stopAutoBackup() {
     if (this.timer) { clearInterval(this.timer); this.timer = null }
     this.autoEnabled = false
+  }
+
+  // ── Restore ───────────────────────────────────────────────────────────────
+
+  async restoreFromBuffer(buffer: Buffer): Promise<{ tables: number; rows: number }> {
+    this.logger.warn('⚠️  RESTORE started — all current data will be replaced')
+
+    // 1. Decompress
+    let json: string
+    try {
+      json = gunzipSync(buffer).toString('utf-8')
+    } catch {
+      throw new InternalServerErrorException('File không hợp lệ — không thể giải nén gzip')
+    }
+
+    // 2. Parse
+    let payload: Record<string, unknown[]>
+    try {
+      payload = JSON.parse(json)
+    } catch {
+      throw new InternalServerErrorException('File không hợp lệ — JSON bị hỏng')
+    }
+
+    if (!payload['_meta']) {
+      throw new InternalServerErrorException('File không phải backup hợp lệ của TuyenDung')
+    }
+
+    // 3. Disable FK checks, wipe tables in REVERSE FK order, re-insert in FORWARD order
+    //    PostgreSQL: SET session_replication_role = replica bypasses FK triggers
+    let totalRows = 0
+    let tableCount = 0
+
+    try {
+      await this.prisma.$executeRawUnsafe(`SET session_replication_role = 'replica'`)
+
+      // Wipe in reverse order
+      const reversed = [...EXPORT_MODELS].reverse()
+      for (const model of reversed) {
+        try {
+          const delegate = (this.prisma as any)[model]
+          if (delegate?.deleteMany) await delegate.deleteMany({})
+        } catch { /* table may not exist yet */ }
+      }
+
+      // Re-insert in forward order
+      for (const model of EXPORT_MODELS) {
+        const rows = payload[model]
+        if (!Array.isArray(rows) || rows.length === 0) continue
+        try {
+          const delegate = (this.prisma as any)[model]
+          if (!delegate?.createMany) continue
+          await delegate.createMany({ data: rows, skipDuplicates: true })
+          totalRows += rows.length
+          tableCount++
+          this.logger.verbose(`  restored ${model}: ${rows.length} rows`)
+        } catch (err: any) {
+          this.logger.warn(`  skip ${model}: ${err?.message?.slice(0, 80)}`)
+        }
+      }
+    } finally {
+      // Always re-enable FK checks
+      await this.prisma.$executeRawUnsafe(`SET session_replication_role = 'DEFAULT'`)
+    }
+
+    this.logger.log(`✅ Restore complete: ${tableCount} tables, ${totalRows} rows`)
+    return { tables: tableCount, rows: totalRows }
   }
 
   // ── Purge ─────────────────────────────────────────────────────────────────

@@ -8,7 +8,7 @@ import {
   DatabaseIcon, DownloadIcon, Trash2Icon, RefreshCwIcon,
   CheckCircle2Icon, XCircleIcon, ClockIcon, HardDriveIcon,
   ToggleLeftIcon, ToggleRightIcon, ShieldCheckIcon, AlertTriangleIcon,
-  CalendarClockIcon, ServerIcon,
+  CalendarClockIcon, ServerIcon, UploadCloudIcon, RotateCcwIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -85,9 +85,12 @@ function StatTile({ icon: Icon, label, value, color = 'slate' }: {
 
 export default function BackupPage() {
   const queryClient = useQueryClient()
-  const [deletingFile,  setDeletingFile]  = useState<string | null>(null)
-  const [downloading,   setDownloading]   = useState<string | null>(null)
-  const [downloadError, setDownloadError] = useState<string | null>(null)
+  const [deletingFile,    setDeletingFile]    = useState<string | null>(null)
+  const [downloading,     setDownloading]     = useState<string | null>(null)
+  const [downloadError,   setDownloadError]   = useState<string | null>(null)
+  const [restoreFile,     setRestoreFile]     = useState<File | null>(null)
+  const [restoreConfirm,  setRestoreConfirm]  = useState(false)
+  const [restoreResult,   setRestoreResult]   = useState<{ tables: number; rows: number } | null>(null)
 
   const { data: status, isLoading: loadingStatus } = useQuery<BackupStatus>({
     queryKey: ['backup-status'],
@@ -121,6 +124,30 @@ export default function BackupPage() {
     onSuccess: () => {
       setDeletingFile(null)
       queryClient.invalidateQueries({ queryKey: ['backup-list'] })
+      queryClient.invalidateQueries({ queryKey: ['backup-status'] })
+    },
+  })
+
+  const restoreMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const session = await getSession()
+      const token   = (session as any)?.accessToken as string | undefined
+      const baseUrl = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001') + '/api/v1'
+      const form    = new FormData()
+      form.append('file', file)
+      const res = await fetch(`${baseUrl}/admin/backup/restore`, {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: form,
+      })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json?.message ?? `Lỗi ${res.status}`)
+      return json.data ?? json
+    },
+    onSuccess: (data) => {
+      setRestoreResult(data)
+      setRestoreFile(null)
+      setRestoreConfirm(false)
       queryClient.invalidateQueries({ queryKey: ['backup-status'] })
     },
   })
@@ -371,6 +398,107 @@ export default function BackupPage() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+      </div>
+
+      {/* ── Restore section ── */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50">
+            <RotateCcwIcon className="h-5 w-5 text-orange-500" />
+          </div>
+          <div className="flex-1">
+            <p className="font-semibold text-slate-800">Khôi phục từ file backup</p>
+            <p className="mt-0.5 text-sm text-slate-500">
+              Upload file <code className="rounded bg-slate-100 px-1 text-xs">.json.gz</code> đã tải về trước đó. Toàn bộ dữ liệu hiện tại sẽ bị thay thế.
+            </p>
+          </div>
+        </div>
+
+        {/* Success */}
+        {restoreResult && (
+          <div className="mt-4 flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+            <CheckCircle2Icon className="h-4 w-4 shrink-0" />
+            <span>Khôi phục thành công! <strong>{restoreResult.tables}</strong> bảng, <strong>{restoreResult.rows.toLocaleString('vi-VN')}</strong> bản ghi.</span>
+            <button onClick={() => setRestoreResult(null)} className="ml-auto text-green-500">✕</button>
+          </div>
+        )}
+
+        {/* Error */}
+        {restoreMutation.isError && (
+          <div className="mt-4 flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <AlertTriangleIcon className="h-4 w-4 shrink-0" />
+            {(restoreMutation.error as any)?.message ?? 'Khôi phục thất bại'}
+          </div>
+        )}
+
+        {/* Upload zone */}
+        <div className="mt-4">
+          <label className={cn(
+            'flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed px-6 py-8 transition',
+            restoreFile ? 'border-brand/40 bg-brand/5' : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50',
+          )}>
+            <UploadCloudIcon className={cn('h-8 w-8', restoreFile ? 'text-brand' : 'text-slate-300')} />
+            {restoreFile ? (
+              <div className="text-center">
+                <p className="text-sm font-semibold text-brand">{restoreFile.name}</p>
+                <p className="text-xs text-slate-400">{formatBytes(restoreFile.size)}</p>
+              </div>
+            ) : (
+              <div className="text-center">
+                <p className="text-sm font-medium text-slate-600">Kéo thả hoặc nhấn để chọn file</p>
+                <p className="text-xs text-slate-400">Chỉ nhận file <code>.json.gz</code> từ hệ thống backup này</p>
+              </div>
+            )}
+            <input
+              type="file"
+              accept=".gz,.json.gz"
+              className="sr-only"
+              onChange={(e) => {
+                setRestoreFile(e.target.files?.[0] ?? null)
+                setRestoreConfirm(false)
+                setRestoreResult(null)
+              }}
+            />
+          </label>
+        </div>
+
+        {restoreFile && !restoreConfirm && (
+          <button
+            onClick={() => setRestoreConfirm(true)}
+            className="mt-3 w-full rounded-xl border border-orange-300 bg-orange-50 py-2.5 text-sm font-semibold text-orange-700 transition hover:bg-orange-100"
+          >
+            Tiếp tục khôi phục →
+          </button>
+        )}
+
+        {/* Confirm step */}
+        {restoreFile && restoreConfirm && (
+          <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-4">
+            <p className="text-sm font-semibold text-red-700">⚠️ Xác nhận khôi phục</p>
+            <p className="mt-1 text-sm text-red-600">
+              Thao tác này sẽ <strong>xóa toàn bộ dữ liệu hiện tại</strong> và thay thế bằng dữ liệu từ file backup.
+              Không thể hoàn tác. Hãy chắc chắn bạn đã tạo backup mới trước khi restore.
+            </p>
+            <div className="mt-3 flex gap-2">
+              <button
+                onClick={() => restoreMutation.mutate(restoreFile)}
+                disabled={restoreMutation.isPending}
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-red-600 py-2.5 text-sm font-bold text-white transition hover:bg-red-700 disabled:opacity-60"
+              >
+                {restoreMutation.isPending
+                  ? <><RefreshCwIcon className="h-4 w-4 animate-spin" /> Đang khôi phục...</>
+                  : <><RotateCcwIcon className="h-4 w-4" /> Xác nhận khôi phục</>}
+              </button>
+              <button
+                onClick={() => { setRestoreConfirm(false); setRestoreFile(null) }}
+                disabled={restoreMutation.isPending}
+                className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-60"
+              >
+                Hủy
+              </button>
+            </div>
           </div>
         )}
       </div>

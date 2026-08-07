@@ -1,7 +1,10 @@
 import {
   Controller, Get, Post, Delete, Param, Body, Res,
-  UseGuards, StreamableFile, BadRequestException,
+  UseGuards, BadRequestException, UseInterceptors,
+  UploadedFile, ParseFilePipe, MaxFileSizeValidator,
 } from '@nestjs/common'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { memoryStorage } from 'multer'
 import { Response } from 'express'
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger'
 import { IsBoolean } from 'class-validator'
@@ -84,5 +87,25 @@ export class BackupController {
   setAuto(@Body() dto: SetAutoBackupDto) {
     this.backup.setAutoBackup(dto.enabled)
     return { autoEnabled: dto.enabled, message: dto.enabled ? 'Đã bật auto-backup' : 'Đã tắt auto-backup' }
+  }
+
+  // ── Restore ───────────────────────────────────────────────────────────────
+
+  @Post('restore')
+  @ApiOperation({ summary: 'Khôi phục database từ file backup (.json.gz)' })
+  @UseInterceptors(FileInterceptor('file', { storage: memoryStorage() }))
+  restore(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [new MaxFileSizeValidator({ maxSize: 500 * 1024 * 1024 })], // 500 MB max
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    if (!file) throw new BadRequestException('Vui lòng chọn file backup (.json.gz)')
+    if (!file.originalname.endsWith('.json.gz') && !file.originalname.endsWith('.gz')) {
+      throw new BadRequestException('File phải có đuôi .json.gz')
+    }
+    return this.backup.restoreFromBuffer(file.buffer)
   }
 }
