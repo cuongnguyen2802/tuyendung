@@ -27,7 +27,11 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
 async function getJobs(params: Record<string, string>): Promise<PaginatedResponse<JobDto>> {
   const query = new URLSearchParams(params).toString()
-  const data = await serverFetch<PaginatedResponse<JobDto>>(`/jobs?${query}`, { revalidate: false })
+  // ISR: cache 60s at the Next.js edge — reduces load on API for anonymous users
+  const data = await serverFetch<PaginatedResponse<JobDto>>(`/jobs?${query}`, {
+    revalidate: 60,
+    tags: ['jobs'],
+  })
   return data ?? { data: [], meta: { total: 0, page: 1, limit: 20, totalPages: 0 } }
 }
 

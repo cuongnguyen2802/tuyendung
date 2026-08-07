@@ -408,6 +408,7 @@ model Job {
   @@index([status, jobType])
   @@index([status, createdAt])
   @@index([employerId, status])
+  @@index([status, salaryMax]) // for sortBy=salary queries
 }
 
 model JobSkill {

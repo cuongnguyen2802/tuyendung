@@ -28,6 +28,7 @@ export class AuthController {
 
   @Public()
   @Post('register')
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @ApiOperation({ summary: 'Đăng ký tài khoản' })
   register(@Body() dto: RegisterDto) {
     return this.authService.register(dto)

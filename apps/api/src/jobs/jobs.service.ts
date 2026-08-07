@@ -64,7 +64,10 @@ export class JobsService {
   }
 
   async findAll(query: JobQueryDto, userId?: string) {
-    const { page = 1, limit = 20, keyword, city, jobType, workMode, salaryMin, experienceMin, sortBy, categorySlug } = query
+    const { page = 1, city, jobType, workMode, salaryMin, experienceMin, sortBy, categorySlug } = query
+    const keyword = query.keyword
+    // Cap limit to 50 to prevent heavy DB queries
+    const limit = Math.min(query.limit ?? 20, 50)
 
     if (keyword) {
       if (this.searchService.isAvailable) {
@@ -132,7 +135,7 @@ export class JobsService {
       meta: buildPaginationMeta(total, page, limit),
     }
 
-    if (cacheKey) await this.cache.set(cacheKey, result, 120_000) // 2 minutes
+    if (cacheKey) await this.cache.set(cacheKey, result, 300_000) // 5 minutes
     return result
   }
 
@@ -153,8 +156,9 @@ export class JobsService {
     })
     if (!job) throw new NotFoundException('Tin tuyển dụng không tồn tại')
 
-    // Fire all side-effects in parallel; view increment is fire-and-forget
-    this.prisma.job.update({ where: { id: job.id }, data: { views: { increment: 1 } } }).catch(() => {})
+    // View counter: debounce per job via Redis (1 flush per job per 10 minutes max)
+    // This prevents DB thrash under high traffic — flushes are fire-and-forget
+    this.incrementViewDebounced(job.id).catch(() => {})
 
     const [hasApplied, isSaved] = await Promise.all([
       userId
@@ -488,6 +492,21 @@ export class JobsService {
     })
     if (!job) throw new NotFoundException('Tin tuyển dụng không tồn tại hoặc bạn không có quyền')
     return job
+  }
+
+  /**
+   * Debounced view counter: increment DB at most once per job per 10 minutes.
+   * Under high traffic this collapses thousands of writes into ~1 per 10 min per job.
+   */
+  private async incrementViewDebounced(jobId: string): Promise<void> {
+    const lockKey = `job:view:lock:${jobId}`
+    const alreadyCounted = await this.cache.get(lockKey)
+    if (alreadyCounted) return // still within debounce window — skip DB write
+
+    await Promise.all([
+      this.prisma.job.update({ where: { id: jobId }, data: { views: { increment: 1 } } }),
+      this.cache.set(lockKey, 1, 600_000), // 10-minute debounce window
+    ])
   }
 
   private toSlug(text: string): string {
