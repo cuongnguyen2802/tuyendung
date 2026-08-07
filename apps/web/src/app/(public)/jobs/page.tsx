@@ -198,12 +198,10 @@ export default async function JobsPage({ searchParams }: PageProps) {
           <div className="flex gap-5">
 
             {/* Left — sticky filter sidebar */}
-            <aside className="hidden w-[280px] shrink-0 lg:block">
-              <div className="sticky top-[132px]">
-                <Suspense>
-                  <JobFilters />
-                </Suspense>
-              </div>
+            <aside className="hidden w-[280px] shrink-0 self-start sticky top-[132px] lg:block">
+              <Suspense>
+                <JobFilters />
+              </Suspense>
             </aside>
 
             {/* Right — job list (streamed) */}
