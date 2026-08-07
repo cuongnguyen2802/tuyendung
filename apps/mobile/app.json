@@ -15,14 +15,27 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "vn.tuyendung.app"
+      "bundleIdentifier": "vn.tuyendung.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Dùng camera để chụp ảnh hồ sơ",
+        "NSPhotoLibraryUsageDescription": "Truy cập ảnh để cập nhật ảnh đại diện",
+        "NSMicrophoneUsageDescription": "Dùng micro để quay video giới thiệu bản thân"
+      }
     },
     "android": {
       "package": "vn.tuyendung.app",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#19734E"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.INTERNET"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -33,11 +46,24 @@
       "expo-secure-store",
       [
         "expo-splash-screen",
-        { "backgroundColor": "#19734E", "image": "./assets/icon.png", "imageWidth": 120 }
+        {
+          "backgroundColor": "#19734E",
+          "image": "./assets/icon.png",
+          "imageWidth": 120
+        }
+      ],
+      [
+        "expo-document-picker",
+        { "iCloudContainerEnvironment": "Production" }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "YOUR_EAS_PROJECT_ID"
+      }
     }
   }
 }

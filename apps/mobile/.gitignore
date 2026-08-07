@@ -32,6 +32,13 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env
+
+# EAS / Store credentials (KHÔNG commit lên git)
+google-service-account.json
+*.p8
+*.p12
+*.mobileprovision
 
 # typescript
 *.tsbuildinfo
