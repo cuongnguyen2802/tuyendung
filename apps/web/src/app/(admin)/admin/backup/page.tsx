@@ -135,7 +135,7 @@ export default function BackupPage() {
         <div>
           <h1 className="text-xl font-bold text-slate-800">Backup & Khôi phục</h1>
           <p className="mt-1 text-sm text-slate-500">
-            Sao lưu toàn bộ cơ sở dữ liệu PostgreSQL. Backup lưu tại <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">uploads/backups/</code> trên server.
+            Xuất toàn bộ dữ liệu sang JSON nén gzip — không cần cài pg_dump. Lưu tại <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">uploads/backups/</code> trên server.
           </p>
         </div>
         <button
@@ -340,7 +340,7 @@ export default function BackupPage() {
           <div className="space-y-1">
             <p className="font-semibold">Lưu ý bảo mật</p>
             <p>Backup chứa toàn bộ dữ liệu hệ thống. Chỉ admin mới có quyền truy cập. File backup được lưu trên server — khuyến nghị định kỳ tải xuống và lưu ở nơi khác (Google Drive, S3 bucket riêng).</p>
-            <p className="mt-1">Để restore: <code className="rounded bg-amber-100 px-1">psql DATABASE_URL &lt; backup.sql</code> (sau khi giải nén với <code className="rounded bg-amber-100 px-1">gunzip</code>).</p>
+            <p className="mt-1">File định dạng <strong>JSON nén gzip</strong>. Để restore: giải nén bằng <code className="rounded bg-amber-100 px-1">gunzip backup.json.gz</code> rồi import qua script hoặc liên hệ kỹ thuật.</p>
           </div>
         </div>
       </div>
