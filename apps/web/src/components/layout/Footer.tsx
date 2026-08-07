@@ -174,12 +174,17 @@ export function Footer() {
         </div>
 
         {/* ── Bottom bar ────────────────────────────────────────────── */}
-        <div className="mt-10 border-t border-gray-100 pt-6">
+        <div className="mt-10 border-t border-gray-100 pt-6 space-y-3">
           <div className="flex flex-col items-center justify-between gap-3 text-xs text-gray-400 sm:flex-row">
             <p>© {year} TuyenDung.vn — Nền tảng tuyển dụng hàng đầu Việt Nam</p>
-            <p>
-              Giấy phép ĐKKD số 0123456789 — Sở KH&ĐT TP. Hà Nội cấp ngày 01/01/2020
-            </p>
+            <p>Dự án Demo — Không có giá trị pháp lý</p>
+          </div>
+
+          {/* Demo disclaimer */}
+          <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-2.5 text-center text-xs text-amber-700">
+            ⚠️ <strong>Trang web này chỉ là bản Demo</strong> — được xây dựng cho mục đích học tập và trình diễn kỹ thuật.
+            Mọi thông tin công ty, tin tuyển dụng, dữ liệu người dùng đều là <strong>giả lập</strong>.
+            Không có giao dịch thực tế nào được thực hiện trên nền tảng này.
           </div>
         </div>
       </div>
