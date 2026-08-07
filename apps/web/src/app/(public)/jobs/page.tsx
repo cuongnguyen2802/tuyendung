@@ -195,7 +195,7 @@ export default async function JobsPage({ searchParams }: PageProps) {
           )}
 
           {/* ── Two-column layout ── */}
-          <div className="flex gap-5 items-start">
+          <div className="flex gap-5">
 
             {/* Left — sticky filter sidebar */}
             <aside className="hidden w-[280px] shrink-0 lg:block">
