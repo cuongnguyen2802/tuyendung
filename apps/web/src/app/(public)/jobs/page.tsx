@@ -199,7 +199,7 @@ export default async function JobsPage({ searchParams }: PageProps) {
 
             {/* Left — sticky filter sidebar */}
             <aside className="hidden w-[280px] shrink-0 lg:block">
-              <div className="sticky top-[132px] max-h-[calc(100vh-148px)] overflow-y-auto rounded-2xl scrollbar-thin">
+              <div className="sticky top-[132px]">
                 <Suspense>
                   <JobFilters />
                 </Suspense>
